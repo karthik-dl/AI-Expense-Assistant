@@ -1,34 +1,53 @@
 from flask import Flask
 from flask_cors import CORS
+from flask_migrate import Migrate
 
 from config import Config
 from database import db
 
-app = Flask(__name__)
-app.config.from_object(Config)
+# Import models so SQLAlchemy registers them
+from models import User, Expense, Income, Budget
 
-CORS(app)
-
-db.init_app(app)
-
-
-@app.route("/")
-def home():
-    return {
-        "message": "AI Expense Assistant Backend Running"
-    }
+# Create Migrate instance
+migrate = Migrate()
 
 
-@app.route("/health")
-def health():
-    return {
-        "status": "success",
-        "database": "Connected"
-    }
+def create_app():
+    app = Flask(__name__)
+
+    # Load configuration
+    app.config.from_object(Config)
+
+    # Enable CORS
+    CORS(app)
+
+    # Initialize database
+    db.init_app(app)
+
+    # Initialize Flask-Migrate
+    migrate.init_app(app, db)
+
+    # -------------------- Routes -------------------- #
+
+    @app.route("/")
+    def home():
+        return {
+            "status": "success",
+            "message": "AI Expense Assistant Backend Running 🚀"
+        }
+
+    @app.route("/health")
+    def health():
+        return {
+            "status": "healthy"
+        }
+
+    return app
+
+
+# Create the Flask application
+app = create_app()
 
 
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-
     app.run(debug=True)
