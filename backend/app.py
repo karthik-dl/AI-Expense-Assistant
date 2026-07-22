@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, app
 from flask_cors import CORS
 from flask_migrate import Migrate
 
@@ -7,7 +7,10 @@ from database import db
 
 # Import models so SQLAlchemy registers them
 from models import User, Expense, Income, Budget
-
+from routes.user_routes import user_bp
+from routes.expense_routes import expense_bp
+from routes.income_routes import income_bp
+from routes.budget_routes import budget_bp
 # Create Migrate instance
 migrate = Migrate()
 
@@ -20,7 +23,11 @@ def create_app():
 
     # Enable CORS
     CORS(app)
-
+    
+    app.register_blueprint(user_bp, url_prefix="/api")
+    app.register_blueprint(expense_bp, url_prefix="/api")
+    app.register_blueprint(income_bp, url_prefix="/api")
+    app.register_blueprint(budget_bp, url_prefix="/api")
     # Initialize database
     db.init_app(app)
 
