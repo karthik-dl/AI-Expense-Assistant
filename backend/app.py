@@ -14,6 +14,7 @@ from routes.budget_routes import budget_bp
 
 from routes.auth_routes import auth_bp
 from routes.profile_routes import profile_bp
+
 # Create Migrate instance
 migrate = Migrate()
 
@@ -28,7 +29,7 @@ def create_app():
     CORS(app)
     
     jwt = JWTManager(app)
-    
+    # app.register_blueprint(expense_bp, url_prefix="/api")
     app.register_blueprint(user_bp, url_prefix="/api")
     app.register_blueprint(expense_bp, url_prefix="/api")
     app.register_blueprint(income_bp, url_prefix="/api")
