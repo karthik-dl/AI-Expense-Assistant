@@ -39,5 +39,11 @@ class User(db.Model):
         cascade="all, delete-orphan"
     )
 
+    budgets = db.relationship(
+        "Budget",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy=True
+    )
     def __repr__(self):
         return f"<User {self.email}>"
