@@ -13,7 +13,7 @@ from routes.budget_routes import budget_bp
 
 from routes.auth_routes import auth_bp
 from routes.profile_routes import profile_bp
-
+from routes.dashboard_routes import dashboard_bp
 # Create Migrate instance
 migrate = Migrate()
 
@@ -35,7 +35,7 @@ def create_app():
     app.register_blueprint(budget_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(profile_bp, url_prefix="/api")
-    
+    app.register_blueprint(dashboard_bp,url_prefix="/api")
     # Initialize database
     db.init_app(app)
 
