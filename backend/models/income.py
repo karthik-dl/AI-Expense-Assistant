@@ -7,18 +7,43 @@ class Income(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    source = db.Column(db.String(100), nullable=False)
+    source = db.Column(
+        db.String(150),
+        nullable=False
+    )
 
-    amount = db.Column(db.Float, nullable=False)
+    category = db.Column(
+        db.String(100),
+        nullable=False,
+        default="Other"
+    )
+
+    amount = db.Column(
+        db.Numeric(10, 2),
+        nullable=False
+    )
 
     income_date = db.Column(
         db.Date,
         nullable=False
     )
 
+    notes = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    updated_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow,
+        nullable=False
     )
 
     user_id = db.Column(
@@ -27,5 +52,20 @@ class Income(db.Model):
         nullable=False
     )
 
-    def __repr__(self):
-        return f"<Income {self.source}>"
+    user = db.relationship(
+        "User",
+        back_populates="incomes"
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "source": self.source,
+            "category": self.category,
+            "amount": float(self.amount),
+            "income_date": self.income_date.isoformat(),
+            "notes": self.notes,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "user_id": self.user_id
+        }

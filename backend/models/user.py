@@ -20,21 +20,21 @@ class User(db.Model):
 
     expenses = db.relationship(
         "Expense",
-        backref="user",
-        lazy=True,
-        cascade="all, delete-orphan"
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy=True
     )
 
     incomes = db.relationship(
         "Income",
-        backref="user",
-        lazy=True,
-        cascade="all, delete-orphan"
+        back_populates="user",
+        cascade="all, delete-orphan",
+        lazy=True
     )
 
     budget = db.relationship(
         "Budget",
-        backref="user",
+        back_populates="user",
         uselist=False,
         cascade="all, delete-orphan"
     )

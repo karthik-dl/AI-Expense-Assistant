@@ -1,7 +1,6 @@
 from flask import Flask, app
 from flask_cors import CORS
 from flask_migrate import Migrate
-
 from config import Config
 from database import db
 from flask_jwt_extended import JWTManager
@@ -36,6 +35,7 @@ def create_app():
     app.register_blueprint(budget_bp, url_prefix="/api")
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(profile_bp, url_prefix="/api")
+
     # Initialize database
     db.init_app(app)
 

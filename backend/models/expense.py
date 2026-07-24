@@ -29,5 +29,11 @@ class Expense(db.Model):
         nullable=False
     )
 
+   
+    user = db.relationship(
+        "User",
+        back_populates="expenses"
+    )
+
     def __repr__(self):
         return f"<Expense {self.description}>"

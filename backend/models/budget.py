@@ -34,5 +34,11 @@ class Budget(db.Model):
         nullable=False
     )
 
+
+    user = db.relationship(
+        "User",
+        back_populates="budget"
+    )
+
     def __repr__(self):
         return f"<Budget {self.month}/{self.year}>"
