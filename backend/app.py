@@ -10,7 +10,7 @@ from routes.user_routes import user_bp
 from routes.expense_routes import expense_bp
 from routes.income_routes import income_bp
 from routes.budget_routes import budget_bp
-
+from routes.report_routes import report_bp
 from routes.auth_routes import auth_bp
 from routes.profile_routes import profile_bp
 from routes.dashboard_routes import dashboard_bp
@@ -36,6 +36,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(profile_bp, url_prefix="/api")
     app.register_blueprint(dashboard_bp,url_prefix="/api")
+    app.register_blueprint(report_bp,url_prefix="/api")
     # Initialize database
     db.init_app(app)
 
