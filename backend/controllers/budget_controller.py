@@ -1,5 +1,9 @@
-from flask import request, jsonify
+from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+
+from utils.validators import validate_budget
+from utils.response import success_response, error_response
+from utils.logger import logger
 
 from services.budget_service import (
     create_budget,
@@ -16,21 +20,20 @@ from services.budget_service import (
 def add_budget():
     data = request.get_json()
 
-    required_fields = [
-        "category",
-        "amount",
-        "month",
-        "year"
-    ]
+    errors = validate_budget(data)
 
-    for field in required_fields:
-        if field not in data or data[field] in [None, ""]:
-            return jsonify({
-                "success": False,
-                "message": f"{field} is required"
-            }), 400
+    if errors:
+        logger.warning("Budget validation failed")
+
+        return error_response(
+            "Validation failed",
+            400,
+            errors
+        )
 
     user_id = get_jwt_identity()
+
+    logger.info(f"User {user_id} is creating a budget")
 
     result = create_budget(
         user_id=user_id,
@@ -41,51 +44,90 @@ def add_budget():
     )
 
     if result["success"]:
-        return jsonify(result), 201
+        logger.info(f"Budget created successfully by User {user_id}")
 
-    return jsonify(result), 400
+        return success_response(
+            "Budget created successfully",
+            result.get("budget"),
+            201
+        )
+
+    logger.warning(f"Budget creation failed for User {user_id}")
+
+    return error_response(
+        result["message"],
+        400
+    )
 
 
 @jwt_required()
 def get_budgets():
     user_id = get_jwt_identity()
 
+    logger.info(f"User {user_id} requested all budgets")
+
     result = get_all_budgets(user_id)
 
-    return jsonify(result), 200
+    if result["success"]:
+        return success_response(
+            "Budgets fetched successfully",
+            result.get("budgets")
+        )
+
+    logger.warning(f"Failed to fetch budgets for User {user_id}")
+
+    return error_response(
+        result["message"],
+        400
+    )
 
 
 @jwt_required()
 def get_budget(budget_id):
     user_id = get_jwt_identity()
 
+    logger.info(f"User {user_id} requested budget {budget_id}")
+
     result = get_budget_by_id(user_id, budget_id)
 
     if result["success"]:
-        return jsonify(result), 200
+        return success_response(
+            "Budget fetched successfully",
+            result.get("budget")
+        )
 
-    return jsonify(result), 404
+    logger.warning(
+        f"Budget {budget_id} not found for User {user_id}"
+    )
+
+    return error_response(
+        result["message"],
+        404
+    )
 
 
 @jwt_required()
 def edit_budget(budget_id):
     data = request.get_json()
 
-    required_fields = [
-        "category",
-        "amount",
-        "month",
-        "year"
-    ]
+    errors = validate_budget(data)
 
-    for field in required_fields:
-        if field not in data or data[field] in [None, ""]:
-            return jsonify({
-                "success": False,
-                "message": f"{field} is required"
-            }), 400
+    if errors:
+        logger.warning(
+            f"Budget update validation failed for budget {budget_id}"
+        )
+
+        return error_response(
+            "Validation failed",
+            400,
+            errors
+        )
 
     user_id = get_jwt_identity()
+
+    logger.info(
+        f"User {user_id} is updating budget {budget_id}"
+    )
 
     result = update_budget(
         user_id=user_id,
@@ -97,21 +139,53 @@ def edit_budget(budget_id):
     )
 
     if result["success"]:
-        return jsonify(result), 200
+        logger.info(
+            f"Budget {budget_id} updated successfully by User {user_id}"
+        )
 
-    return jsonify(result), 404
+        return success_response(
+            "Budget updated successfully",
+            result.get("budget")
+        )
+
+    logger.warning(
+        f"Budget update failed for budget {budget_id}"
+    )
+
+    return error_response(
+        result["message"],
+        404
+    )
 
 
 @jwt_required()
 def remove_budget(budget_id):
     user_id = get_jwt_identity()
 
+    logger.info(
+        f"User {user_id} is deleting budget {budget_id}"
+    )
+
     result = delete_budget(user_id, budget_id)
 
     if result["success"]:
-        return jsonify(result), 200
+        logger.info(
+            f"Budget {budget_id} deleted successfully by User {user_id}"
+        )
 
-    return jsonify(result), 404
+        return success_response(
+            "Budget deleted successfully",
+            result.get("budget")
+        )
+
+    logger.warning(
+        f"Budget deletion failed for budget {budget_id}"
+    )
+
+    return error_response(
+        result["message"],
+        404
+    )
 
 
 @jwt_required()
@@ -120,12 +194,18 @@ def remaining_budget():
     year = request.args.get("year", type=int)
 
     if not month or not year:
-        return jsonify({
-            "success": False,
-            "message": "month and year are required"
-        }), 400
+        logger.warning("Remaining budget request missing month or year")
+
+        return error_response(
+            "month and year are required",
+            400
+        )
 
     user_id = get_jwt_identity()
+
+    logger.info(
+        f"User {user_id} requested remaining budget for {month}/{year}"
+    )
 
     result = get_remaining_budget(
         user_id=user_id,
@@ -133,7 +213,24 @@ def remaining_budget():
         year=year
     )
 
-    return jsonify(result), 200
+    if result["success"]:
+        logger.info(
+            f"Remaining budget calculated successfully for User {user_id}"
+        )
+
+        return success_response(
+            "Remaining budget fetched successfully",
+            result
+        )
+
+    logger.warning(
+        f"Failed to calculate remaining budget for User {user_id}"
+    )
+
+    return error_response(
+        result["message"],
+        400
+    )
 
 
 @jwt_required()
@@ -142,12 +239,18 @@ def budget_utilization():
     year = request.args.get("year", type=int)
 
     if not month or not year:
-        return jsonify({
-            "success": False,
-            "message": "month and year are required"
-        }), 400
+        logger.warning("Budget utilization request missing month or year")
+
+        return error_response(
+            "month and year are required",
+            400
+        )
 
     user_id = get_jwt_identity()
+
+    logger.info(
+        f"User {user_id} requested budget utilization for {month}/{year}"
+    )
 
     result = get_budget_utilization(
         user_id=user_id,
@@ -155,4 +258,21 @@ def budget_utilization():
         year=year
     )
 
-    return jsonify(result), 200
+    if result["success"]:
+        logger.info(
+            f"Budget utilization calculated successfully for User {user_id}"
+        )
+
+        return success_response(
+            "Budget utilization fetched successfully",
+            result
+        )
+
+    logger.warning(
+        f"Failed to calculate budget utilization for User {user_id}"
+    )
+
+    return error_response(
+        result["message"],
+        400
+    )

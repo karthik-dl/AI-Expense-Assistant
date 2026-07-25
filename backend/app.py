@@ -14,6 +14,8 @@ from routes.report_routes import report_bp
 from routes.auth_routes import auth_bp
 from routes.profile_routes import profile_bp
 from routes.dashboard_routes import dashboard_bp
+
+from middleware.error_handler import register_error_handlers
 # Create Migrate instance
 migrate = Migrate()
 
@@ -24,6 +26,7 @@ def create_app():
     # Load configuration
     app.config.from_object(Config)
 
+    register_error_handlers(app)
     # Enable CORS
     CORS(app)
     

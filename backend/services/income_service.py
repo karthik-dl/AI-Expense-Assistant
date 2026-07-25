@@ -33,25 +33,59 @@ def create_income(
     }
 
 
-def get_all_incomes(user_id):
+def get_all_incomes(
+    user_id,
+    page=1,
+    per_page=10,
+    category=None,
+    start_date=None,
+    end_date=None,
+    sort="income_date"
+):
     """
-    Get all incomes for the logged-in user.
+    Get incomes with pagination, filtering and sorting.
     """
 
-    incomes = (
-        Income.query
-        .filter_by(user_id=user_id)
-        .order_by(Income.income_date.desc())
-        .all()
+    query = Income.query.filter_by(user_id=user_id)
+
+    # Category Filter
+    if category:
+        query = query.filter(Income.category == category)
+
+    # Date Filters
+    if start_date:
+        query = query.filter(Income.income_date >= start_date)
+
+    if end_date:
+        query = query.filter(Income.income_date <= end_date)
+
+    # Sorting
+    if sort == "amount":
+        query = query.order_by(Income.amount.desc())
+    elif sort == "category":
+        query = query.order_by(Income.category.asc())
+    elif sort == "source":
+        query = query.order_by(Income.source.asc())
+    else:
+        query = query.order_by(Income.income_date.desc())
+
+    pagination = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
     )
 
     return {
         "success": True,
-        "count": len(incomes),
-        "incomes": [income.to_dict() for income in incomes]
+        "incomes": [income.to_dict() for income in pagination.items],
+        "pagination": {
+            "page": pagination.page,
+            "per_page": pagination.per_page,
+            "total_pages": pagination.pages,
+            "total_records": pagination.total
+        }
     }
-
-
+    
 def get_income_by_id(user_id, income_id):
     """
     Get a single income.

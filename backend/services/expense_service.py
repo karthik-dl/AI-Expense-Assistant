@@ -30,21 +30,49 @@ def create_expense(user_id, description, amount, category, expense_date):
         }
     }
 
-def get_all_expenses(user_id):
+def get_all_expenses(
+    user_id,
+    page=1,
+    per_page=10,
+    category=None,
+    start_date=None,
+    end_date=None,
+    sort="expense_date"
+):
     """
-    Get all expenses for the logged-in user.
+    Get expenses with pagination, filtering and sorting.
     """
 
-    expenses = (
-        Expense.query
-        .filter_by(user_id=user_id)
-        .order_by(Expense.expense_date.desc())
-        .all()
+    query = Expense.query.filter_by(user_id=user_id)
+
+    # Category Filter
+    if category:
+        query = query.filter(Expense.category == category)
+
+    # Date Filters
+    if start_date:
+        query = query.filter(Expense.expense_date >= start_date)
+
+    if end_date:
+        query = query.filter(Expense.expense_date <= end_date)
+
+    # Sorting
+    if sort == "amount":
+        query = query.order_by(Expense.amount.desc())
+    elif sort == "category":
+        query = query.order_by(Expense.category.asc())
+    else:
+        query = query.order_by(Expense.expense_date.desc())
+
+    pagination = query.paginate(
+        page=page,
+        per_page=per_page,
+        error_out=False
     )
 
     expense_list = []
 
-    for expense in expenses:
+    for expense in pagination.items:
         expense_list.append({
             "id": expense.id,
             "description": expense.description,
@@ -55,8 +83,13 @@ def get_all_expenses(user_id):
 
     return {
         "success": True,
-        "count": len(expense_list),
-        "expenses": expense_list
+        "expenses": expense_list,
+        "pagination": {
+            "page": pagination.page,
+            "per_page": pagination.per_page,
+            "total_pages": pagination.pages,
+            "total_records": pagination.total
+        }
     }
     
 def get_expense_by_id(user_id, expense_id):

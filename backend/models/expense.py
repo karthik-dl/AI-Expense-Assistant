@@ -4,6 +4,7 @@ from database import db
 
 class Expense(db.Model):
     __tablename__ = "expenses"
+    
 
     id = db.Column(db.Integer, primary_key=True)
 
