@@ -60,21 +60,38 @@ def add_income():
 
 
 @jwt_required()
+@jwt_required()
 def get_incomes():
     user_id = get_jwt_identity()
 
+    # Pagination
     page = request.args.get("page", default=1, type=int)
     per_page = request.args.get("per_page", default=10, type=int)
 
+    # Filters
     category = request.args.get("category")
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
+
+    # Advanced Filters
+    search = request.args.get("search")
+    min_amount = request.args.get("min_amount", type=float)
+    max_amount = request.args.get("max_amount", type=float)
+    month = request.args.get("month", type=int)
+    year = request.args.get("year", type=int)
+
+    # Sorting
     sort = request.args.get("sort", default="income_date")
 
     logger.info(
         f"User {user_id} requested incomes | "
         f"page={page}, per_page={per_page}, "
         f"category={category}, "
+        f"search={search}, "
+        f"min_amount={min_amount}, "
+        f"max_amount={max_amount}, "
+        f"month={month}, "
+        f"year={year}, "
         f"start_date={start_date}, "
         f"end_date={end_date}, "
         f"sort={sort}"
@@ -87,12 +104,17 @@ def get_incomes():
         category=category,
         start_date=start_date,
         end_date=end_date,
-        sort=sort
+        sort=sort,
+        search=search,
+        min_amount=min_amount,
+        max_amount=max_amount,
+        month=month,
+        year=year
     )
 
     if result["success"]:
         return success_response(
-            "Income fetched successfully",
+            "Incomes fetched successfully",
             {
                 "incomes": result["incomes"],
                 "pagination": result["pagination"]
@@ -105,8 +127,7 @@ def get_incomes():
         result["message"],
         400
     )
-
-
+    
 @jwt_required()
 def get_income(income_id):
     user_id = get_jwt_identity()

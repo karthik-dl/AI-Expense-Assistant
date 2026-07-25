@@ -1,3 +1,5 @@
+from sqlalchemy import extract, or_
+
 from models.expense import Expense
 from database import db
 
@@ -30,6 +32,7 @@ def create_expense(user_id, description, amount, category, expense_date):
         }
     }
 
+
 def get_all_expenses(
     user_id,
     page=1,
@@ -37,10 +40,16 @@ def get_all_expenses(
     category=None,
     start_date=None,
     end_date=None,
-    sort="expense_date"
+    sort="expense_date",
+    search=None,
+    min_amount=None,
+    max_amount=None,
+    month=None,
+    year=None
 ):
     """
-    Get expenses with pagination, filtering and sorting.
+    Get expenses with pagination, filtering,
+    searching and sorting.
     """
 
     query = Expense.query.filter_by(user_id=user_id)
@@ -49,21 +58,58 @@ def get_all_expenses(
     if category:
         query = query.filter(Expense.category == category)
 
+    # Search
+    if search:
+        query = query.filter(
+            or_(
+                Expense.description.ilike(f"%{search}%"),
+                Expense.category.ilike(f"%{search}%")
+            )
+        )
+
+    # Amount Filters
+    if min_amount is not None:
+        query = query.filter(Expense.amount >= min_amount)
+
+    if max_amount is not None:
+        query = query.filter(Expense.amount <= max_amount)
+
     # Date Filters
     if start_date:
-        query = query.filter(Expense.expense_date >= start_date)
+        query = query.filter(
+            Expense.expense_date >= start_date
+        )
 
     if end_date:
-        query = query.filter(Expense.expense_date <= end_date)
+        query = query.filter(
+            Expense.expense_date <= end_date
+        )
+
+    # Month Filter
+    if month:
+        query = query.filter(
+            extract("month", Expense.expense_date) == month
+        )
+
+    # Year Filter
+    if year:
+        query = query.filter(
+            extract("year", Expense.expense_date) == year
+        )
 
     # Sorting
     if sort == "amount":
         query = query.order_by(Expense.amount.desc())
+
     elif sort == "category":
         query = query.order_by(Expense.category.asc())
-    else:
-        query = query.order_by(Expense.expense_date.desc())
 
+    else:
+        query = query.order_by(
+            Expense.expense_date.desc()
+        )
+
+    # Pagination
     pagination = query.paginate(
         page=page,
         per_page=per_page,
@@ -88,10 +134,15 @@ def get_all_expenses(
             "page": pagination.page,
             "per_page": pagination.per_page,
             "total_pages": pagination.pages,
-            "total_records": pagination.total
+            "total_records": pagination.total,
+            "has_next": pagination.has_next,
+            "has_prev": pagination.has_prev,
+            "next_page": pagination.next_num,
+            "prev_page": pagination.prev_num
         }
     }
-    
+
+
 def get_expense_by_id(user_id, expense_id):
     """
     Get a single expense belonging to the logged-in user.
@@ -118,6 +169,7 @@ def get_expense_by_id(user_id, expense_id):
             "expense_date": str(expense.expense_date)
         }
     }
+
 
 def update_expense(
     user_id,
@@ -160,7 +212,8 @@ def update_expense(
             "expense_date": str(expense.expense_date)
         }
     }
-    
+
+
 def delete_expense(user_id, expense_id):
     """
     Delete an expense belonging to the logged-in user.

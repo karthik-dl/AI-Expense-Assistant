@@ -14,8 +14,12 @@ from routes.report_routes import report_bp
 from routes.auth_routes import auth_bp
 from routes.profile_routes import profile_bp
 from routes.dashboard_routes import dashboard_bp
-
+from routes.insight_routes import insight_bp
 from middleware.error_handler import register_error_handlers
+from routes.analytics_routes import analytics_bp
+from routes.recommendation_routes import recommendation_bp
+from routes.financial_health_routes import (financial_health_bp)
+from routes.ai_summary_routes import ai_summary_bp
 # Create Migrate instance
 migrate = Migrate()
 
@@ -40,6 +44,11 @@ def create_app():
     app.register_blueprint(profile_bp, url_prefix="/api")
     app.register_blueprint(dashboard_bp,url_prefix="/api")
     app.register_blueprint(report_bp,url_prefix="/api")
+    app.register_blueprint(insight_bp,url_prefix="/api")
+    app.register_blueprint(analytics_bp,url_prefix="/api")
+    app.register_blueprint(recommendation_bp,url_prefix="/api")
+    app.register_blueprint(ai_summary_bp,url_prefix="/api")
+    app.register_blueprint(financial_health_bp,url_prefix="/api")
     # Initialize database
     db.init_app(app)
 

@@ -2,106 +2,123 @@ from datetime import datetime
 
 
 def validate_expense(data):
+    """
+    Validate expense request data.
+    Category is optional because it can be predicted by AI.
+    """
+
     errors = {}
 
-    amount = data.get("amount")
-    category = data.get("category")
-    description = data.get("description")
-    expense_date = data.get("expense_date")
+    # Required fields
+    required_fields = [
+        "description",
+        "amount",
+        "expense_date"
+    ]
 
-    # Amount
-    if amount is None:
-        errors["amount"] = "Amount is required."
-    else:
+    for field in required_fields:
+        if field not in data or data[field] in [None, ""]:
+            errors[field] = f"{field.replace('_', ' ').title()} is required."
+
+    # Amount validation
+    if "amount" in data:
         try:
-            amount = float(amount)
+            amount = float(data["amount"])
             if amount <= 0:
                 errors["amount"] = "Amount must be greater than 0."
         except (ValueError, TypeError):
             errors["amount"] = "Amount must be a valid number."
 
-    # Category
-    if not category or not category.strip():
-        errors["category"] = "Category is required."
-
-    # Description
-    if not description or not description.strip():
-        errors["description"] = "Description is required."
-
-    # Expense Date
-    if not expense_date:
-        errors["expense_date"] = "Expense date is required."
-    else:
+    # Date validation
+    if "expense_date" in data and data["expense_date"]:
         try:
-            datetime.strptime(expense_date, "%Y-%m-%d")
+            datetime.strptime(data["expense_date"], "%Y-%m-%d")
         except ValueError:
-            errors["expense_date"] = "Expense date must be YYYY-MM-DD."
+            errors["expense_date"] = "Expense date must be in YYYY-MM-DD format."
 
     return errors
+
 
 def validate_income(data):
+    """
+    Validate income request data.
+    """
+
     errors = {}
 
-    amount = data.get("amount")
-    category = data.get("category")
-    source = data.get("source")
-    income_date = data.get("income_date")
+    required_fields = [
+        "source",
+        "category",
+        "amount",
+        "income_date"
+    ]
 
-    if amount is None:
-        errors["amount"] = "Amount is required."
-    else:
+    for field in required_fields:
+        if field not in data or data[field] in [None, ""]:
+            errors[field] = f"{field.replace('_', ' ').title()} is required."
+
+    # Amount validation
+    if "amount" in data:
         try:
-            amount = float(amount)
+            amount = float(data["amount"])
             if amount <= 0:
                 errors["amount"] = "Amount must be greater than 0."
         except (ValueError, TypeError):
             errors["amount"] = "Amount must be a valid number."
 
-    if not category or not category.strip():
-        errors["category"] = "Category is required."
-
-    if not source or not source.strip():
-        errors["source"] = "Source is required."
-
-    if not income_date:
-        errors["income_date"] = "Income date is required."
-    else:
+    # Date validation
+    if "income_date" in data and data["income_date"]:
         try:
-            datetime.strptime(income_date, "%Y-%m-%d")
+            datetime.strptime(data["income_date"], "%Y-%m-%d")
         except ValueError:
-            errors["income_date"] = "Income date must be YYYY-MM-DD."
+            errors["income_date"] = "Income date must be in YYYY-MM-DD format."
 
     return errors
 
+
 def validate_budget(data):
+    """
+    Validate budget request data.
+    """
+
     errors = {}
 
-    amount = data.get("amount")
-    category = data.get("category")
-    month = data.get("month")
-    year = data.get("year")
+    required_fields = [
+        "category",
+        "amount",
+        "month",
+        "year"
+    ]
 
-    if amount is None:
-        errors["amount"] = "Amount is required."
-    else:
+    for field in required_fields:
+        if field not in data or data[field] in [None, ""]:
+            errors[field] = f"{field.replace('_', ' ').title()} is required."
+
+    # Amount validation
+    if "amount" in data:
         try:
-            amount = float(amount)
+            amount = float(data["amount"])
             if amount <= 0:
                 errors["amount"] = "Amount must be greater than 0."
         except (ValueError, TypeError):
             errors["amount"] = "Amount must be a valid number."
 
-    if not category or not category.strip():
-        errors["category"] = "Category is required."
+    # Month validation
+    if "month" in data:
+        try:
+            month = int(data["month"])
+            if month < 1 or month > 12:
+                errors["month"] = "Month must be between 1 and 12."
+        except (ValueError, TypeError):
+            errors["month"] = "Month must be an integer."
 
-    if month is None:
-        errors["month"] = "Month is required."
-    elif not (1 <= int(month) <= 12):
-        errors["month"] = "Month must be between 1 and 12."
-
-    if year is None:
-        errors["year"] = "Year is required."
-    elif int(year) < 2000:
-        errors["year"] = "Year is invalid."
+    # Year validation
+    if "year" in data:
+        try:
+            year = int(data["year"])
+            if year < 2000:
+                errors["year"] = "Year must be valid."
+        except (ValueError, TypeError):
+            errors["year"] = "Year must be an integer."
 
     return errors

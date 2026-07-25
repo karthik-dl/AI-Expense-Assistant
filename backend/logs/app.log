@@ -1,0 +1,148 @@
+2026-07-25 12:46:31,689 | INFO | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-25 12:46:31,689 | INFO | [33mPress CTRL+C to quit[0m
+2026-07-25 12:46:31,692 | INFO |  * Restarting with stat
+2026-07-25 12:46:33,809 | WARNING |  * Debugger is active!
+2026-07-25 12:46:33,814 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:50:55,020 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\expense_service.py', reloading
+2026-07-25 12:50:55,335 | INFO |  * Restarting with stat
+2026-07-25 12:50:58,020 | WARNING |  * Debugger is active!
+2026-07-25 12:50:58,028 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:51:57,360 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\expense_controller.py', reloading
+2026-07-25 12:51:57,770 | INFO |  * Restarting with stat
+2026-07-25 12:52:00,483 | WARNING |  * Debugger is active!
+2026-07-25 12:52:00,490 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:52:50,161 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\income_service.py', reloading
+2026-07-25 12:52:50,537 | INFO |  * Restarting with stat
+2026-07-25 12:52:53,314 | WARNING |  * Debugger is active!
+2026-07-25 12:52:53,320 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:53:35,308 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\income_controller.py', reloading
+2026-07-25 12:53:35,632 | INFO |  * Restarting with stat
+2026-07-25 12:53:38,656 | WARNING |  * Debugger is active!
+2026-07-25 12:53:38,664 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:57:26,498 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\expense_service.py', reloading
+2026-07-25 12:57:26,837 | INFO |  * Restarting with stat
+2026-07-25 12:57:29,723 | WARNING |  * Debugger is active!
+2026-07-25 12:57:29,734 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 12:58:14,399 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\income_service.py', reloading
+2026-07-25 12:58:14,800 | INFO |  * Restarting with stat
+2026-07-25 12:58:18,027 | WARNING |  * Debugger is active!
+2026-07-25 12:58:18,033 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:22:56,892 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\ai_service.py', reloading
+2026-07-25 18:22:57,041 | INFO |  * Restarting with stat
+2026-07-25 18:22:58,568 | WARNING |  * Debugger is active!
+2026-07-25 18:22:58,573 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:22:59,681 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\ai_service.py', reloading
+2026-07-25 18:22:59,873 | INFO |  * Restarting with stat
+2026-07-25 18:23:01,184 | WARNING |  * Debugger is active!
+2026-07-25 18:23:01,189 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:24:07,018 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\expense_controller.py', reloading
+2026-07-25 18:24:07,223 | INFO |  * Restarting with stat
+2026-07-25 18:24:08,538 | WARNING |  * Debugger is active!
+2026-07-25 18:24:08,542 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:26:26,355 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\expense_controller.py', reloading
+2026-07-25 18:26:26,522 | INFO |  * Restarting with stat
+2026-07-25 18:26:27,741 | WARNING |  * Debugger is active!
+2026-07-25 18:26:27,745 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:28:14,766 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\utils\\validators.py', reloading
+2026-07-25 18:28:14,923 | INFO |  * Restarting with stat
+2026-07-25 18:28:16,237 | WARNING |  * Debugger is active!
+2026-07-25 18:28:16,242 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:29:35,612 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\insights_service.py', reloading
+2026-07-25 18:29:35,796 | INFO |  * Restarting with stat
+2026-07-25 18:29:37,229 | WARNING |  * Debugger is active!
+2026-07-25 18:29:37,233 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:30:09,227 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\insights_controller.py', reloading
+2026-07-25 18:30:09,377 | INFO |  * Restarting with stat
+2026-07-25 18:30:10,843 | WARNING |  * Debugger is active!
+2026-07-25 18:30:10,852 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:32:29,647 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\insight_routes.py', reloading
+2026-07-25 18:32:29,870 | INFO |  * Restarting with stat
+2026-07-25 18:32:31,202 | WARNING |  * Debugger is active!
+2026-07-25 18:32:31,209 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:33:08,414 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:33:08,568 | INFO |  * Restarting with stat
+2026-07-25 18:33:09,982 | WARNING |  * Debugger is active!
+2026-07-25 18:33:09,988 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:45:09,078 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\analytics_service.py', reloading
+2026-07-25 18:45:09,593 | INFO |  * Restarting with stat
+2026-07-25 18:45:13,627 | WARNING |  * Debugger is active!
+2026-07-25 18:45:13,633 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:45:42,604 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\analytics_controller.py', reloading
+2026-07-25 18:45:42,962 | INFO |  * Restarting with stat
+2026-07-25 18:45:45,610 | WARNING |  * Debugger is active!
+2026-07-25 18:45:45,629 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:46:13,655 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\analytics_routes.py', reloading
+2026-07-25 18:46:14,001 | INFO |  * Restarting with stat
+2026-07-25 18:46:17,525 | WARNING |  * Debugger is active!
+2026-07-25 18:46:17,536 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:46:42,026 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:46:42,295 | INFO |  * Restarting with stat
+2026-07-25 18:46:44,961 | WARNING |  * Debugger is active!
+2026-07-25 18:46:44,972 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:46:50,406 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:46:50,815 | INFO |  * Restarting with stat
+2026-07-25 18:46:53,636 | WARNING |  * Debugger is active!
+2026-07-25 18:46:53,646 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:47:36,279 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\recommendation_service.py', reloading
+2026-07-25 18:47:36,689 | INFO |  * Restarting with stat
+2026-07-25 18:47:39,306 | WARNING |  * Debugger is active!
+2026-07-25 18:47:39,314 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:47:57,946 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\recommendation_controller.py', reloading
+2026-07-25 18:47:58,250 | INFO |  * Restarting with stat
+2026-07-25 18:48:01,462 | WARNING |  * Debugger is active!
+2026-07-25 18:48:01,472 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:48:22,731 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\recommendation_routes.py', reloading
+2026-07-25 18:48:23,037 | INFO |  * Restarting with stat
+2026-07-25 18:48:25,686 | WARNING |  * Debugger is active!
+2026-07-25 18:48:25,693 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:48:39,022 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:48:39,362 | INFO |  * Restarting with stat
+2026-07-25 18:48:42,100 | WARNING |  * Debugger is active!
+2026-07-25 18:48:42,121 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:48:51,282 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:48:51,658 | INFO |  * Restarting with stat
+2026-07-25 18:48:54,547 | WARNING |  * Debugger is active!
+2026-07-25 18:48:54,557 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:48:58,102 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:48:58,509 | INFO |  * Restarting with stat
+2026-07-25 18:49:01,320 | WARNING |  * Debugger is active!
+2026-07-25 18:49:01,330 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:49:34,089 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\financial_health_service.py', reloading
+2026-07-25 18:49:34,389 | INFO |  * Restarting with stat
+2026-07-25 18:49:37,131 | WARNING |  * Debugger is active!
+2026-07-25 18:49:37,145 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:49:56,946 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\financial_health_controller.py', reloading
+2026-07-25 18:49:57,261 | INFO |  * Restarting with stat
+2026-07-25 18:50:00,188 | WARNING |  * Debugger is active!
+2026-07-25 18:50:00,200 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:50:21,590 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\financial_health_routes.py', reloading
+2026-07-25 18:50:21,969 | INFO |  * Restarting with stat
+2026-07-25 18:50:25,321 | WARNING |  * Debugger is active!
+2026-07-25 18:50:25,327 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:50:59,858 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:51:00,384 | INFO |  * Restarting with stat
+2026-07-25 18:51:03,542 | WARNING |  * Debugger is active!
+2026-07-25 18:51:03,549 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:51:09,177 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:51:09,425 | INFO |  * Restarting with stat
+2026-07-25 18:51:12,757 | WARNING |  * Debugger is active!
+2026-07-25 18:51:12,784 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:52:31,111 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\ai_summary_service.py', reloading
+2026-07-25 18:52:31,445 | INFO |  * Restarting with stat
+2026-07-25 18:52:34,725 | WARNING |  * Debugger is active!
+2026-07-25 18:52:34,737 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:52:54,801 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\ai_summary_controller.py', reloading
+2026-07-25 18:52:55,105 | INFO |  * Restarting with stat
+2026-07-25 18:52:58,311 | WARNING |  * Debugger is active!
+2026-07-25 18:52:58,322 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:53:23,967 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\ai_summary_routes.py', reloading
+2026-07-25 18:53:24,371 | INFO |  * Restarting with stat
+2026-07-25 18:53:27,541 | WARNING |  * Debugger is active!
+2026-07-25 18:53:27,552 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:53:40,943 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:53:41,368 | INFO |  * Restarting with stat
+2026-07-25 18:53:44,394 | WARNING |  * Debugger is active!
+2026-07-25 18:53:44,400 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 18:54:05,660 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
+2026-07-25 18:54:05,984 | INFO |  * Restarting with stat
