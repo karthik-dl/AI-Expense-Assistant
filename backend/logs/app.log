@@ -146,3 +146,41 @@
 2026-07-25 18:53:44,400 | INFO |  * Debugger PIN: 110-794-155
 2026-07-25 18:54:05,660 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\app.py', reloading
 2026-07-25 18:54:05,984 | INFO |  * Restarting with stat
+2026-07-25 18:54:08,707 | WARNING |  * Debugger is active!
+2026-07-25 18:54:08,718 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 19:40:30,114 | INFO | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-25 19:40:30,115 | INFO | [33mPress CTRL+C to quit[0m
+2026-07-25 19:40:30,119 | INFO |  * Restarting with stat
+2026-07-25 19:40:32,821 | WARNING |  * Debugger is active!
+2026-07-25 19:40:32,831 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 20:31:58,492 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,673 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,759 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,760 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,800 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,802 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,841 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,841 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:31:58,883 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:32:59,803 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:32:59,978 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,009 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,009 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,045 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,046 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,076 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,078 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:33:00,109 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-25 20:35:07,216 | INFO | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-25 20:35:07,216 | INFO | [33mPress CTRL+C to quit[0m
+2026-07-25 20:35:07,218 | INFO |  * Restarting with stat
+2026-07-25 20:35:08,448 | WARNING |  * Debugger is active!
+2026-07-25 20:35:08,452 | INFO |  * Debugger PIN: 110-794-155
+2026-07-25 20:35:12,081 | INFO | 127.0.0.1 - - [25/Jul/2026 20:35:12] "[35m[1mPOST /api/auth/register HTTP/1.1[0m" 201 -
+2026-07-25 20:35:58,063 | INFO | 127.0.0.1 - - [25/Jul/2026 20:35:58] "POST /api/auth/login HTTP/1.1" 200 -
+2026-07-25 20:40:00,231 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\tests\\test_auth.py', reloading
+2026-07-25 20:40:00,466 | INFO |  * Restarting with stat
+2026-07-25 20:40:01,792 | WARNING |  * Debugger is active!
+2026-07-25 20:40:01,796 | INFO |  * Debugger PIN: 110-794-155

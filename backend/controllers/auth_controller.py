@@ -44,6 +44,7 @@ def login():
         data["password"]
     )
 
-    return jsonify(result), 200
+    if result["success"]:
+        return jsonify(result), 200
 
     return jsonify(result), 401

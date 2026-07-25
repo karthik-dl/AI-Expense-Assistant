@@ -20,15 +20,14 @@ from routes.analytics_routes import analytics_bp
 from routes.recommendation_routes import recommendation_bp
 from routes.financial_health_routes import (financial_health_bp)
 from routes.ai_summary_routes import ai_summary_bp
+
 # Create Migrate instance
 migrate = Migrate()
 
-
-def create_app():
+def create_app(config_class=Config):
     app = Flask(__name__)
 
-    # Load configuration
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     register_error_handlers(app)
     # Enable CORS
