@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from database import db
 
 
@@ -35,14 +35,14 @@ class Income(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
         nullable=False
     )
 
     updated_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
         nullable=False
     )
 

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from database import db
 
 
@@ -15,7 +15,7 @@ class User(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow
+        default=lambda: datetime.now(UTC)
     )
 
     expenses = db.relationship(
@@ -32,18 +32,12 @@ class User(db.Model):
         lazy=True
     )
 
-    budget = db.relationship(
-        "Budget",
-        back_populates="user",
-        uselist=False,
-        cascade="all, delete-orphan"
-    )
-
     budgets = db.relationship(
         "Budget",
         back_populates="user",
         cascade="all, delete-orphan",
         lazy=True
     )
+
     def __repr__(self):
         return f"<User {self.email}>"
