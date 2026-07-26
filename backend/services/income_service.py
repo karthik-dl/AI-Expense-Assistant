@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import extract, or_
 
 from models.income import Income
@@ -15,6 +17,12 @@ def create_income(
     """
     Create a new income.
     """
+
+    if isinstance(income_date, str):
+        income_date = datetime.strptime(
+            income_date,
+            "%Y-%m-%d"
+        ).date()
 
     income = Income(
         source=source,
@@ -49,18 +57,12 @@ def get_all_incomes(
     month=None,
     year=None
 ):
-    """
-    Get incomes with pagination, filtering,
-    searching and sorting.
-    """
 
     query = Income.query.filter_by(user_id=user_id)
 
-    # Category Filter
     if category:
         query = query.filter(Income.category == category)
 
-    # Search
     if search:
         query = query.filter(
             or_(
@@ -69,37 +71,44 @@ def get_all_incomes(
             )
         )
 
-    # Amount Filters
     if min_amount is not None:
         query = query.filter(Income.amount >= min_amount)
 
     if max_amount is not None:
         query = query.filter(Income.amount <= max_amount)
 
-    # Date Filters
     if start_date:
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(
+                start_date,
+                "%Y-%m-%d"
+            ).date()
+
         query = query.filter(
             Income.income_date >= start_date
         )
 
     if end_date:
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(
+                end_date,
+                "%Y-%m-%d"
+            ).date()
+
         query = query.filter(
             Income.income_date <= end_date
         )
 
-    # Month Filter
     if month:
         query = query.filter(
             extract("month", Income.income_date) == month
         )
 
-    # Year Filter
     if year:
         query = query.filter(
             extract("year", Income.income_date) == year
         )
 
-    # Sorting
     if sort == "amount":
         query = query.order_by(Income.amount.desc())
 
@@ -114,7 +123,6 @@ def get_all_incomes(
             Income.income_date.desc()
         )
 
-    # Pagination
     pagination = query.paginate(
         page=page,
         per_page=per_page,
@@ -141,9 +149,6 @@ def get_all_incomes(
 
 
 def get_income_by_id(user_id, income_id):
-    """
-    Get a single income.
-    """
 
     income = Income.query.filter_by(
         id=income_id,
@@ -171,9 +176,6 @@ def update_income(
     income_date,
     notes=None
 ):
-    """
-    Update an income.
-    """
 
     income = Income.query.filter_by(
         id=income_id,
@@ -185,6 +187,12 @@ def update_income(
             "success": False,
             "message": "Income not found"
         }
+
+    if isinstance(income_date, str):
+        income_date = datetime.strptime(
+            income_date,
+            "%Y-%m-%d"
+        ).date()
 
     income.source = source
     income.category = category
@@ -202,9 +210,6 @@ def update_income(
 
 
 def delete_income(user_id, income_id):
-    """
-    Delete an income.
-    """
 
     income = Income.query.filter_by(
         id=income_id,
@@ -227,9 +232,6 @@ def delete_income(user_id, income_id):
 
 
 def get_total_income(user_id):
-    """
-    Calculate total income for the logged-in user.
-    """
 
     incomes = Income.query.filter_by(
         user_id=user_id
@@ -247,9 +249,6 @@ def get_total_income(user_id):
 
 
 def get_income_by_category(user_id):
-    """
-    Group income totals by category.
-    """
 
     incomes = Income.query.filter_by(
         user_id=user_id
@@ -258,9 +257,7 @@ def get_income_by_category(user_id):
     categories = {}
 
     for income in incomes:
-        if income.category not in categories:
-            categories[income.category] = 0
-
+        categories.setdefault(income.category, 0)
         categories[income.category] += float(income.amount)
 
     return {

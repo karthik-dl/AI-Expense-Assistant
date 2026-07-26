@@ -344,3 +344,61 @@ sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accept
 2026-07-26 19:09:13,196 | INFO | User 1 requested expense 999
 2026-07-26 19:09:13,198 | WARNING | Expense 999 not found for User 1
 2026-07-26 19:09:13,945 | WARNING | Expense validation failed
+2026-07-26 19:17:53,797 | INFO | User 1 is creating income
+2026-07-26 19:17:53,804 | INFO | Income created successfully by User 1
+2026-07-26 19:17:54,670 | INFO | User 1 is creating income
+2026-07-26 19:17:54,673 | INFO | Income created successfully by User 1
+2026-07-26 19:17:54,675 | INFO | User 1 requested incomes | page=1, per_page=10, category=None, search=None, min_amount=None, max_amount=None, month=None, year=None, start_date=None, end_date=None, sort=income_date
+2026-07-26 19:17:55,460 | INFO | User 1 is creating income
+2026-07-26 19:17:55,464 | INFO | Income created successfully by User 1
+2026-07-26 19:17:55,465 | INFO | User 1 requested income 1
+2026-07-26 19:17:56,215 | INFO | User 1 is creating income
+2026-07-26 19:17:56,218 | INFO | Income created successfully by User 1
+2026-07-26 19:17:56,220 | INFO | User 1 is updating income 1
+2026-07-26 19:17:56,224 | INFO | Income 1 updated successfully
+2026-07-26 19:17:56,895 | INFO | User 1 is creating income
+2026-07-26 19:17:56,898 | INFO | Income created successfully by User 1
+2026-07-26 19:17:56,900 | INFO | User 1 is deleting income 1
+2026-07-26 19:17:56,902 | INFO | Income 1 deleted successfully
+2026-07-26 19:17:57,584 | INFO | User 1 is creating income
+2026-07-26 19:17:57,587 | INFO | Income created successfully by User 1
+2026-07-26 19:17:57,588 | INFO | User 1 requested total income
+2026-07-26 19:17:58,306 | INFO | User 1 is creating income
+2026-07-26 19:17:58,309 | INFO | Income created successfully by User 1
+2026-07-26 19:17:58,310 | INFO | User 1 requested income category summary
+2026-07-26 19:17:59,027 | INFO | User 1 requested income 999
+2026-07-26 19:17:59,029 | WARNING | Income 999 not found
+2026-07-26 19:17:59,724 | WARNING | Income validation failed
+2026-07-26 19:20:42,831 | INFO | User 1 is creating a budget
+2026-07-26 19:20:42,839 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:43,744 | INFO | User 1 is creating a budget
+2026-07-26 19:20:43,749 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:43,751 | INFO | User 1 requested all budgets
+2026-07-26 19:20:44,796 | INFO | User 1 is creating a budget
+2026-07-26 19:20:44,817 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:44,823 | INFO | User 1 requested budget 1
+2026-07-26 19:20:45,882 | INFO | User 1 is creating a budget
+2026-07-26 19:20:45,886 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:45,887 | INFO | User 1 is updating budget 1
+2026-07-26 19:20:45,891 | INFO | Budget 1 updated successfully by User 1
+2026-07-26 19:20:46,723 | INFO | User 1 is creating a budget
+2026-07-26 19:20:46,727 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:46,729 | INFO | User 1 is deleting budget 1
+2026-07-26 19:20:46,732 | INFO | Budget 1 deleted successfully by User 1
+2026-07-26 19:20:47,606 | INFO | User 1 is creating a budget
+2026-07-26 19:20:47,611 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:47,612 | INFO | User 1 requested remaining budget for 7/2026
+2026-07-26 19:20:47,617 | INFO | Remaining budget calculated successfully for User 1
+2026-07-26 19:20:48,441 | INFO | User 1 is creating a budget
+2026-07-26 19:20:48,445 | INFO | Budget created successfully by User 1
+2026-07-26 19:20:48,446 | INFO | User 1 requested budget utilization for 7/2026
+2026-07-26 19:20:48,450 | INFO | Budget utilization calculated successfully for User 1
+2026-07-26 19:20:49,203 | INFO | User 1 requested budget 999
+2026-07-26 19:20:49,205 | WARNING | Budget 999 not found for User 1
+2026-07-26 19:20:49,957 | WARNING | Budget validation failed
+2026-07-26 19:24:23,744 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:24:23,749 | INFO | Expense created successfully by User 1
+2026-07-26 19:24:24,566 | INFO | User 1 is creating income
+2026-07-26 19:24:24,570 | INFO | Income created successfully by User 1
+2026-07-26 19:24:24,571 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:24:24,576 | INFO | Expense created successfully by User 1
