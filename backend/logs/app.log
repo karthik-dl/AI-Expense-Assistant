@@ -184,3 +184,163 @@
 2026-07-25 20:40:00,466 | INFO |  * Restarting with stat
 2026-07-25 20:40:01,792 | WARNING |  * Debugger is active!
 2026-07-25 20:40:01,796 | INFO |  * Debugger PIN: 110-794-155
+2026-07-26 19:02:51,725 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:02:51,731 | ERROR | (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO expenses (description, amount, category, expense_date, created_at, user_id) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 250, 'category': 'Food', 'expense_date': '2026-07-25', 'user_id': '1', 'description': 'Lunch'}]]
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1817, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\default.py", line 1496, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1284, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+TypeError: SQLite Date type only accepts Python date objects as input.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\flask_jwt_extended\view_decorators.py", line 170, in decorator
+    return current_app.ensure_sync(fn)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\Git Projects\AI-Expense-Assistant\backend\controllers\expense_controller.py", line 49, in add_expense
+    result = create_expense(
+        user_id=user_id,
+    ...<3 lines>...
+        expense_date=data["expense_date"]
+    )
+  File "D:\Git Projects\AI-Expense-Assistant\backend\services\expense_service.py", line 21, in create_expense
+    db.session.commit()
+    ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\scoping.py", line 596, in commit
+    return self._proxied.commit()
+           ~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 2035, in commit
+    trans.commit(_to_root=True)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "<string>", line 2, in commit
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 1316, in commit
+    self._prepare_impl()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 1290, in _prepare_impl
+    self.session.flush()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\orm\persistence.py", line 1234, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1823, in _execute_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str(statement), parameters, None, None
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\base.py", line 1817, in _execute_context
+    context = constructor(
+        dialect, self, conn, execution_options, *args, **kw
+    )
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\engine\default.py", line 1496, in _init_compiled
+    flattened_processors[key](compiled_params[key])
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\AppData\Roaming\Python\Python314\site-packages\sqlalchemy\dialects\sqlite\base.py", line 1284, in process
+    raise TypeError(
+    ...<2 lines>...
+    )
+sqlalchemy.exc.StatementError: (builtins.TypeError) SQLite Date type only accepts Python date objects as input.
+[SQL: INSERT INTO expenses (description, amount, category, expense_date, created_at, user_id) VALUES (?, ?, ?, ?, ?, ?)]
+[parameters: [{'amount': 250, 'category': 'Food', 'expense_date': '2026-07-25', 'user_id': '1', 'description': 'Lunch'}]]
+2026-07-26 19:06:09,770 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:06:09,776 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:09,131 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:09:09,136 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:10,042 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:09:10,046 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:10,048 | INFO | User 1 requested expenses | page=1, per_page=10, category=None, search=None, min_amount=None, max_amount=None, month=None, year=None, start_date=None, end_date=None, sort=expense_date
+2026-07-26 19:09:10,916 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:09:10,919 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:10,920 | INFO | User 1 requested expense 1
+2026-07-26 19:09:11,659 | INFO | User 1 is creating an expense with category 'Food'
+2026-07-26 19:09:11,661 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:11,663 | INFO | User 1 is updating expense 1
+2026-07-26 19:09:11,666 | INFO | Expense 1 updated successfully by User 1
+2026-07-26 19:09:12,502 | INFO | User 1 is creating an expense with category 'Entertainment'
+2026-07-26 19:09:12,505 | INFO | Expense created successfully by User 1
+2026-07-26 19:09:12,507 | INFO | User 1 is deleting expense 1
+2026-07-26 19:09:12,510 | INFO | Expense 1 deleted successfully by User 1
+2026-07-26 19:09:13,196 | INFO | User 1 requested expense 999
+2026-07-26 19:09:13,198 | WARNING | Expense 999 not found for User 1
+2026-07-26 19:09:13,945 | WARNING | Expense validation failed

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import extract, or_
 
 from models.expense import Expense
@@ -8,6 +10,12 @@ def create_expense(user_id, description, amount, category, expense_date):
     """
     Create a new expense for the logged-in user.
     """
+
+    if isinstance(expense_date, str):
+        expense_date = datetime.strptime(
+            expense_date,
+            "%Y-%m-%d"
+        ).date()
 
     expense = Expense(
         description=description,
@@ -76,11 +84,23 @@ def get_all_expenses(
 
     # Date Filters
     if start_date:
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(
+                start_date,
+                "%Y-%m-%d"
+            ).date()
+
         query = query.filter(
             Expense.expense_date >= start_date
         )
 
     if end_date:
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(
+                end_date,
+                "%Y-%m-%d"
+            ).date()
+
         query = query.filter(
             Expense.expense_date <= end_date
         )
@@ -193,6 +213,12 @@ def update_expense(
             "success": False,
             "message": "Expense not found"
         }
+
+    if isinstance(expense_date, str):
+        expense_date = datetime.strptime(
+            expense_date,
+            "%Y-%m-%d"
+        ).date()
 
     expense.description = description
     expense.amount = amount
