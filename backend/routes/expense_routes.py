@@ -1,4 +1,5 @@
 from flask import Blueprint
+
 from controllers.expense_controller import (
     add_expense,
     get_expenses,
