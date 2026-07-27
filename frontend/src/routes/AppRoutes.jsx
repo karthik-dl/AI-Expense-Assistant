@@ -14,6 +14,7 @@ import Register from "../pages/auth/Register";
 
 import ProtectedRoute from "./ProtectedRoute";
 
+
 function AppRoutes() {
   return (
     <Routes>
@@ -96,6 +97,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      
     </Routes>
   );
 }

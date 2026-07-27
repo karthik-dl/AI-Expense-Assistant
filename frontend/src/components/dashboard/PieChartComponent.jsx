@@ -18,7 +18,7 @@ const COLORS = [
 
 function PieChartComponent({ data }) {
   return (
-    <div className="bg-white rounded-xl shadow p-6 h-[400px]">
+    <div className="bg-white rounded-xl shadow p-6 h-100">
       <h2 className="text-xl font-semibold mb-6">
         Expenses by Category
       </h2>

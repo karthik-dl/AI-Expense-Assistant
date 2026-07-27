@@ -1,28 +1,43 @@
 import { useEffect, useState } from "react";
 
 import MainLayout from "../../components/layout/MainLayout";
-import SummaryCard from "../../components/cards/SummaryCard";
-import PieChartComponent from "../../components/charts/PieChartComponent";
+import SummaryCard from "../../components/dashboard/SummaryCard";
+import PieChartComponent from "../../components/dashboard/PieChartComponent";
+import MonthlySummaryChart from "../../components/dashboard/MonthlySummaryChart";
+import RecentTransactionTable from "../../components/tables/RecentTransactionTable";
 
 import {
   getDashboardSummary,
   getCategoryExpenses,
+  getMonthlySummary,
+  getRecentTransactions,
 } from "../../services/dashboardService";
 
 function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [monthlySummary, setMonthlySummary] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadDashboard = async () => {
     try {
-      const [summaryRes, categoryRes] = await Promise.all([
+      const [
+        summaryRes,
+        categoryRes,
+        monthlyRes,
+        transactionRes,
+      ] = await Promise.all([
         getDashboardSummary(),
         getCategoryExpenses(),
+        getMonthlySummary(),
+        getRecentTransactions(),
       ]);
 
       setSummary(summaryRes.summary);
       setCategories(categoryRes.categories);
+      setMonthlySummary(monthlyRes.monthly_summary);
+      setTransactions(transactionRes.transactions);
     } catch (error) {
       console.error("Dashboard Error:", error);
     } finally {
@@ -45,8 +60,10 @@ function Dashboard() {
 
   return (
     <MainLayout>
+      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
+
         <p className="text-gray-500 mt-2">
           Welcome back! Here's your financial overview.
         </p>
@@ -79,10 +96,21 @@ function Dashboard() {
         />
       </div>
 
-      {/* Pie Chart */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <PieChartComponent data={categories} />
+
+        {monthlySummary && (
+          <MonthlySummaryChart
+            data={monthlySummary}
+          />
+        )}
       </div>
+
+      {/* Recent Transactions */}
+      <RecentTransactionTable
+        transactions={transactions}
+      />
     </MainLayout>
   );
 }
