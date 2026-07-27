@@ -2216,3 +2216,41 @@ KeyError: 'password'
 2026-07-27 20:34:36,185 | INFO | 127.0.0.1 - - [27/Jul/2026 20:34:36] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
 2026-07-27 20:34:36,187 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
 2026-07-27 20:34:36,191 | INFO | 127.0.0.1 - - [27/Jul/2026 20:34:36] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
+2026-07-27 20:41:44,117 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:44,120 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:44] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
+2026-07-27 20:41:44,122 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:44,125 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:44] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
+2026-07-27 20:41:44,127 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:44,130 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:44] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
+2026-07-27 20:41:44,135 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:44,140 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:44] "[33mOPTIONS /api/reports?start_date=&end_date=&category=&type=&search= HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,033 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "OPTIONS /api/analytics HTTP/1.1" 200 -
+2026-07-27 20:41:52,036 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,039 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/monthly-trend HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,042 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,047 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,048 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/category HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,055 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "OPTIONS /api/analytics HTTP/1.1" 200 -
+2026-07-27 20:41:52,056 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/comparison HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,057 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,060 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[31m[1mGET /api/analytics HTTP/1.1[0m" 401 -
+2026-07-27 20:41:52,063 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/monthly-trend HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,068 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,073 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/category HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,076 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,077 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,082 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/comparison HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,084 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/monthly-trend HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,086 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,088 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,091 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/comparison HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,089 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/category HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,094 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,099 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/monthly-trend HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,103 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,108 | WARNING | 404 Error : 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-07-27 20:41:52,109 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/category HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,111 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[33mOPTIONS /api/analytics/comparison HTTP/1.1[0m" 404 -
+2026-07-27 20:41:52,114 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[31m[1mGET /api/analytics HTTP/1.1[0m" 401 -
+2026-07-27 20:41:52,121 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[31m[1mGET /api/analytics HTTP/1.1[0m" 401 -
+2026-07-27 20:41:52,129 | INFO | 127.0.0.1 - - [27/Jul/2026 20:41:52] "[31m[1mGET /api/analytics HTTP/1.1[0m" 401 -
