@@ -1488,3 +1488,31 @@ Traceback (most recent call last):
     password=data["password"]
              ~~~~^^^^^^^^^^^^
 KeyError: 'password'
+2026-07-27 10:55:40,201 | INFO | [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-07-27 10:55:40,202 | INFO | [33mPress CTRL+C to quit[0m
+2026-07-27 10:55:40,231 | INFO |  * Restarting with watchdog (windowsapi)
+2026-07-27 10:55:41,510 | WARNING |  * Debugger is active!
+2026-07-27 10:55:41,527 | INFO |  * Debugger PIN: 140-256-762
+2026-07-27 10:57:51,383 | INFO | 127.0.0.1 - - [27/Jul/2026 10:57:51] "OPTIONS /api/auth/login HTTP/1.1" 200 -
+2026-07-27 10:57:51,907 | INFO | 127.0.0.1 - - [27/Jul/2026 10:57:51] "POST /api/auth/login HTTP/1.1" 200 -
+2026-07-27 11:00:43,363 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\controllers\\budget_controller.py', reloading
+2026-07-27 11:00:43,810 | INFO |  * Restarting with watchdog (windowsapi)
+2026-07-27 11:00:46,218 | WARNING |  * Debugger is active!
+2026-07-27 11:00:46,223 | INFO |  * Debugger PIN: 140-256-762
+2026-07-27 11:00:46,805 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\services\\dashboard_service.py', reloading
+2026-07-27 11:00:47,057 | INFO |  * Restarting with watchdog (windowsapi)
+2026-07-27 11:00:48,568 | WARNING |  * Debugger is active!
+2026-07-27 11:00:48,572 | INFO |  * Debugger PIN: 140-256-762
+2026-07-27 11:00:53,814 | INFO |  * Detected change in 'D:\\Git Projects\\AI-Expense-Assistant\\backend\\routes\\dashboard_routes.py', reloading
+2026-07-27 11:00:54,081 | INFO |  * Restarting with watchdog (windowsapi)
+2026-07-27 11:00:55,413 | WARNING |  * Debugger is active!
+2026-07-27 11:00:55,417 | INFO |  * Debugger PIN: 140-256-762
+2026-07-27 11:03:57,544 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+2026-07-27 11:03:57,546 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+2026-07-27 11:03:57,549 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+2026-07-27 11:03:57,555 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "OPTIONS /api/dashboard/summary HTTP/1.1" 200 -
+2026-07-27 11:03:57,558 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "[31m[1mGET /api/dashboard/summary HTTP/1.1[0m" 422 -
+2026-07-27 11:03:57,564 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "[31m[1mGET /api/dashboard/summary HTTP/1.1[0m" 422 -
+2026-07-27 11:03:57,571 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "[31m[1mGET /api/dashboard/summary HTTP/1.1[0m" 422 -
+2026-07-27 11:03:57,576 | INFO | 127.0.0.1 - - [27/Jul/2026 11:03:57] "[31m[1mGET /api/dashboard/summary HTTP/1.1[0m" 422 -
