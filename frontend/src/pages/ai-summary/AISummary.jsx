@@ -1,101 +1,97 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import {
-  getAISummary,
-  getFinancialHealth,
-  getRecommendations,
-  getSpendingPrediction,
-} from "../../services/aiSummaryService";
+import Loader from "../../components/ui/Loader";
+import PageHeader from "../../components/ui/PageHeader";
 
-import AIInsightCard from "../../components/ai-summary/AIInsightCard";
-import FinancialHealthCard from "../../components/ai-summary/FinancialHealthCard";
-import RecommendationCard from "../../components/ai-summary/RecommendationCard";
-import SpendingPrediction from "../../components/ai-summary/SpendingPrediction";
+import SummaryCard from "../../components/ai-summary/SummaryCard";
+import FinancialHealth from "../../components/ai-summary/FinancialHealth";
+import SpendingInsights from "../../components/ai-summary/SpendingInsights";
+import SavingsSuggestions from "../../components/ai-summary/SavingsSuggestions";
+import BudgetAlerts from "../../components/ai-summary/BudgetAlerts";
+import PredictionCard from "../../components/ai-summary/PredictionCard";
+import AIChatSummary from "../../components/ai-summary/AIChatSummary";
 
-const AISummary = () => {
-  const [loading, setLoading] = useState(false);
+import { getAISummary } from "../../services/aiService";
 
-  const [insights, setInsights] = useState([]);
-  const [health, setHealth] = useState({});
-  const [recommendations, setRecommendations] = useState([]);
-  const [prediction, setPrediction] = useState({});
+function AISummary() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchAISummary();
-  }, []);
+  const [summary, setSummary] = useState({
+    spendingInsights: [],
+    savingsSuggestions: [],
+    budgetAlerts: [],
+    prediction: {},
+  });
 
-  const fetchAISummary = async () => {
+  const loadSummary = useCallback(async () => {
     try {
       setLoading(true);
+      setError("");
 
-      const [
-        insightsRes,
-        healthRes,
-        recommendationsRes,
-        predictionRes,
-      ] = await Promise.all([
-        getAISummary(),
-        getFinancialHealth(),
-        getRecommendations(),
-        getSpendingPrediction(),
-      ]);
+      const { data } = await getAISummary();
 
-      setInsights(insightsRes.insights || insightsRes || []);
-      setHealth(healthRes || {});
-      setRecommendations(
-        recommendationsRes.recommendations ||
-        recommendationsRes ||
-        []
-      );
-      setPrediction(predictionRes || {});
-    } catch (error) {
-      console.error("Failed to load AI Summary", error);
+      setSummary(data);
+    } catch (err) {
+      console.error(err);
+      setError("Unable to load AI summary. Please try again.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-96">
-        <div className="text-lg font-semibold">
-          Loading AI Summary...
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    loadSummary();
+  }, [loadSummary]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="AI Financial Summary"
+        subtitle="AI-powered insights into your finances."
+      >
+        <button
+          onClick={loadSummary}
+          disabled={loading}
+          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {loading ? "Refreshing..." : "Refresh"}
+        </button>
+      </PageHeader>
 
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">
-          AI Financial Assistant
-        </h1>
-      </div>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-600">
+          <p className="mb-4">{error}</p>
 
-      <FinancialHealthCard
-        health={health}
-      />
+          <button
+            onClick={loadSummary}
+            className="rounded-xl bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
+          >
+            Try Again
+          </button>
+        </div>
+      ) : (
+        <>
+          <SummaryCard summary={summary} />
 
-      <SpendingPrediction
-        prediction={prediction}
-      />
+          <div className="grid gap-6 xl:grid-cols-2">
+            <FinancialHealth summary={summary} />
+            <PredictionCard summary={summary} />
+          </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          <SpendingInsights summary={summary} />
 
-        <AIInsightCard
-          insights={insights}
-        />
+          <SavingsSuggestions summary={summary} />
 
-        <RecommendationCard
-          recommendations={recommendations}
-        />
+          <BudgetAlerts summary={summary} />
 
-      </div>
-
+          <AIChatSummary summary={summary} />
+        </>
+      )}
     </div>
   );
-};
+}
 
 export default AISummary;

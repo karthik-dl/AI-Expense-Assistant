@@ -1,49 +1,22 @@
 import api from "./api";
 
-// Get Incomes with Filters & Pagination
-export const getIncomes = async (params = {}) => {
-  const response = await api.get("/incomes", {
-    params,
-  });
+export const getIncomes = () =>
+  api.get("/incomes");
 
-  return response.data;
-};
+export const getIncome = (id) =>
+  api.get(`/incomes/${id}`);
 
-// Get Single Income
-export const getIncomeById = async (id) => {
-  const response = await api.get(`/incomes/${id}`);
+export const createIncome = (data) =>
+  api.post("/incomes", data);
 
-  return response.data;
-};
+export const updateIncome = (id, data) =>
+  api.put(`/incomes/${id}`, data);
 
-// Create Income
-export const createIncome = async (incomeData) => {
-  const response = await api.post(
-    "/incomes",
-    incomeData
-  );
+export const deleteIncome = (id) =>
+  api.delete(`/incomes/${id}`);
 
-  return response.data;
-};
+export const getTotalIncome = () =>
+  api.get("/incomes/total");
 
-// Update Income
-export const updateIncome = async (
-  id,
-  incomeData
-) => {
-  const response = await api.put(
-    `/incomes/${id}`,
-    incomeData
-  );
-
-  return response.data;
-};
-
-// Delete Income
-export const deleteIncome = async (id) => {
-  const response = await api.delete(
-    `/incomes/${id}`
-  );
-
-  return response.data;
-};
+export const getIncomeCategorySummary = () =>
+  api.get("/incomes/category-summary");

@@ -1,83 +1,86 @@
 import { useEffect, useState } from "react";
-import { getReports } from "../../services/reportService";
+import PageHeader from "../../components/ui/PageHeader";
+import Loader from "../../components/ui/Loader";
 
-import ReportFilters from "../../components/reports/ReportFilters";
-import ReportSummaryCards from "../../components/reports/ReportSummaryCards";
-import ReportTable from "../../components/reports/ReportTable";
+import ReportsSummary from "../../components/reports/ReportsSummary";
+import ReportsFilters from "../../components/reports/ReportsFilters";
+import IncomeExpenseChart from "../../components/reports/IncomeExpenseChart";
+import CategoryExpenseChart from "../../components/reports/CategoryExpenseChart";
+import MonthlyTrendChart from "../../components/reports/MonthlyTrendChart";
 import ExportButtons from "../../components/reports/ExportButtons";
 
-const Reports = () => {
-  const [loading, setLoading] = useState(false);
+import {
+  getReportSummary,
+} from "../../services/reportsService";
+
+function Reports() {
+  const [loading, setLoading] = useState(true);
 
   const [summary, setSummary] = useState({});
 
-  const [transactions, setTransactions] = useState([]);
-
   const [filters, setFilters] = useState({
-    start_date: "",
-    end_date: "",
-    category: "",
-    type: "",
-    search: "",
+    month: "",
+    year: new Date().getFullYear(),
   });
 
-  const fetchReports = async () => {
+  const loadReports = async () => {
     try {
       setLoading(true);
 
-      const response = await getReports(filters);
+      const { data } =
+        await getReportSummary(filters);
 
-      setSummary(response.summary || {});
-      setTransactions(response.transactions || []);
+      setSummary(data);
     } catch (error) {
-      console.error("Failed to fetch reports", error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchReports();
+    loadReports();
   }, [filters]);
 
-  const clearFilters = () => {
-    setFilters({
-      start_date: "",
-      end_date: "",
-      category: "",
-      type: "",
-      search: "",
-    });
-  };
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      <PageHeader
+        title="Reports"
+        subtitle="Financial reports and analytics."
+      />
 
-      <div className="flex flex-col md:flex-row md:justify-between md:items-center">
+      <ReportsFilters
+        filters={filters}
+        setFilters={setFilters}
+      />
 
-        <h1 className="text-3xl font-bold">
-          Financial Reports
-        </h1>
+      <ReportsSummary
+        summary={summary}
+      />
 
-        <ExportButtons filters={filters} />
+      <ExportButtons
+        filters={filters}
+      />
 
+      <div className="grid gap-6 xl:grid-cols-2">
+        <IncomeExpenseChart
+          summary={summary}
+        />
+
+        <CategoryExpenseChart
+          summary={summary}
+        />
       </div>
 
-      <ReportFilters
-        filters={filters}
-        onFilterChange={setFilters}
-        onClear={clearFilters}
+      <MonthlyTrendChart
+        summary={summary}
       />
-
-      <ReportSummaryCards summary={summary} />
-
-      <ReportTable
-        transactions={transactions}
-        loading={loading}
-      />
-
     </div>
   );
-};
+}
 
 export default Reports;

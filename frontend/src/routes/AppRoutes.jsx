@@ -1,115 +1,140 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
+import AppLayout from "../layouts/AppLayout";
+import ProtectedRoute from "./ProtectedRoute";
+
+import Login from "../pages/auth/Login";
+import Register from "../pages/auth/Register";
 import Dashboard from "../pages/dashboard/Dashboard";
-import Expenses from "../pages/expenses/Expenses";
+import Expenses from "../pages/expense/Expenses";
+import AddExpense from "../pages/expense/AddExpense";
+import EditExpense from "../pages/expense/EditExpense";
 import Income from "../pages/income/Income";
-import Budgets from "../pages/budgets/Budgets";
-import Analytics from "../pages/analytics/Analytics";
+import AddIncome from "../pages/income/AddIncome";
+import EditIncome from "../pages/income/EditIncome";
+import Budgets from "../pages/budget/Budgets";
+import AddBudget from "../pages/budget/AddBudget";
+import EditBudget from "../pages/budget/EditBudget"; 
+
 import Reports from "../pages/reports/Reports";
 import AISummary from "../pages/ai-summary/AISummary";
 import Profile from "../pages/profile/Profile";
 
-import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
-
-import ProtectedRoute from "./ProtectedRoute";
-import NotFound from "../pages/errors/NotFound";
-
 function AppRoutes() {
   return (
-    <Routes>
-      {/* Default Route */}
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+    <BrowserRouter>
+      <Routes>
+       
+        <Route
+          path="/"
+          element={<Navigate to="/dashboard" replace />}
+        />
 
-      {/* Public Routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
 
-      {/* Protected Routes */}
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-      <Route
-        path="/expenses"
-        element={
-          <ProtectedRoute>
-            <Expenses />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/register"
+          element={<Register />}
+        />
 
-      <Route
-        path="/income"
-        element={
-          <ProtectedRoute>
-            <Income />
-          </ProtectedRoute>
-        }
-      />
 
-      <Route
-        path="/budgets"
-        element={
-          <ProtectedRoute>
-            <Budgets />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }
+        >
 
-      <Route
-        path="/analytics"
-        element={
-          <ProtectedRoute>
-            <Analytics />
-          </ProtectedRoute>
-        }
-      />
+          <Route
+            path="/dashboard"
+            element={<Dashboard />}
+          />
 
-      <Route
-        path="/reports"
-        element={
-          <ProtectedRoute>
-            <Reports />
-          </ProtectedRoute>
-        }
-      />
 
-      <Route
-        path="/ai-summary"
-        element={
-          <ProtectedRoute>
-            <AISummary />
-          </ProtectedRoute>
-        }
-      />
+          <Route
+            path="/expenses"
+            element={<Expenses />}
+          />
 
-      <Route
-        path="/profile"
-        element={
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-  path="/profile"
-  element={
-    <ProtectedRoute>
-      <Profile />
-    </ProtectedRoute>
-  }
-/>
+          <Route
+            path="/expenses/new"
+            element={<AddExpense />}
+          />
 
-<Route path="*" element={<NotFound />} />
+          <Route
+            path="/expenses/:id/edit"
+            element={<EditExpense />}
+          />
 
-      
-    </Routes>
+
+          <Route
+            path="/income"
+            element={<Income />}
+          />
+
+          <Route
+            path="/income/new"
+            element={<AddIncome />}
+          />
+
+          <Route
+            path="/income/:id/edit"
+            element={<EditIncome />}
+          />
+
+
+          <Route
+            path="/budgets"
+            element={<Budgets />}
+          />
+
+          <Route
+            path="/budgets/new"
+            element={<AddBudget />}
+          />
+
+          <Route
+            path="/budgets/:id/edit"
+            element={<EditBudget />}
+          />
+         
+
+
+          <Route
+            path="/reports"
+            element={<Reports />}
+          />
+
+
+          <Route
+            path="/ai-summary"
+            element={<AISummary />}
+          />
+
+
+          <Route
+            path="/profile"
+            element={<Profile />}
+          />
+        </Route>
+
+
+        <Route
+          path="*"
+          element={<h1>404 - Page Not Found</h1>}
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

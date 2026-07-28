@@ -31,7 +31,11 @@ def create_app(config_class=Config):
 
     register_error_handlers(app)
     # Enable CORS
-    CORS(app)
+    CORS(app,
+    resources={r"/api/*": {"origins": "http://localhost:5173"}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],)
     
     jwt = JWTManager(app)
     # app.register_blueprint(expense_bp, url_prefix="/api")

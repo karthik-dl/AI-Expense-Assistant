@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+
+:root {
+  --brand: #2563eb;
+  --brand-dark: #1d4ed8;
+  --brand-bg: #eff6ff;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --danger: #dc2626;
+  --danger-bg: #fef2f2;
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -7,9 +25,8 @@
 }
 
 body {
-  font-family: "Inter", sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
+  font-family: Inter, sans-serif;
+  background: #F8FAFC;
 }
 
 a {

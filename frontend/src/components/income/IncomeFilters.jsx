@@ -1,154 +1,60 @@
-import { useState } from "react";
+import SearchBar from "../ui/SearchBar";
 
-function IncomeFilters({ onFilter }) {
-  const initialFilters = {
-    search: "",
-    category: "",
-    start_date: "",
-    end_date: "",
-    min_amount: "",
-    max_amount: "",
-    sort: "income_date",
-  };
-
-  const [filters, setFilters] = useState(initialFilters);
-
-  const handleChange = (e) => {
-    setFilters((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const applyFilters = () => {
-    onFilter?.(filters);
-  };
-
-  const clearFilters = () => {
-    setFilters(initialFilters);
-    onFilter?.(initialFilters);
-  };
-
+function IncomeFilters({
+  filters,
+  onFilterChange,
+}) {
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="grid gap-4 md:grid-cols-4">
+        <SearchBar
+          placeholder="Search income..."
+          value={filters.search}
+          onChange={(e) =>
+            onFilterChange("search", e.target.value)
+          }
+        />
 
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Search
-          </label>
-          <input
-            type="text"
-            name="search"
-            placeholder="Search..."
-            value={filters.search}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Category
-          </label>
-          <input
-            type="text"
-            name="category"
-            placeholder="Category"
-            value={filters.category}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Start Date
-          </label>
-          <input
-            type="date"
-            name="start_date"
-            value={filters.start_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            End Date
-          </label>
-          <input
-            type="date"
-            name="end_date"
-            value={filters.end_date}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Minimum Amount
-          </label>
-          <input
-            type="number"
-            name="min_amount"
-            min="0"
-            placeholder="Min Amount"
-            value={filters.min_amount}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Maximum Amount
-          </label>
-          <input
-            type="number"
-            name="max_amount"
-            min="0"
-            placeholder="Max Amount"
-            value={filters.max_amount}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Sort By
-          </label>
-          <select
-            name="sort"
-            value={filters.sort}
-            onChange={handleChange}
-            className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            <option value="income_date">Latest</option>
-            <option value="amount">Amount</option>
-            <option value="category">Category</option>
-          </select>
-        </div>
-
-      </div>
-
-      <div className="flex justify-end gap-3 mt-6">
-        <button
-          onClick={clearFilters}
-          className="px-5 py-2 border rounded-lg hover:bg-gray-100 transition"
+        <select
+          value={filters.category}
+          onChange={(e) =>
+            onFilterChange("category", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
         >
-          Clear
-        </button>
+          <option value="">All Categories</option>
+          <option value="Salary">Salary</option>
+          <option value="Freelancing">Freelancing</option>
+          <option value="Business">Business</option>
+          <option value="Investment">Investment</option>
+          <option value="Bonus">Bonus</option>
+          <option value="Rental">Rental</option>
+          <option value="Interest">Interest</option>
+          <option value="Gift">Gift</option>
+          <option value="Others">Others</option>
+        </select>
 
-        <button
-          onClick={applyFilters}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+        <input
+          type="date"
+          value={filters.date}
+          onChange={(e) =>
+            onFilterChange("date", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
+        />
+
+        <select
+          value={filters.sort}
+          onChange={(e) =>
+            onFilterChange("sort", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 px-4 py-3 focus:border-blue-500 focus:outline-none"
         >
-          Apply Filters
-        </button>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="highest">Highest Amount</option>
+          <option value="lowest">Lowest Amount</option>
+        </select>
       </div>
     </div>
   );

@@ -1,131 +1,68 @@
-import { useState } from "react";
+import SearchBar from "../ui/SearchBar";
 
-const categories = [
-  "All",
-  "Food",
-  "Transport",
-  "Shopping",
-  "Bills",
-  "Healthcare",
-  "Entertainment",
-  "Education",
-  "Travel",
-  "Salary",
-  "Investment",
-  "Other",
-];
-
-const months = [
-  "All",
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const BudgetFilters = ({
+function BudgetFilters({
   filters,
   onFilterChange,
-  onClearFilters,
-}) => {
-  const currentYear = new Date().getFullYear();
-
-  const [yearOptions] = useState([
-    "All",
-    currentYear - 2,
-    currentYear - 1,
-    currentYear,
-    currentYear + 1,
-  ]);
-
-  const handleChange = (e) => {
-    onFilterChange({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
-  };
-
+}) {
   return (
-    <div className="bg-white rounded-xl shadow p-5 mb-5">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-        <input
-          type="text"
-          name="search"
-          placeholder="Search Category..."
+    <div className="rounded-3xl bg-white p-6 shadow-sm">
+      <div className="grid gap-4 md:grid-cols-3">
+        {/* Search */}
+        <SearchBar
+          placeholder="Search category..."
           value={filters.search}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
+          onChange={(e) =>
+            onFilterChange("search", e.target.value)
+          }
         />
 
+        {/* Month Filter */}
         <select
-          name="category"
-          value={filters.category}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
-        >
-          {categories.map((category) => (
-            <option
-              key={category}
-              value={category === "All" ? "" : category}
-            >
-              {category}
-            </option>
-          ))}
-        </select>
-
-        <select
-          name="month"
           value={filters.month}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
+          onChange={(e) =>
+            onFilterChange("month", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
         >
-          {months.map((month) => (
-            <option
-              key={month}
-              value={month === "All" ? "" : month}
-            >
-              {month}
-            </option>
-          ))}
+          <option value="">All Months</option>
+
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
         </select>
 
+        {/* Sort */}
         <select
-          name="year"
-          value={filters.year}
-          onChange={handleChange}
-          className="border rounded-lg px-3 py-2"
+          value={filters.sort}
+          onChange={(e) =>
+            onFilterChange("sort", e.target.value)
+          }
+          className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
         >
-          {yearOptions.map((year) => (
-            <option
-              key={year}
-              value={year === "All" ? "" : year}
-            >
-              {year}
-            </option>
-          ))}
+          <option value="newest">
+            Newest First
+          </option>
+
+          <option value="highest">
+            Highest Budget
+          </option>
+
+          <option value="lowest">
+            Lowest Budget
+          </option>
         </select>
-
-      </div>
-
-      <div className="flex justify-end mt-4">
-        <button
-          onClick={onClearFilters}
-          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg"
-        >
-          Clear Filters
-        </button>
       </div>
     </div>
   );
-};
+}
 
 export default BudgetFilters;

@@ -59,7 +59,7 @@ def add_income():
     )
 
 
-@jwt_required()
+
 @jwt_required()
 def get_incomes():
     user_id = get_jwt_identity()

@@ -1,142 +1,141 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import { Mail, Lock, ArrowRight } from "lucide-react";
 import toast from "react-hot-toast";
 
-import AuthLayout from "../../components/auth/AuthLayout";
-import { loginUser } from "../../services/authService";
+import Input from "../../components/ui/Input";
+import Button from "../../components/ui/Button";
+import Card from "../../components/ui/Card";
+
+import { login as loginAPI } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (formData) => {
     try {
-      const response = await loginUser(data);
+      setLoading(true);
 
-      login(response.user, response.access_token);
+      const { data } = await loginAPI(formData);
+
+      login(data.access_token, data.user);
 
       toast.success("Login successful!");
 
       navigate("/dashboard");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Invalid email or password"
+        error.response?.data?.message || "Login failed."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthLayout
-      title="Welcome Back!"
-      subtitle="Login to continue to your account"
-      footerText="Don't have an account?"
-      footerLabel="Sign Up"
-      footerLink="/register"
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
+    <div className="flex min-h-screen">
+      {/* Left */}
+      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 text-white items-center justify-center p-16">
+        <div className="max-w-lg">
+          <h1 className="text-5xl font-bold leading-tight">
+            AI Expense Assistant
+          </h1>
 
-        {/* Email */}
-        <div className="space-y-3">
-          <label className="block text-sm font-semibold text-slate-800">
-            Email
-          </label>
-
-          <input
-            type="email"
-            placeholder="Enter your email"
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^\S+@\S+\.\S+$/,
-                message: "Enter a valid email",
-              },
-            })}
-            className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 text-sm placeholder:text-slate-400 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
-
-          {errors.email && (
-            <p className="text-sm text-red-500">
-              {errors.email.message}
-            </p>
-          )}
+          <p className="mt-6 text-lg text-blue-100">
+            Manage your income, expenses,
+            budgets and AI financial insights
+            from one beautiful dashboard.
+          </p>
         </div>
+      </div>
 
-        {/* Password */}
-        <div className="space-y-3">
-          <label className="block text-sm font-semibold text-slate-800">
-            Password
-          </label>
+      {/* Right */}
+      <div className="flex flex-1 items-center justify-center bg-slate-50 px-6">
+        <Card
+          className="w-full max-w-md"
+          hover={false}
+        >
+          <h2 className="text-3xl font-bold">
+            Welcome Back 👋
+          </h2>
 
-          <div className="relative">
-            <input
-              type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+          <p className="mt-2 text-slate-500">
+            Login to continue.
+          </p>
+
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-8 space-y-5"
+          >
+            <Input
+              label="Email"
+              type="email"
+              leftIcon={<Mail size={18} />}
+              error={errors.email?.message}
+              {...register("email", {
+                required: "Email is required",
+              })}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              leftIcon={<Lock size={18} />}
+              error={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
               })}
-              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                />
+                Remember me
+              </label>
+
+              <Link
+                to="/forgot-password"
+                className="text-sm font-medium text-blue-600 hover:underline"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+            <Button
+              type="submit"
+              loading={loading}
+              className="w-full"
+              rightIcon={<ArrowRight size={18} />}
             >
-              {showPassword ? (
-                <FaEyeSlash size={18} />
-              ) : (
-                <FaEye size={18} />
-              )}
-            </button>
-          </div>
+              Sign In
+            </Button>
+          </form>
 
-          {errors.password && (
-            <p className="text-sm text-red-500">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
-
-        {/* Remember & Forgot */}
-        <div className="flex items-center justify-between pt-2 text-sm">
-          <label className="flex items-center gap-2 text-slate-600">
-            <input
-              type="checkbox"
-              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-            />
-            Remember me
-          </label>
-
-          <Link
-            to="/forgot-password"
-            className="font-medium text-blue-600 hover:text-blue-700"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-
-        {/* Login Button */}
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="mt-2 w-full h-12 rounded-lg bg-blue-600 font-semibold text-white shadow-md transition duration-200 hover:bg-blue-700 disabled:opacity-60"
-        >
-          {isSubmitting ? "Signing In..." : "Login"}
-        </button>
-
-      </form>
-    </AuthLayout>
+          <p className="mt-8 text-center text-sm text-slate-500">
+            Don't have an account?{" "}
+            <Link
+              to="/register"
+              className="font-semibold text-blue-600"
+            >
+              Create Account
+            </Link>
+          </p>
+        </Card>
+      </div>
+    </div>
   );
 }
 

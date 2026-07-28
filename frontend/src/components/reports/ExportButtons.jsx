@@ -1,10 +1,14 @@
-import { useState } from "react";
-import { exportCSV, exportPDF } from "../../services/reportService";
+import toast from "react-hot-toast";
+import { Download, FileText, FileSpreadsheet } from "lucide-react";
 
-const ExportButtons = ({ filters }) => {
-  const [csvLoading, setCsvLoading] = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
+import Button from "../ui/Button";
 
+import {
+  exportPdf,
+  exportCsv,
+} from "../../services/reportsService";
+
+function ExportButtons({ filters }) {
   const downloadFile = (blob, filename) => {
     const url = window.URL.createObjectURL(blob);
 
@@ -19,53 +23,52 @@ const ExportButtons = ({ filters }) => {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleExportCSV = async () => {
+  const handlePdfExport = async () => {
     try {
-      setCsvLoading(true);
+      const { data } = await exportPdf(filters);
 
-      const blob = await exportCSV(filters);
+      downloadFile(data, "financial-report.pdf");
 
-      downloadFile(blob, "Expense_Report.csv");
+      toast.success("PDF exported successfully.");
     } catch (error) {
-      console.error("CSV Export Failed", error);
-    } finally {
-      setCsvLoading(false);
+      console.error(error);
+
+      toast.error("Failed to export PDF.");
     }
   };
 
-  const handleExportPDF = async () => {
+  const handleCsvExport = async () => {
     try {
-      setPdfLoading(true);
+      const { data } = await exportCsv(filters);
 
-      const blob = await exportPDF(filters);
+      downloadFile(data, "financial-report.csv");
 
-      downloadFile(blob, "Expense_Report.pdf");
+      toast.success("CSV exported successfully.");
     } catch (error) {
-      console.error("PDF Export Failed", error);
-    } finally {
-      setPdfLoading(false);
+      console.error(error);
+
+      toast.error("Failed to export CSV.");
     }
   };
 
   return (
-    <div className="flex flex-wrap gap-4 justify-end mb-6">
-      <button
-        onClick={handleExportCSV}
-        disabled={csvLoading}
-        className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-5 py-2 rounded-lg transition"
+    <div className="flex flex-wrap justify-end gap-4">
+      <Button
+        variant="secondary"
+        onClick={handlePdfExport}
       >
-        {csvLoading ? "Exporting..." : "Export CSV"}
-      </button>
+        <FileText size={18} />
+        Export PDF
+      </Button>
 
-      <button
-        onClick={handleExportPDF}
-        disabled={pdfLoading}
-        className="bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white px-5 py-2 rounded-lg transition"
+      <Button
+        onClick={handleCsvExport}
       >
-        {pdfLoading ? "Exporting..." : "Export PDF"}
-      </button>
+        <FileSpreadsheet size={18} />
+        Export CSV
+      </Button>
     </div>
   );
-};
+}
 
 export default ExportButtons;

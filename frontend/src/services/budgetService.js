@@ -1,49 +1,16 @@
 import api from "./api";
 
-// Get Budgets
-export const getBudgets = async (params = {}) => {
-  const response = await api.get("/budgets", {
-    params,
-  });
+export const getBudgets = () =>
+  api.get("/budget");
 
-  return response.data;
-};
+export const getBudget = (id) =>
+  api.get(`/budget/${id}`);
 
-// Get Single Budget
-export const getBudgetById = async (id) => {
-  const response = await api.get(`/budgets/${id}`);
+export const createBudget = (data) =>
+  api.post("/budget", data);
 
-  return response.data;
-};
+export const updateBudget = (id, data) =>
+  api.put(`/budget/${id}`, data);
 
-// Create Budget
-export const createBudget = async (budgetData) => {
-  const response = await api.post(
-    "/budgets",
-    budgetData
-  );
-
-  return response.data;
-};
-
-// Update Budget
-export const updateBudget = async (
-  id,
-  budgetData
-) => {
-  const response = await api.put(
-    `/budgets/${id}`,
-    budgetData
-  );
-
-  return response.data;
-};
-
-// Delete Budget
-export const deleteBudget = async (id) => {
-  const response = await api.delete(
-    `/budgets/${id}`
-  );
-
-  return response.data;
-};
+export const deleteBudget = (id) =>
+  api.delete(`/budget/${id}`);

@@ -1,129 +1,117 @@
+import { Link } from "react-router-dom";
+import { Pencil, Trash2, Plus } from "lucide-react";
+
+import Loader from "../ui/Loader";
+import Badge from "../ui/Badge";
+import Button from "../ui/Button";
+
 function IncomeTable({
   incomes = [],
-  pagination,
-  onEdit,
+  loading,
   onDelete,
-  onPageChange,
 }) {
-  return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-slate-100">
-            <tr>
-              <th className="px-6 py-4 text-left">Source</th>
-              <th className="px-6 py-4 text-left">Category</th>
-              <th className="px-6 py-4 text-left">Amount</th>
-              <th className="px-6 py-4 text-left">Date</th>
-              <th className="px-6 py-4 text-center">Actions</th>
-            </tr>
-          </thead>
+  if (loading) {
+    return <Loader text="Loading income..." />;
+  }
 
-          <tbody>
-            {incomes.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="py-12 text-center text-gray-500"
-                >
-                  No income records found.
-                </td>
-              </tr>
-            ) : (
-              incomes.map((income) => (
-                <tr
-                  key={income.id}
-                  className="border-b hover:bg-gray-50 transition-colors"
-                >
-                  <td className="px-6 py-4">
-                    {income.source}
-                  </td>
+  if (incomes.length === 0) {
+    return (
+      <div className="rounded-3xl border border-slate-200 bg-white py-16 text-center shadow-sm">
+        <h3 className="text-xl font-semibold text-slate-700">
+          No income found
+        </h3>
 
-                  <td className="px-6 py-4">
-                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                      {income.category}
-                    </span>
-                  </td>
+        <p className="mt-2 text-slate-500">
+          Start by adding your first income.
+        </p>
 
-                  <td className="px-6 py-4 font-semibold text-green-600">
-                    ₹{Number(income.amount).toLocaleString()}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    {new Date(
-                      income.income_date
-                    ).toLocaleDateString()}
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <div className="flex justify-center gap-2">
-                      <button
-                        onClick={() => onEdit?.(income)}
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition"
-                      >
-                        Edit
-                      </button>
-
-                      <button
-                        onClick={() => onDelete?.(income.id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+        <Link to="/income/new">
+          <Button className="mt-6">
+            <Plus size={18} />
+            Add Income
+          </Button>
+        </Link>
       </div>
+    );
+  }
 
-      {pagination && (
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t px-6 py-4">
-          <div className="text-gray-600">
-            Showing Page <strong>{pagination.page}</strong> of{" "}
-            <strong>{pagination.total_pages}</strong>
-          </div>
+  return (
+    <div className="overflow-x-auto rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <table className="min-w-full">
+        <thead className="bg-slate-50">
+          <tr>
+            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+              Title
+            </th>
 
-          <div className="text-gray-600">
-            Total Records:{" "}
-            <strong>{pagination.total_records}</strong>
-          </div>
+            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+              Source
+            </th>
 
-          <div className="flex gap-3">
-            <button
-              disabled={pagination.page === 1}
-              onClick={() =>
-                onPageChange?.(pagination.page - 1)
-              }
-              className={`px-4 py-2 rounded transition ${
-                pagination.page === 1
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-gray-700 text-white hover:bg-gray-800"
-              }`}
+            <th className="px-6 py-4 text-left text-sm font-semibold text-slate-600">
+              Date
+            </th>
+
+            <th className="px-6 py-4 text-right text-sm font-semibold text-slate-600">
+              Amount
+            </th>
+
+            <th className="px-6 py-4 text-center text-sm font-semibold text-slate-600">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {incomes.map((income) => (
+            <tr
+              key={income.id}
+              className="border-t border-slate-100 transition hover:bg-slate-50"
             >
-              ← Previous
-            </button>
+              <td className="px-6 py-4 font-medium text-slate-800">
+                {income.title}
+              </td>
 
-            <button
-              disabled={
-                pagination.page === pagination.total_pages
-              }
-              onClick={() =>
-                onPageChange?.(pagination.page + 1)
-              }
-              className={`px-4 py-2 rounded transition ${
-                pagination.page === pagination.total_pages
-                  ? "bg-gray-300 cursor-not-allowed"
-                  : "bg-green-600 text-white hover:bg-green-700"
-              }`}
-            >
-              Next →
-            </button>
-          </div>
-        </div>
-      )}
+              <td className="px-6 py-4">
+                <Badge>
+                  {income.category || income.source || "Others"}
+                </Badge>
+              </td>
+
+              <td className="px-6 py-4 text-slate-600">
+                {income.date
+                  ? new Date(income.date).toLocaleDateString("en-IN")
+                  : "-"}
+              </td>
+
+              <td className="px-6 py-4 text-right font-semibold text-green-600">
+                ₹{Number(income.amount || 0).toLocaleString("en-IN")}
+              </td>
+
+              <td className="px-6 py-4">
+                <div className="flex justify-center gap-2">
+                 <Link to={`/income/${income.id}/edit`}>
+  <Button
+    size="sm"
+    variant="secondary"
+  >
+    <Pencil size={16} />
+  </Button>
+</Link>
+
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => onDelete?.(income)}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
