@@ -1,114 +1,142 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-
+import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+
+import AuthLayout from "../../components/auth/AuthLayout";
 import { loginUser } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
-import Input from "../../components/ui/Input";
-import Button from "../../components/ui/Button";
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-    const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-const { login } = useAuth();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   const onSubmit = async (data) => {
+    try {
+      const response = await loginUser(data);
 
-    try{
+      login(response.user, response.access_token);
 
-        const response = await loginUser(data);
+      toast.success("Login successful!");
 
-        login(
-            response.user,
-            response.access_token
-        );
-
-        toast.success("Login Successful");
-
-        navigate("/dashboard");
-
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Invalid email or password"
+      );
     }
-    catch(error){
+  };
 
-        toast.error(
-            error.response?.data?.message ||
-            "Invalid Credentials"
-        );
-
-    }
-
-};
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
-      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2">
+    <AuthLayout
+      title="Welcome Back!"
+      subtitle="Login to continue to your account"
+      footerText="Don't have an account?"
+      footerLabel="Sign Up"
+      footerLink="/register"
+    >
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-7">
 
-        {/* Left Section */}
-        <div className="bg-blue-600 text-white flex flex-col justify-center p-10">
-          <h1 className="text-4xl font-bold mb-4">
-            AI Expense Assistant
-          </h1>
+        {/* Email */}
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-slate-800">
+            Email
+          </label>
 
-          <p className="text-blue-100 text-lg">
-            Track your expenses, analyse your finances,
-            and get AI-powered insights to make smarter
-            financial decisions.
-          </p>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            {...register("email", {
+              required: "Email is required",
+              pattern: {
+                value: /^\S+@\S+\.\S+$/,
+                message: "Enter a valid email",
+              },
+            })}
+            className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 text-sm placeholder:text-slate-400 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+
+          {errors.email && (
+            <p className="text-sm text-red-500">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
-        {/* Right Section */}
-        <div className="p-10">
-          <h2 className="text-3xl font-bold mb-8">
-            Welcome Back 👋
-          </h2>
+        {/* Password */}
+        <div className="space-y-3">
+          <label className="block text-sm font-semibold text-slate-800">
+            Password
+          </label>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              {...register("password", {
+                required: "Password is required",
+              })}
+              className="w-full h-12 rounded-lg border border-slate-200 bg-white px-4 pr-12 text-sm placeholder:text-slate-400 outline-none transition duration-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
 
-            <Input
-  label="Email"
-  type="email"
-  name="email"
-  placeholder="Enter your email"
-  register={register}
-  rules={{
-    required: "Email is required",
-    pattern: {
-      value: /^\S+@\S+\.\S+$/,
-      message: "Enter a valid email",
-    },
-  }}
-  errors={errors}
-/>
-        <Input
-  label="Password"
-  type="password"
-  name="password"
-  placeholder="Enter your password"
-  register={register}
-  rules={{
-    required: "Password is required",
-    minLength: {
-      value: 6,
-      message: "Password must be at least 6 characters",
-    },
-  }}
-  errors={errors}
-/>
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            >
+              {showPassword ? (
+                <FaEyeSlash size={18} />
+              ) : (
+                <FaEye size={18} />
+              )}
+            </button>
+          </div>
 
-            <Button type="submit">
-              Login
-            </Button>
-
-          </form>
+          {errors.password && (
+            <p className="text-sm text-red-500">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
-      </div>
-    </div>
+        {/* Remember & Forgot */}
+        <div className="flex items-center justify-between pt-2 text-sm">
+          <label className="flex items-center gap-2 text-slate-600">
+            <input
+              type="checkbox"
+              className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+            />
+            Remember me
+          </label>
+
+          <Link
+            to="/forgot-password"
+            className="font-medium text-blue-600 hover:text-blue-700"
+          >
+            Forgot Password?
+          </Link>
+        </div>
+
+        {/* Login Button */}
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="mt-2 w-full h-12 rounded-lg bg-blue-600 font-semibold text-white shadow-md transition duration-200 hover:bg-blue-700 disabled:opacity-60"
+        >
+          {isSubmitting ? "Signing In..." : "Login"}
+        </button>
+
+      </form>
+    </AuthLayout>
   );
 }
 
