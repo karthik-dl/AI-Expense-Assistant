@@ -13,7 +13,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 import ProtectedRoute from "./ProtectedRoute";
-
+import NotFound from "../pages/errors/NotFound";
 
 function AppRoutes() {
   return (
@@ -97,6 +97,17 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
+
+<Route path="*" element={<NotFound />} />
+
       
     </Routes>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const categories = [
   "Food",
@@ -14,6 +15,21 @@ const categories = [
   "Other",
 ];
 
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const BudgetModal = ({
   open,
   onClose,
@@ -21,12 +37,14 @@ const BudgetModal = ({
   budget,
   loading = false,
 }) => {
-  const [formData, setFormData] = useState({
+  const initialState = {
     category: "",
     amount: "",
     month: "",
     year: new Date().getFullYear(),
-  });
+  };
+
+  const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
     if (budget) {
@@ -37,12 +55,7 @@ const BudgetModal = ({
         year: budget.year || new Date().getFullYear(),
       });
     } else {
-      setFormData({
-        category: "",
-        amount: "",
-        month: "",
-        year: new Date().getFullYear(),
-      });
+      setFormData(initialState);
     }
   }, [budget]);
 
@@ -62,7 +75,12 @@ const BudgetModal = ({
       !formData.month ||
       !formData.year
     ) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (Number(formData.amount) <= 0) {
+      toast.error("Budget amount must be greater than 0");
       return;
     }
 
@@ -73,18 +91,18 @@ const BudgetModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl w-full max-w-md p-6 shadow-lg">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
 
-        <h2 className="text-2xl font-semibold mb-6">
+        <h2 className="text-2xl font-bold mb-6">
           {budget ? "Edit Budget" : "Add Budget"}
         </h2>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-4"
+          className="space-y-5"
         >
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-2 font-medium">
               Category
             </label>
 
@@ -92,7 +110,7 @@ const BudgetModal = ({
               name="category"
               value={formData.category}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Category</option>
 
@@ -105,22 +123,24 @@ const BudgetModal = ({
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-2 font-medium">
               Budget Amount
             </label>
 
             <input
               type="number"
               name="amount"
+              min="1"
+              step="0.01"
               value={formData.amount}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
               placeholder="Enter budget amount"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-2 font-medium">
               Month
             </label>
 
@@ -128,24 +148,11 @@ const BudgetModal = ({
               name="month"
               value={formData.month}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">Select Month</option>
 
-              {[
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-              ].map((month) => (
+              {months.map((month) => (
                 <option key={month} value={month}>
                   {month}
                 </option>
@@ -154,24 +161,26 @@ const BudgetModal = ({
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">
+            <label className="block mb-2 font-medium">
               Year
             </label>
 
             <input
               type="number"
               name="year"
+              min="2020"
               value={formData.year}
               onChange={handleChange}
-              className="w-full border rounded-lg p-2"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
+              disabled={loading}
               onClick={onClose}
-              className="px-4 py-2 rounded-lg border"
+              className="px-5 py-2 rounded-lg border hover:bg-gray-100 transition disabled:opacity-50"
             >
               Cancel
             </button>
@@ -179,7 +188,7 @@ const BudgetModal = ({
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition disabled:opacity-50"
             >
               {loading
                 ? "Saving..."
@@ -189,6 +198,7 @@ const BudgetModal = ({
             </button>
           </div>
         </form>
+
       </div>
     </div>
   );

@@ -5,6 +5,9 @@ __pycache__/
 *.pyd
 *.egg-info/
 
+*.pyc
+backend/logs/
+
 # Virtual Environment
 venv/
 .env

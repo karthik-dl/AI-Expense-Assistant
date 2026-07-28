@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
 import {
   getBudgets,
   createBudget,
@@ -42,7 +44,12 @@ const Budgets = () => {
         []
       );
     } catch (error) {
-      console.error("Failed to load budgets", error);
+      console.error(error);
+
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to load budgets"
+      );
     } finally {
       setLoading(false);
     }
@@ -56,8 +63,10 @@ const Budgets = () => {
     try {
       if (selectedBudget) {
         await updateBudget(selectedBudget.id, data);
+        toast.success("Budget updated successfully");
       } else {
         await createBudget(data);
+        toast.success("Budget created successfully");
       }
 
       setModalOpen(false);
@@ -66,6 +75,11 @@ const Budgets = () => {
       loadBudgets();
     } catch (error) {
       console.error(error);
+
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to save budget"
+      );
     }
   };
 
@@ -73,12 +87,19 @@ const Budgets = () => {
     try {
       await deleteBudget(deleteBudgetId);
 
+      toast.success("Budget deleted successfully");
+
       setConfirmOpen(false);
       setDeleteBudgetId(null);
 
       loadBudgets();
     } catch (error) {
       console.error(error);
+
+      toast.error(
+        error.response?.data?.message ||
+          "Failed to delete budget"
+      );
     }
   };
 
@@ -96,7 +117,7 @@ const Budgets = () => {
             setSelectedBudget(null);
             setModalOpen(true);
           }}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg"
+          className="bg-blue-600 hover:bg-blue-700 transition text-white px-5 py-2 rounded-lg"
         >
           + Add Budget
         </button>

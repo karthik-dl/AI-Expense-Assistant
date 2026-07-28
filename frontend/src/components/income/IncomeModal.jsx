@@ -60,9 +60,11 @@ function IncomeModal({
         toast.success("Income added successfully");
       }
 
-      refreshIncomes();
-      onClose();
+      if (typeof refreshIncomes === "function") {
+        refreshIncomes();
+      }
 
+      onClose();
     } catch (error) {
       console.error(error);
 
@@ -79,18 +81,12 @@ function IncomeModal({
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-8">
-
         <h2 className="text-2xl font-bold mb-6">
           {income ? "Edit Income" : "Add Income"}
         </h2>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
-
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block mb-2 font-medium">
               Source
@@ -102,7 +98,7 @@ function IncomeModal({
               value={formData.source}
               onChange={handleChange}
               required
-              className="w-full border rounded-lg px-4 py-3"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -117,7 +113,7 @@ function IncomeModal({
               value={formData.category}
               onChange={handleChange}
               required
-              className="w-full border rounded-lg px-4 py-3"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -132,7 +128,9 @@ function IncomeModal({
               value={formData.amount}
               onChange={handleChange}
               required
-              className="w-full border rounded-lg px-4 py-3"
+              min="0"
+              step="0.01"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -147,16 +145,16 @@ function IncomeModal({
               value={formData.income_date}
               onChange={handleChange}
               required
-              className="w-full border rounded-lg px-4 py-3"
+              className="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
           <div className="flex justify-end gap-3 pt-4">
-
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2 rounded-lg border hover:bg-gray-100"
+              disabled={loading}
+              className="px-5 py-2 rounded-lg border hover:bg-gray-100 disabled:opacity-50"
             >
               Cancel
             </button>
@@ -164,7 +162,7 @@ function IncomeModal({
             <button
               type="submit"
               disabled={loading}
-              className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white"
+              className="px-5 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white disabled:opacity-50"
             >
               {loading
                 ? "Saving..."
@@ -172,13 +170,9 @@ function IncomeModal({
                 ? "Update Income"
                 : "Add Income"}
             </button>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 }
