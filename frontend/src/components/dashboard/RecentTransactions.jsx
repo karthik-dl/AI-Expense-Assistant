@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowDownLeft,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 import api from "../../services/api";
@@ -35,70 +38,104 @@ function RecentTransactions() {
     try {
       setLoading(true);
 
-      const [incomeRes, expenseRes] = await Promise.all([
-        api.get("/incomes"),
-        api.get("/expenses"),
-      ]);
+      const [incomeRes, expenseRes] =
+        await Promise.all([
+          api.get("/incomes"),
+          api.get("/expenses"),
+        ]);
 
-      console.log("Income Response:", incomeRes.data);
-      console.log("Expense Response:", expenseRes.data);
-
-      const incomes = getArray(incomeRes, "incomes").map((item) => ({
+      const incomes = getArray(
+        incomeRes,
+        "incomes"
+      ).map((item) => ({
         ...item,
         type: "Income",
         date: item.income_date,
       }));
 
-      const expenses = getArray(expenseRes, "expenses").map((item) => ({
+      const expenses = getArray(
+        expenseRes,
+        "expenses"
+      ).map((item) => ({
         ...item,
         type: "Expense",
         date: item.expense_date,
       }));
 
-      const merged = [...incomes, ...expenses]
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
+      const merged = [
+        ...incomes,
+        ...expenses,
+      ]
+        .filter((item) => item.date)
+        .sort(
+          (a, b) =>
+            new Date(b.date) -
+            new Date(a.date)
+        )
         .slice(0, 7);
 
       setTransactions(merged);
     } catch (error) {
-      console.error("Recent Transactions Error:", error);
+      console.error(
+        "Recent Transactions Error:",
+        error
+      );
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <Loader text="Loading transactions..." />;
+    return (
+      <Loader text="Loading transactions..." />
+    );
   }
 
   return (
-    <Card>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-bold">
-          Recent Transactions
-        </h2>
+    <Card hover={false}>
+      <div className="mb-5 flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
+            Recent Transactions
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Your latest income and expenses.
+          </p>
+        </div>
 
         <Link
           to="/expenses"
-          className="text-sm font-semibold text-blue-600 hover:underline"
+          className="shrink-0 text-sm font-semibold text-blue-600 transition hover:text-blue-700"
         >
           View All
         </Link>
       </div>
 
       {transactions.length === 0 ? (
-        <div className="py-16 text-center text-slate-500">
+        <div className="flex min-h-40 items-center justify-center text-center text-sm text-slate-500">
           No transactions found.
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full">
+        <div className="w-full overflow-x-auto">
+          <table className="w-full min-w-150">
             <thead>
-              <tr className="border-b text-left text-sm text-slate-500">
-                <th className="pb-3">Type</th>
-                <th className="pb-3">Category</th>
-                <th className="pb-3">Date</th>
-                <th className="pb-3 text-right">Amount</th>
+              <tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                <th className="pb-3">
+                  Type
+                </th>
+
+                <th className="pb-3">
+                  Category
+                </th>
+
+                <th className="pb-3">
+                  Date
+                </th>
+
+                <th className="pb-3 text-right">
+                  Amount
+                </th>
               </tr>
             </thead>
 
@@ -106,45 +143,63 @@ function RecentTransactions() {
               {transactions.map((item) => (
                 <tr
                   key={`${item.type}-${item.id}`}
-                  className="border-b last:border-none"
+                  className="border-b border-slate-100 last:border-none"
                 >
-                  <td className="py-4">
+                  <td className="py-3">
                     <div className="flex items-center gap-2">
-                      {item.type === "Income" ? (
-                        <ArrowDownLeft
-                          className="text-green-600"
-                          size={18}
-                        />
-                      ) : (
-                        <ArrowUpRight
-                          className="text-red-600"
-                          size={18}
-                        />
-                      )}
+                      <span
+                        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
+                          item.type === "Income"
+                            ? "bg-emerald-50 text-emerald-600"
+                            : "bg-red-50 text-red-600"
+                        }`}
+                      >
+                        {item.type === "Income" ? (
+                          <ArrowDownLeft size={16} />
+                        ) : (
+                          <ArrowUpRight size={16} />
+                        )}
+                      </span>
 
-                      {item.type}
+                      <span className="text-sm font-medium text-slate-700">
+                        {item.type}
+                      </span>
                     </div>
                   </td>
 
-                  <td>
-                    <Badge>
+                  <td className="py-3">
+                    <Badge
+                      variant={
+                        item.type === "Income"
+                          ? "success"
+                          : "danger"
+                      }
+                      size="sm"
+                    >
                       {item.category || "General"}
                     </Badge>
                   </td>
 
-                  <td>
-                    {new Date(item.date).toLocaleDateString("en-IN")}
+                  <td className="whitespace-nowrap py-3 text-sm text-slate-500">
+                    {new Date(
+                      item.date
+                    ).toLocaleDateString("en-IN")}
                   </td>
 
                   <td
-                    className={`text-right font-semibold ${
+                    className={`whitespace-nowrap py-3 text-right text-sm font-semibold ${
                       item.type === "Income"
-                        ? "text-green-600"
+                        ? "text-emerald-600"
                         : "text-red-600"
                     }`}
                   >
-                    {item.type === "Income" ? "+" : "-"}₹
-                    {Number(item.amount).toLocaleString("en-IN")}
+                    {item.type === "Income"
+                      ? "+"
+                      : "-"}
+                    ₹
+                    {Number(
+                      item.amount || 0
+                    ).toLocaleString("en-IN")}
                   </td>
                 </tr>
               ))}

@@ -1,30 +1,25 @@
 import { Wallet } from "lucide-react";
 import { Link } from "react-router-dom";
 
-function Logo({ collapsed = false }) {
+function Logo() {
   return (
     <Link
       to="/dashboard"
-      className="flex items-center gap-3"
+      className="group flex min-w-0 items-center gap-3"
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-600 shadow-lg">
-        <Wallet
-          size={24}
-          className="text-white"
-        />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white transition-colors group-hover:bg-blue-700">
+        <Wallet size={21} strokeWidth={2.2} />
       </div>
 
-      {!collapsed && (
-        <div>
-          <h2 className="text-lg font-bold tracking-tight text-white">
-            ExpenseAI
-          </h2>
+      <div className="min-w-0">
+        <h1 className="truncate text-lg font-bold tracking-tight text-slate-900">
+          ExpenseAI
+        </h1>
 
-          <p className="text-xs text-slate-400">
-            Finance Assistant
-          </p>
-        </div>
-      )}
+        <p className="truncate text-xs font-medium text-slate-500">
+          Personal Finance
+        </p>
+      </div>
     </Link>
   );
 }

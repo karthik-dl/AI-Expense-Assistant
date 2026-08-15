@@ -53,9 +53,6 @@ function FinancialOverview() {
         api.get("/expenses"),
       ]);
 
-      console.log("Income Response:", incomeRes.data);
-      console.log("Expense Response:", expenseRes.data);
-
       const incomeList = getArray(incomeRes, "incomes");
       const expenseList = getArray(expenseRes, "expenses");
 
@@ -82,7 +79,10 @@ function FinancialOverview() {
         savingsTrend: 14.8,
       });
     } catch (error) {
-      console.error("Financial Overview Error:", error);
+      console.error(
+        "Financial Overview Error:",
+        error
+      );
     } finally {
       setLoading(false);
     }
@@ -93,12 +93,12 @@ function FinancialOverview() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+    <section className="grid w-full min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       <StatCard
         title="Current Balance"
         value={stats.balance}
         icon={Wallet}
-        iconColor="bg-blue-100 text-blue-600"
+        iconColor="bg-blue-50 text-blue-600"
         trend={stats.balanceTrend}
       />
 
@@ -106,7 +106,7 @@ function FinancialOverview() {
         title="Total Income"
         value={stats.income}
         icon={Landmark}
-        iconColor="bg-green-100 text-green-600"
+        iconColor="bg-emerald-50 text-emerald-600"
         trend={stats.incomeTrend}
       />
 
@@ -114,7 +114,7 @@ function FinancialOverview() {
         title="Total Expenses"
         value={stats.expenses}
         icon={Receipt}
-        iconColor="bg-red-100 text-red-600"
+        iconColor="bg-red-50 text-red-600"
         trend={stats.expenseTrend}
       />
 
@@ -122,10 +122,10 @@ function FinancialOverview() {
         title="Savings"
         value={stats.savings}
         icon={PiggyBank}
-        iconColor="bg-purple-100 text-purple-600"
+        iconColor="bg-indigo-50 text-indigo-600"
         trend={stats.savingsTrend}
       />
-    </div>
+    </section>
   );
 }
 

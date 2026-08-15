@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { User, Mail, Lock, ArrowRight } from "lucide-react";
+import { User, Mail, Lock, ArrowRight, Wallet } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -53,13 +53,20 @@ function Register() {
     <div className="flex min-h-screen">
       {/* Left Side */}
 
-      <div className="hidden lg:flex lg:w-1/2 items-center justify-center bg-blue-600 p-16 text-white">
-        <div className="max-w-lg">
-          <h1 className="text-5xl font-bold leading-tight">
+      <div className="relative hidden items-center justify-center overflow-hidden bg-linear-to-br from-ink via-surface to-[#1C4736] p-16 text-bone lg:flex lg:w-1/2">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-sage/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 left-10 h-64 w-64 rounded-full bg-gold/10 blur-3xl" />
+
+        <div className="relative max-w-lg">
+          <div className="mb-8 flex h-14 w-14 items-center justify-center rounded-2xl bg-bone/10 ring-1 ring-inset ring-bone/15 backdrop-blur">
+            <Wallet size={26} />
+          </div>
+
+          <h1 className="font-display text-5xl font-semibold leading-tight tracking-tight">
             Join ExpenseAI
           </h1>
 
-          <p className="mt-6 text-lg text-blue-100">
+          <p className="mt-6 text-lg text-bone/70">
             Take control of your finances with
             smart expense tracking, budgeting,
             analytics and AI insights.
@@ -69,16 +76,16 @@ function Register() {
 
       {/* Right Side */}
 
-      <div className="flex flex-1 items-center justify-center bg-slate-50 px-6">
+      <div className="flex flex-1 items-center justify-center bg-ink px-6">
         <Card
-          className="w-full max-w-md"
+          className="w-full max-w-md border border-line bg-surface"
           hover={false}
         >
-          <h2 className="text-3xl font-bold">
+          <h2 className="font-display text-3xl font-semibold tracking-tight text-bone">
             Create Account
           </h2>
 
-          <p className="mt-2 text-slate-500">
+          <p className="mt-2 text-muted">
             Start managing your finances today.
           </p>
 
@@ -144,11 +151,11 @@ function Register() {
             </Button>
           </form>
 
-          <p className="mt-8 text-center text-sm text-slate-500">
+          <p className="mt-8 text-center text-sm text-muted">
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-semibold text-blue-600 hover:underline"
+              className="font-semibold text-sage transition-colors hover:text-gold hover:underline underline-offset-4"
             >
               Login
             </Link>

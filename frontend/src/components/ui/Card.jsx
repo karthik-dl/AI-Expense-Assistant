@@ -7,23 +7,26 @@ function Card({
   headerAction,
   footer,
   className,
-  padding = "p-6",
-  hover = true,
+  padding = "p-5 sm:p-6",
+  hover = false,
 }) {
   return (
-    <div
+    <section
       className={clsx(
-        "rounded-3xl border border-slate-200 bg-white transition-all duration-300",
-        hover ? "hover:-translate-y-1 hover:shadow-lg" : "shadow-sm",
+        "w-full min-w-0 overflow-hidden rounded-2xl",
+        "border border-slate-200 bg-white",
+        "shadow-sm",
+        hover &&
+          "transition-shadow duration-200 hover:shadow-md",
         padding,
         className
       )}
     >
       {(title || subtitle || headerAction) && (
-        <div className="mb-6 flex items-start justify-between">
-          <div>
+        <div className="mb-5 flex min-w-0 items-start justify-between gap-4 border-b border-slate-100 pb-4">
+          <div className="min-w-0">
             {title && (
-              <h3 className="text-lg font-semibold text-slate-900">
+              <h3 className="truncate text-lg font-semibold text-slate-900">
                 {title}
               </h3>
             )}
@@ -36,23 +39,23 @@ function Card({
           </div>
 
           {headerAction && (
-            <div>
+            <div className="shrink-0">
               {headerAction}
             </div>
           )}
         </div>
       )}
 
-      <div>
+      <div className="min-w-0">
         {children}
       </div>
 
       {footer && (
-        <div className="mt-6 border-t border-slate-100 pt-4">
+        <div className="mt-5 border-t border-slate-100 pt-4">
           {footer}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 

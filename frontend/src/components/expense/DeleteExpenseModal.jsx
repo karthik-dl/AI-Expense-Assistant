@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 import Modal from "../ui/Modal";
@@ -12,21 +13,33 @@ function DeleteExpenseModal({
   expense,
   onSuccess,
 }) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
   const handleDelete = async () => {
+    if (!expense?.id) return;
+
     try {
       setLoading(true);
 
-      await expenseService.deleteExpense(expense.id);
+      await expenseService.deleteExpense(
+        expense.id
+      );
 
-      toast.success("Expense deleted successfully.");
+      toast.success(
+        "Expense deleted successfully."
+      );
 
-      onSuccess();
-      onClose();
+      await onSuccess?.();
+      onClose?.();
     } catch (error) {
+      console.error(
+        "Delete Expense Error:",
+        error
+      );
+
       toast.error(
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
           "Failed to delete expense."
       );
     } finally {
@@ -38,40 +51,66 @@ function DeleteExpenseModal({
 
   return (
     <Modal
-      open={open}
+      isOpen={open}
       onClose={onClose}
       title="Delete Expense"
-    >
-      <div className="space-y-6">
-        <p className="text-slate-600">
-          Are you sure you want to delete
-          <span className="font-semibold">
-            {" "}
-            {expense.title}
-          </span>
-          ?
-        </p>
-
-        <p className="text-sm text-red-600">
-          This action cannot be undone.
-        </p>
-
-        <div className="flex justify-end gap-3">
+      size="sm"
+      footer={
+        <div className="flex w-full flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button
+            type="button"
             variant="secondary"
             onClick={onClose}
+            disabled={loading}
+            className="w-full sm:w-auto"
           >
             Cancel
           </Button>
 
           <Button
+            type="button"
             variant="danger"
             loading={loading}
             onClick={handleDelete}
+            leftIcon={
+              !loading && <Trash2 size={16} />
+            }
+            className="w-full sm:w-auto"
           >
-            Delete
+            Delete Expense
           </Button>
         </div>
+      }
+    >
+      <div className="space-y-5">
+        {/* Warning */}
+        <div className="flex gap-3 rounded-xl border border-red-100 bg-red-50 p-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600">
+            <AlertTriangle size={18} />
+          </div>
+
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-red-800">
+              Are you sure?
+            </p>
+
+            <p className="mt-1 text-sm leading-5 text-red-700">
+              You are about to delete{" "}
+              <span className="font-semibold">
+                {expense.title ||
+                  "this expense"}
+              </span>
+              .
+            </p>
+          </div>
+        </div>
+
+        {/* Description */}
+        <p className="text-sm leading-6 text-slate-500">
+          This action cannot be undone. The
+          expense will be permanently removed
+          from your account.
+        </p>
       </div>
     </Modal>
   );

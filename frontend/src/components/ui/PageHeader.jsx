@@ -4,21 +4,21 @@ function PageHeader({
   children,
 }) {
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-slate-800">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           {title}
         </h1>
 
         {subtitle && (
-          <p className="mt-1 text-slate-500">
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
             {subtitle}
           </p>
         )}
       </div>
 
       {children && (
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           {children}
         </div>
       )}

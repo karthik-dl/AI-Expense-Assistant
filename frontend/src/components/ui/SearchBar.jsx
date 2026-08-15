@@ -1,7 +1,7 @@
 import { Search, X, SlidersHorizontal } from "lucide-react";
 
 function SearchBar({
-  value,
+  value = "",
   onChange,
   placeholder = "Search...",
   onClear,
@@ -10,42 +10,66 @@ function SearchBar({
   className = "",
 }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <div className="relative flex-1">
-        {/* Search Icon */}
+    <div
+      className={`flex w-full items-center gap-2 sm:gap-3 ${className}`}
+    >
+      <div className="relative min-w-0 flex-1">
         <Search
           size={18}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
         />
 
-        {/* Input */}
         <input
           type="text"
           value={value}
-          onChange={(e) => onChange?.(e.target.value)}
+          onChange={(event) =>
+            onChange?.(event.target.value)
+          }
           placeholder={placeholder}
-          className="h-11 w-full rounded-xl border border-slate-200 bg-white pl-11 pr-11 text-sm text-slate-700 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="
+            h-11 w-full rounded-xl
+            border border-slate-200
+            bg-white
+            pl-10 pr-10
+            text-sm text-slate-900
+            outline-none
+            transition
+            placeholder:text-slate-400
+            hover:border-slate-300
+            focus:border-blue-500
+            focus:ring-4
+            focus:ring-blue-100
+          "
         />
 
-        {/* Clear */}
         {value && (
           <button
+            type="button"
             onClick={onClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 transition hover:bg-slate-100"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            aria-label="Clear search"
           >
-            <X
-              size={16}
-              className="text-slate-500"
-            />
+            <X size={16} />
           </button>
         )}
       </div>
 
-      {/* Filter */}
       {showFilter && (
         <button
+          type="button"
           onClick={onFilterClick}
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-100"
+          className="
+            flex h-11 w-11 shrink-0
+            items-center justify-center
+            rounded-xl
+            border border-slate-200
+            bg-white
+            text-slate-600
+            transition
+            hover:bg-slate-50
+            hover:text-blue-600
+          "
+          aria-label="Open filters"
         >
           <SlidersHorizontal size={18} />
         </button>

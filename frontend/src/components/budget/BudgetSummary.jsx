@@ -1,67 +1,120 @@
-import Card from "../ui/Card";
+import {
+  Wallet,
+  Receipt,
+  PiggyBank,
+  Layers3,
+} from "lucide-react";
 
-function BudgetSummary({ budgets }) {
-  const totalBudget = budgets.reduce(
-    (sum, budget) => sum + Number(budget.amount || 0),
-    0
-  );
+function BudgetSummary({
+  budgets = [],
+}) {
+  const totalBudget =
+    budgets.reduce(
+      (sum, budget) =>
+        sum +
+        Number(
+          budget?.amount || 0
+        ),
+      0
+    );
 
-  const totalSpent = budgets.reduce(
-    (sum, budget) => sum + Number(budget.spent || 0),
-    0
-  );
+  const totalSpent =
+    budgets.reduce(
+      (sum, budget) =>
+        sum +
+        Number(
+          budget?.spent || 0
+        ),
+      0
+    );
 
-  const remaining = totalBudget - totalSpent;
+  const remaining =
+    totalBudget - totalSpent;
 
-  const totalCategories = budgets.length;
+  const cards = [
+    {
+      title: "Total Budget",
+      value: totalBudget,
+      prefix: "₹",
+      icon: Wallet,
+      iconClass:
+        "bg-blue-50 text-blue-600",
+      valueClass:
+        "text-blue-600",
+    },
+    {
+      title: "Total Spent",
+      value: totalSpent,
+      prefix: "₹",
+      icon: Receipt,
+      iconClass:
+        "bg-red-50 text-red-600",
+      valueClass:
+        "text-red-600",
+    },
+    {
+      title: "Remaining",
+      value: remaining,
+      prefix: "₹",
+      icon: PiggyBank,
+      iconClass:
+        remaining >= 0
+          ? "bg-emerald-50 text-emerald-600"
+          : "bg-red-50 text-red-600",
+      valueClass:
+        remaining >= 0
+          ? "text-emerald-600"
+          : "text-red-600",
+    },
+    {
+      title: "Categories",
+      value: budgets.length,
+      prefix: "",
+      icon: Layers3,
+      iconClass:
+        "bg-slate-100 text-slate-600",
+      valueClass:
+        "text-slate-900",
+    },
+  ];
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      <Card>
-        <h4 className="text-sm text-slate-500">
-          Total Budget
-        </h4>
+    <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => {
+        const Icon = card.icon;
 
-        <p className="mt-2 text-3xl font-bold text-blue-600">
-          ₹{totalBudget.toLocaleString("en-IN")}
-        </p>
-      </Card>
+        return (
+          <div
+            key={card.title}
+            className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-slate-500">
+                  {card.title}
+                </p>
 
-      <Card>
-        <h4 className="text-sm text-slate-500">
-          Total Spent
-        </h4>
+                <p
+                  className={`mt-2 break-word text-2xl font-bold ${card.valueClass}`}
+                >
+                  {card.prefix}
+                  {Number(
+                    card.value || 0
+                  ).toLocaleString(
+                    "en-IN"
+                  )}
+                </p>
+              </div>
 
-        <p className="mt-2 text-3xl font-bold text-red-500">
-          ₹{totalSpent.toLocaleString("en-IN")}
-        </p>
-      </Card>
-
-      <Card>
-        <h4 className="text-sm text-slate-500">
-          Remaining Budget
-        </h4>
-
-        <p
-          className={`mt-2 text-3xl font-bold ${
-            remaining >= 0
-              ? "text-green-600"
-              : "text-red-600"
-          }`}
-        >
-          ₹{remaining.toLocaleString("en-IN")}
-        </p>
-      </Card>
-
-      <Card>
-        <h4 className="text-sm text-slate-500">
-          Categories
-        </h4>
-
-        <p className="mt-2 text-3xl font-bold text-slate-800">
-          {totalCategories}
-        </p>
-      </Card>
+              <div
+                className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${card.iconClass}`}
+              >
+                <Icon size={20} />
+              </div>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

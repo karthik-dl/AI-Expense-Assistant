@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   LayoutDashboard,
   Receipt,
@@ -9,21 +8,20 @@ import {
   User,
   Settings,
   LogOut,
-  Menu,
   X,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 
 import clsx from "clsx";
+import { useAuth } from "../../context/AuthContext";
+
 import Logo from "./Logo";
 import NavItem from "./NavItem";
-import Avatar from "../ui/Avatar";
-import Button from "../ui/Button";
 
-function Sidebar() {
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+function Sidebar({
+  mobileOpen = false,
+  onClose,
+}) {
+  const { user, logout } = useAuth();
 
   const navigation = [
     {
@@ -59,129 +57,118 @@ function Sidebar() {
     },
   ];
 
+  const accountNavigation = [
+    {
+      label: "Profile",
+      to: "/profile",
+      icon: User,
+    },
+    {
+      label: "Settings",
+      to: "/settings",
+      icon: Settings,
+    },
+  ];
+
   return (
     <>
-      {/* Mobile Toggle */}
-      <button
-        onClick={() => setMobileOpen(true)}
-        className="fixed left-4 top-4 z-50 rounded-xl bg-slate-900 p-2 text-white lg:hidden"
-      >
-        <Menu size={22} />
-      </button>
-
-      {/* Overlay */}
+      {/* Mobile overlay */}
       {mobileOpen && (
-        <div
-          onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        <button
+          type="button"
+          aria-label="Close sidebar"
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-slate-900/30 lg:hidden"
         />
       )}
 
       <aside
         className={clsx(
-          "fixed left-0 top-0 z-50 flex h-screen flex-col bg-slate-900 transition-all duration-300",
-          collapsed ? "w-24" : "w-72",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col",
+          "border-r border-slate-200 bg-white",
+          "transition-transform duration-200 ease-out",
           mobileOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
         )}
       >
-        {/* Header */}
-        <div className="flex items-center justify-between p-6">
-          <Logo collapsed={collapsed} />
+        {/* Logo */}
+        <div className="flex h-16 shrink-0 items-center border-b border-slate-100 px-5">
+          <div className="flex w-full items-center justify-between">
+            <Logo />
 
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="hidden rounded-lg p-2 text-slate-300 hover:bg-slate-800 lg:block"
-          >
-            {collapsed ? (
-              <ChevronRight size={18} />
-            ) : (
-              <ChevronLeft size={18} />
-            )}
-          </button>
-
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="rounded-lg p-2 text-slate-300 hover:bg-slate-800 lg:hidden"
-          >
-            <X size={20} />
-          </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close menu"
+              className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 lg:hidden"
+            >
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="mt-6 flex-1 space-y-2 px-4">
-          {navigation.map((item) => (
-            <NavItem
-              key={item.to}
-              to={item.to}
-              icon={item.icon}
-              label={item.label}
-              badge={item.badge}
-              collapsed={collapsed}
-            />
-          ))}
-        </nav>
+        <div className="flex-1 overflow-y-auto px-3 py-5">
+          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            Main Menu
+          </p>
 
-        {/* Bottom */}
-        <div className="border-t border-slate-800 p-4">
-          <NavItem
-            to="/profile"
-            icon={User}
-            label="Profile"
-            collapsed={collapsed}
-          />
+          <nav className="space-y-1">
+            {navigation.map((item) => (
+              <NavItem
+                key={item.to}
+                to={item.to}
+                icon={item.icon}
+                label={item.label}
+                badge={item.badge}
+              />
+            ))}
+          </nav>
 
-          <NavItem
-            to="/settings"
-            icon={Settings}
-            label="Settings"
-            collapsed={collapsed}
-          />
+          <p className="mb-2 mt-7 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+            Account
+          </p>
 
-          <div
-            className={clsx(
-              "mt-6 rounded-2xl bg-slate-800 p-4",
-              collapsed && "p-2"
-            )}
-          >
-            {!collapsed && (
-              <>
-                <div className="mb-4 flex items-center gap-3">
-                  <Avatar
-                    name="Karthik D L"
-                    status="online"
-                  />
+          <nav className="space-y-1">
+            {accountNavigation.map((item) => (
+              <NavItem
+                key={item.to}
+                to={item.to}
+                icon={item.icon}
+                label={item.label}
+              />
+            ))}
+          </nav>
+        </div>
 
-                  <div>
-                    <h4 className="font-medium text-white">
-                      Karthik D L
-                    </h4>
-
-                    <p className="text-xs text-slate-400">
-                      Python Developer
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  variant="danger"
-                  className="w-full"
-                  leftIcon={<LogOut size={18} />}
-                >
-                  Logout
-                </Button>
-              </>
-            )}
-
-            {collapsed && (
-              <div className="flex justify-center">
-                <Avatar
-                  name="Karthik D L"
-                  status="online"
-                />
+        {/* User section */}
+        <div className="shrink-0 border-t border-slate-100 p-4">
+          <div className="rounded-xl bg-slate-50 p-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                {user?.name?.charAt(0)?.toUpperCase() || "U"}
               </div>
-            )}
+
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-slate-900">
+                  {user?.name || "User"}
+                </p>
+
+                <p className="truncate text-xs text-slate-500">
+                  {user?.email || ""}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={logout}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg border border-red-100 bg-white px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+            >
+              <LogOut size={16} />
+              Logout
+            </button>
           </div>
         </div>
       </aside>

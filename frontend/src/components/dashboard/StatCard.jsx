@@ -1,63 +1,69 @@
-import { motion } from "framer-motion";
-import CountUp from "react-countup";
 import clsx from "clsx";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import {
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 
 function StatCard({
   title,
   value = 0,
   icon: Icon,
-  iconColor = "bg-blue-100 text-blue-600",
+  iconColor = "bg-blue-50 text-blue-600",
   trend = 0,
   prefix = "₹",
 }) {
-  const positive = trend >= 0;
+  const positive = Number(trend) >= 0;
 
   return (
-    <motion.div
-      whileHover={{ y: -5, scale: 1.02 }}
-      transition={{ duration: 0.25 }}
-      className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
-    >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm text-slate-500">{title}</p>
+    <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-6">
+      <div className="flex min-w-0 items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-slate-500">
+            {title}
+          </p>
 
-          <h2 className="mt-3 text-3xl font-bold text-slate-900">
-  {prefix}
-  {Number(value).toLocaleString("en-IN")}
-</h2>
+          <h2 className="mt-2 truncate text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            {prefix}
+            {Number(value || 0).toLocaleString("en-IN")}
+          </h2>
 
           <div
             className={clsx(
-              "mt-4 flex items-center gap-2 text-sm font-medium",
-              positive ? "text-green-600" : "text-red-600"
+              "mt-3 flex items-center gap-1.5 text-xs font-medium sm:text-sm",
+              positive
+                ? "text-emerald-600"
+                : "text-red-600"
             )}
           >
             {positive ? (
-              <TrendingUp size={18} />
+              <TrendingUp size={16} />
             ) : (
-              <TrendingDown size={18} />
+              <TrendingDown size={16} />
             )}
 
-            <span>{Math.abs(trend)}% this month</span>
+            <span>
+              {Math.abs(Number(trend || 0))}% this month
+            </span>
           </div>
         </div>
 
         <div
           className={clsx(
-            "flex h-16 w-16 items-center justify-center rounded-2xl",
+            "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12",
             iconColor
           )}
         >
-          {typeof Icon === "function" ? (
-            <Icon size={30} />
+          {Icon ? (
+            <Icon
+              size={23}
+              strokeWidth={2}
+            />
           ) : (
-            <span className="text-2xl">💰</span>
+            <span className="text-lg">₹</span>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

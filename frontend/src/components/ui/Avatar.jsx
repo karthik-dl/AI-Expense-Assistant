@@ -3,16 +3,17 @@ import clsx from "clsx";
 const sizes = {
   sm: "h-8 w-8 text-xs",
   md: "h-10 w-10 text-sm",
-  lg: "h-14 w-14 text-lg",
-  xl: "h-20 w-20 text-2xl",
+  lg: "h-12 w-12 text-base",
+  xl: "h-16 w-16 text-xl",
 };
 
 function getInitials(name = "") {
   return name
-    .split(" ")
+    .trim()
+    .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
-    .map((word) => word[0].toUpperCase())
+    .map((word) => word[0]?.toUpperCase())
     .join("");
 }
 
@@ -24,13 +25,13 @@ function Avatar({
   className,
 }) {
   return (
-    <div className="relative inline-block">
+    <div className="relative inline-flex shrink-0">
       {src ? (
         <img
           src={src}
           alt={name}
           className={clsx(
-            "rounded-full object-cover border border-slate-200",
+            "rounded-full border border-slate-200 object-cover",
             sizes[size],
             className
           )}
@@ -38,19 +39,22 @@ function Avatar({
       ) : (
         <div
           className={clsx(
-            "flex items-center justify-center rounded-full bg-blue-600 font-semibold text-white border border-slate-200",
+            "flex items-center justify-center rounded-full",
+            "border border-blue-100 bg-blue-600",
+            "font-semibold text-white",
             sizes[size],
             className
           )}
         >
-          {getInitials(name)}
+          {getInitials(name) || "U"}
         </div>
       )}
 
       {status && (
         <span
           className={clsx(
-            "absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-white",
+            "absolute bottom-0 right-0 h-3 w-3 rounded-full",
+            "border-2 border-white",
             {
               "bg-emerald-500": status === "online",
               "bg-amber-500": status === "away",

@@ -4,49 +4,85 @@ function BudgetFilters({
   filters,
   onFilterChange,
 }) {
+  const selectClass =
+    "h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+
   return (
-    <div className="rounded-3xl bg-white p-6 shadow-sm">
-      <div className="grid gap-4 md:grid-cols-3">
-        {/* Search */}
+    <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <div className="mb-4">
+        <h2 className="text-base font-semibold text-slate-900">
+          Budget Filters
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          Find and sort your budgets.
+        </p>
+      </div>
+
+      <div className="grid min-w-0 gap-3 md:grid-cols-3">
         <SearchBar
           placeholder="Search category..."
           value={filters.search}
-          onChange={(e) =>
-            onFilterChange("search", e.target.value)
-          }
+          onChange={(value) => {
+            const nextValue =
+              typeof value === "string"
+                ? value
+                : value?.target?.value ||
+                  "";
+
+            onFilterChange(
+              "search",
+              nextValue
+            );
+          }}
         />
 
-        {/* Month Filter */}
         <select
           value={filters.month}
           onChange={(e) =>
-            onFilterChange("month", e.target.value)
+            onFilterChange(
+              "month",
+              e.target.value
+            )
           }
-          className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
+          className={selectClass}
         >
-          <option value="">All Months</option>
+          <option value="">
+            All Months
+          </option>
 
-          <option value="January">January</option>
-          <option value="February">February</option>
-          <option value="March">March</option>
-          <option value="April">April</option>
-          <option value="May">May</option>
-          <option value="June">June</option>
-          <option value="July">July</option>
-          <option value="August">August</option>
-          <option value="September">September</option>
-          <option value="October">October</option>
-          <option value="November">November</option>
-          <option value="December">December</option>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((month) => (
+            <option
+              key={month}
+              value={month}
+            >
+              {month}
+            </option>
+          ))}
         </select>
 
-        {/* Sort */}
         <select
           value={filters.sort}
           onChange={(e) =>
-            onFilterChange("sort", e.target.value)
+            onFilterChange(
+              "sort",
+              e.target.value
+            )
           }
-          className="rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-blue-500"
+          className={selectClass}
         >
           <option value="newest">
             Newest First
@@ -61,7 +97,7 @@ function BudgetFilters({
           </option>
         </select>
       </div>
-    </div>
+    </section>
   );
 }
 

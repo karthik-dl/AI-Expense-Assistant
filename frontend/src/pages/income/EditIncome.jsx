@@ -21,10 +21,21 @@ function EditIncome() {
       try {
         setLoading(true);
 
-        const { data } = await incomeService.getIncome(id);
+        const { data } =
+          await incomeService.getIncome(id);
 
-        setIncome(data.income || data);
+        const incomeData =
+          data?.income ||
+          data?.data?.income ||
+          data;
+
+        setIncome(incomeData);
       } catch (error) {
+        console.error(
+          "Load Income Error:",
+          error
+        );
+
         toast.error(
           error.response?.data?.message ||
             "Failed to load income."
@@ -43,12 +54,22 @@ function EditIncome() {
     try {
       setSaving(true);
 
-      await incomeService.updateIncome(id, values);
+      await incomeService.updateIncome(
+        id,
+        values
+      );
 
-      toast.success("Income updated successfully.");
+      toast.success(
+        "Income updated successfully."
+      );
 
       navigate("/income");
     } catch (error) {
+      console.error(
+        "Update Income Error:",
+        error
+      );
+
       toast.error(
         error.response?.data?.message ||
           "Failed to update income."
@@ -59,11 +80,19 @@ function EditIncome() {
   };
 
   if (loading) {
-    return <Loader text="Loading income..." />;
+    return (
+      <div className="flex min-h-75 items-center justify-center">
+        <Loader text="Loading income..." />
+      </div>
+    );
+  }
+
+  if (!income) {
+    return null;
   }
 
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
       <PageHeader
         title="Edit Income"
         subtitle="Update your income details."

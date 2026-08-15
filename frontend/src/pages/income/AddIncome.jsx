@@ -22,6 +22,8 @@ function AddIncome() {
 
       navigate("/income");
     } catch (error) {
+      console.error("Add Income Error:", error);
+
       toast.error(
         error.response?.data?.message ||
           "Failed to add income."
@@ -32,7 +34,7 @@ function AddIncome() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
       <PageHeader
         title="Add Income"
         subtitle="Record a new income source."

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 import PageHeader from "../../components/ui/PageHeader";
 import Pagination from "../../components/ui/Pagination";
+import Button from "../../components/ui/Button";
 
 import IncomeFilters from "../../components/income/IncomeFilters";
 import IncomeSummary from "../../components/income/IncomeSummary";
@@ -10,10 +13,6 @@ import IncomeTable from "../../components/income/IncomeTable";
 import DeleteIncomeModal from "../../components/income/DeleteIncomeModal";
 
 import * as incomeService from "../../services/incomeService";
-import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
-
-import Button from "../../components/ui/Button";
 
 function Income() {
   const [incomes, setIncomes] = useState([]);
@@ -49,19 +48,30 @@ function Income() {
     return [];
   };
 
+  // Handles both date fields safely.
+  const getIncomeDate = (income) => {
+    return income?.income_date || income?.date || "";
+  };
+
   const loadIncomes = async () => {
     try {
       setLoading(true);
 
       const response = await incomeService.getIncomes();
 
-      console.log("Income API:", response.data);
-
       const incomeList = getArray(response, "incomes");
 
-      setIncomes(incomeList);
+      setIncomes(
+        Array.isArray(incomeList)
+          ? incomeList
+          : []
+      );
     } catch (error) {
-      console.error("Load Incomes Error:", error);
+      console.error(
+        "Load Incomes Error:",
+        error
+      );
+
       setIncomes([]);
     } finally {
       setLoading(false);
@@ -86,30 +96,42 @@ function Income() {
     setSelectedIncome(null);
   };
 
-  const handleFilterChange = (field, value) => {
+  const handleFilterChange = (
+    field,
+    value
+  ) => {
     setFilters((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const filteredIncomes = incomes
+  const filteredIncomes = [...incomes]
     .filter((income) => {
+      const search =
+        filters.search.toLowerCase();
+
+      const title =
+        income.title?.toLowerCase() || "";
+
+      const category =
+        income.category?.toLowerCase() || "";
+
       const matchesSearch =
-        income.title
-          ?.toLowerCase()
-          .includes(filters.search.toLowerCase()) ||
-        income.category
-          ?.toLowerCase()
-          .includes(filters.search.toLowerCase());
+        !search ||
+        title.includes(search) ||
+        category.includes(search);
 
       const matchesCategory =
         !filters.category ||
         income.category === filters.category;
 
+      const incomeDate =
+        getIncomeDate(income);
+
       const matchesDate =
         !filters.date ||
-        income.income_date?.startsWith(filters.date);
+        incomeDate.startsWith(filters.date);
 
       return (
         matchesSearch &&
@@ -118,77 +140,103 @@ function Income() {
       );
     })
     .sort((a, b) => {
+      const dateA = new Date(
+        getIncomeDate(a)
+      );
+
+      const dateB = new Date(
+        getIncomeDate(b)
+      );
+
       switch (filters.sort) {
         case "highest":
-          return Number(b.amount) - Number(a.amount);
+          return (
+            Number(b.amount || 0) -
+            Number(a.amount || 0)
+          );
 
         case "lowest":
-          return Number(a.amount) - Number(b.amount);
+          return (
+            Number(a.amount || 0) -
+            Number(b.amount || 0)
+          );
 
         case "oldest":
-          return (
-            new Date(a.income_date) -
-            new Date(b.income_date)
-          );
+          return dateA - dateB;
 
+        case "newest":
         default:
-          return (
-            new Date(b.income_date) -
-            new Date(a.income_date)
-          );
+          return dateB - dateA;
       }
     });
 
   const totalPages = Math.ceil(
-    filteredIncomes.length / itemsPerPage
+    filteredIncomes.length /
+      itemsPerPage
   );
 
-  const paginatedIncomes = filteredIncomes.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const paginatedIncomes =
+    filteredIncomes.slice(
+      (currentPage - 1) *
+        itemsPerPage,
+      currentPage * itemsPerPage
+    );
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
+      {/* Header */}
+      <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           title="Income"
-          subtitle="Manage all your income."
+          subtitle="Track and manage your income."
         />
 
-        <Link to="/income/new">
-          <Button>
-            <Plus size={18} />
+        <Link
+          to="/income/new"
+          className="w-full sm:w-auto"
+        >
+          <Button
+            className="w-full sm:w-auto"
+            leftIcon={<Plus size={18} />}
+          >
             Add Income
           </Button>
         </Link>
       </div>
 
+      {/* Filters */}
       <IncomeFilters
         filters={filters}
         onFilterChange={handleFilterChange}
       />
 
+      {/* Summary */}
       <IncomeSummary
         incomes={filteredIncomes}
       />
 
+      {/* Analytics */}
       <IncomeAnalytics
         incomes={filteredIncomes}
       />
 
+      {/* Table */}
       <IncomeTable
         incomes={paginatedIncomes}
         loading={loading}
         onDelete={handleDeleteClick}
       />
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      {/* Pagination */}
+      {totalPages > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
 
+      {/* Delete Modal */}
       <DeleteIncomeModal
         open={deleteOpen}
         income={selectedIncome}

@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { Mail, Lock, ArrowRight } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  Wallet,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
-import Card from "../../components/ui/Card";
 
 import { login as loginAPI } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
@@ -31,12 +35,13 @@ function Login() {
 
       login(data.access_token, data.user);
 
-      toast.success("Login successful!");
+      toast.success("Login successful");
 
       navigate("/dashboard");
     } catch (error) {
       toast.error(
-        error.response?.data?.message || "Login failed."
+        error.response?.data?.message ||
+          "Login failed"
       );
     } finally {
       setLoading(false);
@@ -44,44 +49,63 @@ function Login() {
   };
 
   return (
-    <div className="flex min-h-screen">
-      {/* Left */}
-      <div className="hidden lg:flex lg:w-1/2 bg-blue-600 text-white items-center justify-center p-16">
-        <div className="max-w-lg">
-          <h1 className="text-5xl font-bold leading-tight">
-            AI Expense Assistant
-          </h1>
+    <div className="flex min-h-screen items-center justify-center bg-ink px-4 py-8">
 
-          <p className="mt-6 text-lg text-blue-100">
-            Manage your income, expenses,
-            budgets and AI financial insights
-            from one beautiful dashboard.
-          </p>
-        </div>
-      </div>
+     <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-line bg-surface shadow-2xl shadow-black/40">
 
-      {/* Right */}
-      <div className="flex flex-1 items-center justify-center bg-slate-50 px-6">
-        <Card
-          className="w-full max-w-md"
-          hover={false}
-        >
-          <h2 className="text-3xl font-bold">
-            Welcome Back 👋
-          </h2>
+  {/* Ledger stamp */}
+  <div className="pointer-events-none absolute -right-7 top-4 rotate-90 font-mono text-[10px] tracking-[0.2em] text-line">
+    AUG 04
+  </div>
 
-          <p className="mt-2 text-slate-500">
-            Login to continue.
-          </p>
+  <div className="flex flex-col justify-center p-10">
+
+          {/* Logo */}
+
+          <div className="mb-8 text-center">
+
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-sage shadow-md">
+              <Wallet
+                size={30}
+                className="text-ink"
+              />
+            </div>
+
+            <h1 className="mt-5 font-display text-3xl font-semibold text-bone">
+              ExpenseAI
+            </h1>
+
+            <p className="mt-2 text-sm text-muted">
+              Smart Personal Finance Manager
+            </p>
+
+          </div>
+
+          {/* Heading */}
+
+          <div className="mb-8 text-center">
+
+            <h2 className="font-display text-2xl font-semibold text-bone">
+              Welcome Back 👋
+            </h2>
+
+            <p className="mt-2 text-sm text-muted">
+              Sign in to continue
+            </p>
+
+          </div>
+
+          {/* Form */}
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="mt-8 space-y-5"
+            className="space-y-5"
           >
+
             <Input
-              label="Email"
+              label="Email Address"
               type="email"
-              leftIcon={<Mail size={18} />}
+              leftIcon={<Mail size={16} />}
               error={errors.email?.message}
               {...register("email", {
                 required: "Email is required",
@@ -91,50 +115,67 @@ function Login() {
             <Input
               label="Password"
               type="password"
-              leftIcon={<Lock size={18} />}
+              leftIcon={<Lock size={16} />}
               error={errors.password?.message}
               {...register("password", {
                 required: "Password is required",
               })}
             />
 
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm">
+            <div className="flex items-center justify-between text-sm">
+
+              <label className="flex items-center gap-2 text-muted">
+
                 <input
                   type="checkbox"
+                  className="rounded border-line accent-sage"
                 />
+
                 Remember me
+
               </label>
 
               <Link
                 to="/forgot-password"
-                className="text-sm font-medium text-blue-600 hover:underline"
+                className="font-medium text-sage hover:underline"
               >
                 Forgot Password?
               </Link>
+
             </div>
 
             <Button
               type="submit"
               loading={loading}
               className="w-full"
-              rightIcon={<ArrowRight size={18} />}
+              rightIcon={<ArrowRight size={16} />}
             >
               Sign In
             </Button>
+
           </form>
 
-          <p className="mt-8 text-center text-sm text-slate-500">
-            Don't have an account?{" "}
+          {/* Footer */}
+
+          <div className="mt-8 border-t border-line pt-6 text-center">
+
+            <p className="text-sm text-muted">
+              Don't have an account?
+            </p>
+
             <Link
               to="/register"
-              className="font-semibold text-blue-600"
+              className="mt-2 inline-block font-semibold text-sage hover:text-gold hover:underline"
             >
               Create Account
             </Link>
-          </p>
-        </Card>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
   );
 }

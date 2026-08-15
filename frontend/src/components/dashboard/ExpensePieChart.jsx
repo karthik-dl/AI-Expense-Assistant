@@ -15,9 +15,9 @@ import Loader from "../ui/Loader";
 
 const COLORS = [
   "#2563EB",
-  "#16A34A",
+  "#059669",
   "#DC2626",
-  "#9333EA",
+  "#7C3AED",
   "#EA580C",
   "#0891B2",
   "#CA8A04",
@@ -54,70 +54,107 @@ function ExpensePieChart() {
 
       const response = await api.get("/expenses");
 
-      console.log("Expense Response:", response.data);
-
       const expenses = getArray(response, "expenses");
 
-      const grouped = expenses.reduce((acc, item) => {
-        const category = item.category || "Others";
+      const grouped = expenses.reduce(
+        (acc, item) => {
+          const category =
+            item.category || "Others";
 
-        acc[category] =
-          (acc[category] || 0) + Number(item.amount || 0);
+          acc[category] =
+            (acc[category] || 0) +
+            Number(item.amount || 0);
 
-        return acc;
-      }, {});
-
-      const chartData = Object.entries(grouped).map(
-        ([name, value]) => ({
-          name,
-          value,
-        })
+          return acc;
+        },
+        {}
       );
 
-      setData(chartData);
+      setData(
+        Object.entries(grouped).map(
+          ([name, value]) => ({
+            name,
+            value,
+          })
+        )
+      );
     } catch (error) {
-      console.error("Expense Pie Chart Error:", error);
+      console.error(
+        "Expense Pie Chart Error:",
+        error
+      );
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <Loader text="Loading chart..." />;
+    return <Loader text="Loading expenses..." />;
   }
 
   return (
-    <Card>
-      <h2 className="mb-6 text-xl font-bold">
-        Expense by Category
-      </h2>
+    <Card hover={false}>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
+          Expense by Category
+        </h2>
+
+        <p className="mt-1 text-sm text-slate-500">
+          See where your money is going.
+        </p>
+      </div>
 
       {data.length === 0 ? (
-        <div className="py-20 text-center text-slate-500">
+        <div className="flex h-64 items-center justify-center text-center text-sm text-slate-500">
           No expense data available.
         </div>
       ) : (
-        <div className="h-87.5">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="h-64 w-full sm:h-72">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+          >
             <PieChart>
               <Pie
                 data={data}
                 dataKey="value"
                 nameKey="name"
-                outerRadius={120}
-                innerRadius={70}
-                paddingAngle={4}
+                cx="50%"
+                cy="42%"
+                outerRadius="62%"
+                innerRadius="38%"
+                paddingAngle={3}
               >
                 {data.map((entry, index) => (
                   <Cell
                     key={entry.name}
-                    fill={COLORS[index % COLORS.length]}
+                    fill={
+                      COLORS[
+                        index % COLORS.length
+                      ]
+                    }
                   />
                 ))}
               </Pie>
 
-              <Tooltip />
-              <Legend />
+              <Tooltip
+                formatter={(value) =>
+                  `₹${Number(value).toLocaleString(
+                    "en-IN"
+                  )}`
+                }
+                contentStyle={{
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "10px",
+                }}
+              />
+
+              <Legend
+                wrapperStyle={{
+                  fontSize: "12px",
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

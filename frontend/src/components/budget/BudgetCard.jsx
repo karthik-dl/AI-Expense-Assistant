@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { Pencil, Trash2, Wallet } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Wallet,
+} from "lucide-react";
 
-import Card from "../ui/Card";
 import Button from "../ui/Button";
 import BudgetProgress from "./BudgetProgress";
 
@@ -9,100 +12,129 @@ function BudgetCard({
   budget,
   onDelete,
 }) {
-  const budgetAmount = Number(budget.amount || 0);
-  const spentAmount = Number(budget.spent || 0);
-  const remaining = budgetAmount - spentAmount;
+  const budgetAmount = Number(
+    budget?.amount || 0
+  );
+
+  const spentAmount = Number(
+    budget?.spent || 0
+  );
+
+  const remaining =
+    budgetAmount - spentAmount;
 
   return (
-    <Card className="space-y-5">
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="rounded-2xl bg-blue-100 p-3">
-            <Wallet
-              size={22}
-              className="text-blue-600"
-            />
+    <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
+      {/* Header */}
+      <div className="flex min-w-0 items-start justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+            <Wallet size={21} />
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold text-slate-800">
-              {budget.category}
+          <div className="min-w-0">
+            <h3 className="truncate text-base font-semibold text-slate-900">
+              {budget?.category ||
+                "Budget"}
             </h3>
 
-            <p className="text-sm text-slate-500">
-              {budget.month}
+            <p className="mt-0.5 text-sm text-slate-500">
+              {budget?.month ||
+                "Monthly budget"}
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        <div>
-          <p className="text-xs text-slate-500">
+      {/* Amounts */}
+      <div className="mt-6 grid grid-cols-3 gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-slate-500">
             Budget
           </p>
 
-          <p className="mt-1 font-bold text-blue-600">
-            ₹{budgetAmount.toLocaleString("en-IN")}
+          <p className="mt-1 truncate text-sm font-bold text-blue-600">
+            ₹
+            {budgetAmount.toLocaleString(
+              "en-IN"
+            )}
           </p>
         </div>
 
-        <div>
-          <p className="text-xs text-slate-500">
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-slate-500">
             Spent
           </p>
 
-          <p className="mt-1 font-bold text-red-500">
-            ₹{spentAmount.toLocaleString("en-IN")}
+          <p className="mt-1 truncate text-sm font-bold text-red-600">
+            ₹
+            {spentAmount.toLocaleString(
+              "en-IN"
+            )}
           </p>
         </div>
 
-        <div>
-          <p className="text-xs text-slate-500">
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-slate-500">
             Remaining
           </p>
 
           <p
-            className={`mt-1 font-bold ${
+            className={`mt-1 truncate text-sm font-bold ${
               remaining >= 0
-                ? "text-green-600"
+                ? "text-emerald-600"
                 : "text-red-600"
             }`}
           >
-            ₹{remaining.toLocaleString("en-IN")}
+            ₹
+            {remaining.toLocaleString(
+              "en-IN"
+            )}
           </p>
         </div>
       </div>
 
-      <BudgetProgress
-        spent={spentAmount}
-        budget={budgetAmount}
-      />
+      {/* Progress */}
+      <div className="mt-6 border-t border-slate-100 pt-5">
+        <BudgetProgress
+          spent={spentAmount}
+          budget={budgetAmount}
+        />
+      </div>
 
-      <div className="flex gap-3 pt-2">
+      {/* Actions */}
+      <div className="mt-5 grid grid-cols-2 gap-3">
         <Link
           to={`/budgets/${budget.id}/edit`}
-          className="flex-1"
+          className="min-w-0"
         >
           <Button
-            variant="secondary"
+            type="button"
+            variant="outline"
             className="w-full"
+            leftIcon={
+              <Pencil size={15} />
+            }
           >
-            <Pencil size={16} />
             Edit
           </Button>
         </Link>
 
         <Button
+          type="button"
           variant="danger"
-          onClick={() => onDelete(budget)}
-          className="flex-1"
+          className="w-full"
+          leftIcon={
+            <Trash2 size={15} />
+          }
+          onClick={() =>
+            onDelete?.(budget)
+          }
         >
-          <Trash2 size={16} />
           Delete
         </Button>
       </div>
-    </Card>
+    </article>
   );
 }
 

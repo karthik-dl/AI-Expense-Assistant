@@ -14,39 +14,45 @@ const actions = [
     description: "Record a new expense",
     icon: PlusCircle,
     to: "/expenses/new",
-    color: "bg-red-100 text-red-600",
+    iconClass: "bg-red-50 text-red-600",
   },
   {
     title: "Add Income",
     description: "Record new income",
     icon: Wallet,
     to: "/income/new",
-    color: "bg-green-100 text-green-600",
+    iconClass: "bg-emerald-50 text-emerald-600",
   },
   {
     title: "View Reports",
     description: "Monthly analytics",
     icon: ChartColumn,
     to: "/reports",
-    color: "bg-blue-100 text-blue-600",
+    iconClass: "bg-blue-50 text-blue-600",
   },
   {
     title: "AI Summary",
     description: "Smart financial insights",
     icon: Bot,
     to: "/ai-summary",
-    color: "bg-purple-100 text-purple-600",
+    iconClass: "bg-indigo-50 text-indigo-600",
   },
 ];
 
 function QuickActions() {
   return (
-    <Card>
-      <h2 className="mb-6 text-xl font-bold">
-        Quick Actions
-      </h2>
+    <Card hover={false}>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
+          Quick Actions
+        </h2>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+        <p className="mt-1 text-sm text-slate-500">
+          Manage your finances quickly.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-1">
         {actions.map((action) => {
           const Icon = action.icon;
 
@@ -54,20 +60,20 @@ function QuickActions() {
             <Link
               key={action.title}
               to={action.to}
-              className="group flex items-center gap-4 rounded-2xl border border-slate-200 p-4 transition-all duration-300 hover:border-blue-500 hover:bg-blue-50"
+              className="group flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 p-3 transition-colors hover:border-blue-200 hover:bg-blue-50/50"
             >
               <div
-                className={`flex h-14 w-14 items-center justify-center rounded-xl ${action.color}`}
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${action.iconClass}`}
               >
-                <Icon size={26} />
+                <Icon size={20} />
               </div>
 
-              <div>
-                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600">
+              <div className="min-w-0">
+                <h3 className="truncate text-sm font-semibold text-slate-900 group-hover:text-blue-600">
                   {action.title}
                 </h3>
 
-                <p className="text-sm text-slate-500">
+                <p className="mt-0.5 truncate text-xs text-slate-500">
                   {action.description}
                 </p>
               </div>

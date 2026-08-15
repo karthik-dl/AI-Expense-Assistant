@@ -1,67 +1,53 @@
 import { NavLink } from "react-router-dom";
 import clsx from "clsx";
-import { ChevronRight } from "lucide-react";
 
 function NavItem({
   to,
   icon: Icon,
   label,
   badge,
-  collapsed = false,
 }) {
   return (
     <NavLink
       to={to}
       className={({ isActive }) =>
         clsx(
-          "group flex items-center gap-3 rounded-2xl px-4 py-3 transition-all duration-200",
+          "group flex min-h-10 items-center gap-3 rounded-xl px-3 py-2.5",
+          "transition-colors duration-150",
           isActive
-            ? "bg-blue-600 text-white shadow-lg"
-            : "text-slate-300 hover:bg-slate-800 hover:text-white"
+            ? "bg-blue-50 text-blue-700"
+            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
         )
       }
     >
       {({ isActive }) => (
         <>
           <Icon
-            size={20}
+            size={19}
+            strokeWidth={isActive ? 2.2 : 2}
             className={clsx(
-              "flex-shrink-0",
-              isActive ? "text-white" : "text-slate-400 group-hover:text-white"
+              "shrink-0",
+              isActive
+                ? "text-blue-600"
+                : "text-slate-400 group-hover:text-slate-600"
             )}
           />
 
-          {!collapsed && (
-            <>
-              <span className="flex-1 text-sm font-medium">
-                {label}
-              </span>
+          <span className="min-w-0 flex-1 truncate text-sm font-medium">
+            {label}
+          </span>
 
-              {badge && (
-                <span
-                  className={clsx(
-                    "rounded-full px-2 py-0.5 text-xs font-semibold",
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-slate-700 text-slate-200"
-                  )}
-                >
-                  {badge}
-                </span>
+          {badge && (
+            <span
+              className={clsx(
+                "rounded-full px-2 py-0.5 text-[10px] font-bold",
+                isActive
+                  ? "bg-blue-600 text-white"
+                  : "bg-emerald-50 text-emerald-700"
               )}
-
-              {!badge && (
-                <ChevronRight
-                  size={16}
-                  className={clsx(
-                    "transition-transform duration-200",
-                    isActive
-                      ? "translate-x-1 text-white"
-                      : "text-slate-500 group-hover:translate-x-1 group-hover:text-slate-300"
-                  )}
-                />
-              )}
-            </>
+            >
+              {badge}
+            </span>
           )}
         </>
       )}

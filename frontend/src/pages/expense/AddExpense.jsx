@@ -10,15 +10,23 @@ function AddExpense() {
   const navigate = useNavigate();
 
   const handleCreate = async (expense) => {
-    await expenseService.createExpense(expense);
+    try {
+      await expenseService.createExpense(
+        expense
+      );
 
-    toast.success("Expense added successfully!");
+      toast.success(
+        "Expense added successfully!"
+      );
 
-    navigate("/expenses");
+      navigate("/expenses");
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
       <PageHeader
         title="Add Expense"
         subtitle="Record a new expense."

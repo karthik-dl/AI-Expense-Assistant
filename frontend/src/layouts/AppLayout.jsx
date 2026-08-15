@@ -1,38 +1,29 @@
-import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { Outlet } from "react-router-dom";
 
 import Sidebar from "../components/layout/Sidebar";
 import Navbar from "../components/layout/Navbar";
 
 function AppLayout() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] =
+    useState(false);
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Mobile Overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
       <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        mobileOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
       />
 
-      {/* Main Content */}
-      <div className="lg:ml-72">
+      <div className="min-h-screen lg:pl-64">
         <Navbar
-          onMenuClick={() =>
-            setSidebarOpen(true)
-          }
+          onMenuClick={() => setMobileSidebarOpen(true)}
         />
 
-        <main className="min-h-[calc(100vh-80px)] p-6">
-          <Outlet />
+        <main className="w-full px-4 py-5 sm:px-6 sm:py-6 lg:px-8">
+          <div className="mx-auto w-full max-w-7xl">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

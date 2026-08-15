@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { CalendarDays } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
@@ -13,27 +12,30 @@ function WelcomeHeader() {
   });
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="mb-8 flex flex-col justify-between gap-5 rounded-3xl bg-linear-to-r from-blue-600 to-indigo-600 p-8 text-white shadow-xl lg:flex-row lg:items-center"
-    >
-      <div>
-        <h1 className="text-3xl font-bold">
-          Welcome back, {user?.name || "User"} 👋
-        </h1>
+    <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <h1 className="break-word text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Welcome back, {user?.name || "User"} 👋
+          </h1>
 
-        <p className="mt-2 text-blue-100">
-          Here's an overview of your financial activity.
-        </p>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
+            Here's an overview of your financial activity.
+          </p>
+        </div>
+
+        <div className="flex w-fit max-w-full items-center gap-2 rounded-xl bg-blue-50 px-3 py-2.5 text-sm font-medium text-blue-700">
+          <CalendarDays
+            size={18}
+            className="shrink-0"
+          />
+
+          <span className="whitespace-nowrap">
+            {today}
+          </span>
+        </div>
       </div>
-
-      <div className="flex items-center gap-3 rounded-xl bg-white/10 px-5 py-3 backdrop-blur">
-        <CalendarDays size={20} />
-
-        <span>{today}</span>
-      </div>
-    </motion.div>
+    </section>
   );
 }
 

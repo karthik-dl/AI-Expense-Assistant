@@ -2,75 +2,111 @@ function BudgetProgress({
   spent = 0,
   budget = 0,
 }) {
+  const numericSpent =
+    Number(spent) || 0;
+
+  const numericBudget =
+    Number(budget) || 0;
+
   const percentage =
-    budget > 0
-      ? Math.min((spent / budget) * 100, 100)
+    numericBudget > 0
+      ? (numericSpent /
+          numericBudget) *
+        100
       : 0;
 
-  const remaining = Math.max(
-    budget - spent,
-    0
-  );
+  const displayPercentage =
+    Math.round(percentage);
 
-  let progressColor = "bg-green-500";
+  const remaining =
+    numericBudget - numericSpent;
+
+  const isOverBudget =
+    percentage >= 100;
+
+  const isNearLimit =
+    percentage >= 75 &&
+    percentage < 100;
+
+  let progressColor =
+    "bg-emerald-500";
+
   let status = "On Track";
 
-  if (percentage >= 100) {
+  let statusClass =
+    "bg-emerald-50 text-emerald-700";
+
+  if (isOverBudget) {
     progressColor = "bg-red-500";
     status = "Over Budget";
-  } else if (percentage >= 75) {
-    progressColor = "bg-yellow-500";
+    statusClass =
+      "bg-red-50 text-red-700";
+  } else if (isNearLimit) {
+    progressColor = "bg-amber-500";
     status = "Near Limit";
+    statusClass =
+      "bg-amber-50 text-amber-700";
   }
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-between text-sm">
-        <span className="text-slate-500">
-          Progress
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-xs font-medium text-slate-500">
+          Spending Progress
         </span>
 
-        <span className="font-semibold text-slate-700">
-          {percentage.toFixed(0)}%
+        <span className="text-xs font-semibold text-slate-700">
+          {displayPercentage}%
         </span>
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-slate-200">
+      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
         <div
           className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
           style={{
-            width: `${percentage}%`,
+            width: `${Math.min(
+              percentage,
+              100
+            )}%`,
           }}
         />
       </div>
 
-      <div className="flex justify-between text-sm">
-        <span className="text-slate-600">
-          Spent:
-          <strong>
-            {" "}
-            ₹{Number(spent).toLocaleString("en-IN")}
+      <div className="flex items-center justify-between gap-3 text-xs">
+        <span className="min-w-0 truncate text-slate-500">
+          Spent{" "}
+          <strong className="text-slate-700">
+            ₹
+            {numericSpent.toLocaleString(
+              "en-IN"
+            )}
           </strong>
         </span>
 
-        <span className="text-slate-600">
-          Remaining:
+        <span
+          className={`min-w-0 truncate font-medium ${
+            remaining >= 0
+              ? "text-slate-500"
+              : "text-red-600"
+          }`}
+        >
+          {remaining >= 0
+            ? "Remaining "
+            : "Over by "}
           <strong>
-            {" "}
-            ₹{remaining.toLocaleString("en-IN")}
+            ₹
+            {Math.abs(
+              remaining
+            ).toLocaleString(
+              "en-IN"
+            )}
           </strong>
         </span>
       </div>
 
-      <div className="text-right">
+      <div>
         <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold text-white ${
-            percentage >= 100
-              ? "bg-red-500"
-              : percentage >= 75
-              ? "bg-yellow-500"
-              : "bg-green-500"
-          }`}
+          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass}`}
         >
           {status}
         </span>

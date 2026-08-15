@@ -1,6 +1,7 @@
 from database import db
 from models.user import User
 from utils.password import hash_password, verify_password
+
 from flask_jwt_extended import create_access_token
 
 def register_user(name, email, password):
@@ -32,26 +33,31 @@ def register_user(name, email, password):
 
 
 def login_user(email, password):
-    """
-    Login existing user.
-    """
+    print("Login Email:", email)
 
     user = User.query.filter_by(email=email).first()
+
+    print("User Found:", user)
 
     if not user:
         return {
             "success": False,
-            "message": "Invalid email or password"
+            "message": "User not found"
         }
 
-    if not verify_password(password, user.password):
+    print("Stored Password:", user.password)
+
+    is_valid = verify_password(password, user.password)
+
+    print("Password Match:", is_valid)
+
+    if not is_valid:
         return {
             "success": False,
-            "message": "Invalid email or password"
+            "message": "Wrong password"
         }
 
-    access_token = create_access_token(
-    identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id))
 
     return {
         "success": True,
@@ -62,4 +68,4 @@ def login_user(email, password):
             "name": user.name,
             "email": user.email
         }
-    } 
+    }
