@@ -1,171 +1,183 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import {
-  Pencil,
+  AlertTriangle,
   Trash2,
-  Plus,
-  Wallet,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
-import Loader from "../ui/Loader";
-import Badge from "../ui/Badge";
+import Modal from "../ui/Modal";
 import Button from "../ui/Button";
 
-function IncomeTable({
-  incomes = [],
-  loading,
-  onDelete,
+import * as incomeService from "../../services/incomeService";
+
+function DeleteIncomeModal({
+  open,
+  onClose,
+  income,
+  onSuccess,
 }) {
-  if (loading) {
-    return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-12 shadow-sm">
-        <Loader text="Loading income..." />
-      </div>
-    );
+  const [loading, setLoading] = useState(false);
+
+  const handleDelete = async () => {
+    if (!income?.id) {
+      console.error(
+        "Delete Income: Missing income ID",
+        income
+      );
+
+      toast.error("Income ID is missing.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      console.log(
+        "Deleting income:",
+        income.id
+      );
+
+      const response =
+        await incomeService.deleteIncome(
+          income.id
+        );
+
+      console.log(
+        "Delete Income Response:",
+        response
+      );
+
+      toast.success(
+        "Income deleted successfully."
+      );
+
+      await onSuccess?.();
+
+      onClose?.();
+    } catch (error) {
+      console.error(
+        "========== DELETE INCOME ERROR =========="
+      );
+
+      console.error(
+        "Status:",
+        error?.response?.status
+      );
+
+      console.error(
+        "Response:",
+        error?.response?.data
+      );
+
+      console.error(
+        "URL:",
+        error?.config?.url
+      );
+
+      console.error(
+        "Method:",
+        error?.config?.method
+      );
+
+      console.error(
+        "Income ID:",
+        income?.id
+      );
+
+      console.error(
+        "Full Error:",
+        error
+      );
+
+      console.error(
+        "========================================="
+      );
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          "Failed to delete income."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!income) {
+    return null;
   }
-
-  if (incomes.length === 0) {
-    return (
-      <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-          <Wallet size={26} />
-        </div>
-
-        <h3 className="mt-5 text-lg font-semibold text-slate-900">
-          No income found
-        </h3>
-
-        <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">
-          Start tracking your earnings by
-          adding your first income.
-        </p>
-
-        <Link to="/income/new">
-          <Button
-            className="mt-6"
-            leftIcon={<Plus size={18} />}
-          >
-            Add Income
-          </Button>
-        </Link>
-      </div>
-    );
-  }
-
-  const getIncomeDate = (income) =>
-    income?.income_date ||
-    income?.date ||
-    "";
 
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-175">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
-                Title
-              </th>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Delete Income"
+      size="sm"
+    >
+      <div className="space-y-5">
 
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
-                Source
-              </th>
+        {/* Warning */}
+        <div className="flex gap-3 rounded-xl border border-red-100 bg-red-50 p-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600">
+            <AlertTriangle size={18} />
+          </div>
 
-              <th className="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
-                Date
-              </th>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-red-800">
+              Are you sure?
+            </p>
 
-              <th className="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
-                Amount
-              </th>
+            <p className="mt-1 text-sm leading-5 text-red-700">
+              You are about to delete{" "}
+              <span className="font-semibold">
+                {income.source ||
+                  "this income"}
+              </span>
+              .
+            </p>
+          </div>
+        </div>
 
-              <th className="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wide text-slate-500 sm:px-6">
-                Actions
-              </th>
-            </tr>
-          </thead>
+        {/* Description */}
+        <p className="text-sm leading-6 text-slate-500">
+          This action cannot be undone. The
+          income record will be permanently
+          removed from your account.
+        </p>
 
-          <tbody>
-            {incomes.map((income) => (
-              <tr
-                key={income.id}
-                className="border-t border-slate-100 transition hover:bg-slate-50"
-              >
-                <td className="px-5 py-4 sm:px-6">
-                  <p className="max-w-55 truncate text-sm font-semibold text-slate-800">
-                    {income.title ||
-                      "Untitled Income"}
-                  </p>
-                </td>
+        {/* Actions */}
+        <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
 
-                <td className="px-5 py-4 sm:px-6">
-                  <Badge
-                    variant="success"
-                    size="sm"
-                  >
-                    {income.category ||
-                      income.source ||
-                      "Others"}
-                  </Badge>
-                </td>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onClose}
+            disabled={loading}
+            className="w-full sm:w-auto"
+          >
+            Cancel
+          </Button>
 
-                <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-500 sm:px-6">
-                  {getIncomeDate(income)
-                    ? new Date(
-                        getIncomeDate(
-                          income
-                        )
-                      ).toLocaleDateString(
-                        "en-IN"
-                      )
-                    : "-"}
-                </td>
+          <Button
+            type="button"
+            variant="danger"
+            loading={loading}
+            disabled={loading}
+            onClick={handleDelete}
+            leftIcon={
+              !loading ? (
+                <Trash2 size={16} />
+              ) : null
+            }
+            className="w-full sm:w-auto"
+          >
+            Delete Income
+          </Button>
 
-                <td className="whitespace-nowrap px-5 py-4 text-right text-sm font-bold text-emerald-600 sm:px-6">
-                  +₹
-                  {Number(
-                    income.amount || 0
-                  ).toLocaleString(
-                    "en-IN"
-                  )}
-                </td>
-
-                <td className="px-5 py-4 sm:px-6">
-                  <div className="flex justify-center gap-2">
-                    <Link
-                      to={`/income/${income.id}/edit`}
-                    >
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="secondary"
-                        className="h-9 w-9 px-0"
-                        aria-label="Edit income"
-                      >
-                        <Pencil size={15} />
-                      </Button>
-                    </Link>
-
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="danger"
-                      className="h-9 w-9 px-0"
-                      onClick={() =>
-                        onDelete?.(income)
-                      }
-                      aria-label="Delete income"
-                    >
-                      <Trash2 size={15} />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 
-export default IncomeTable;
+export default DeleteIncomeModal;

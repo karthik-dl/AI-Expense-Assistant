@@ -5,7 +5,7 @@ function IncomeFilters({
   onFilterChange,
 }) {
   const selectClass =
-    "h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+    "h-11 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition-colors duration-200 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
   return (
     <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
@@ -20,28 +20,33 @@ function IncomeFilters({
       </div>
 
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-        <SearchBar
-          placeholder="Search income..."
-          value={filters.search}
-          onChange={(value) => {
-            const nextValue =
-              typeof value === "string"
-                ? value
-                : value?.target?.value || "";
+        {/* Search */}
+        <div className="min-w-0">
+          <SearchBar
+            placeholder="Search income..."
+            value={filters.search}
+            onChange={(value) => {
+              const nextValue =
+                typeof value === "string"
+                  ? value
+                  : value?.target?.value ||
+                    "";
 
-            onFilterChange(
-              "search",
-              nextValue
-            );
-          }}
-          onClear={() =>
-            onFilterChange(
-              "search",
-              ""
-            )
-          }
-        />
+              onFilterChange(
+                "search",
+                nextValue
+              );
+            }}
+            onClear={() =>
+              onFilterChange(
+                "search",
+                ""
+              )
+            }
+          />
+        </div>
 
+        {/* Category */}
         <select
           value={filters.category}
           onChange={(e) =>
@@ -51,6 +56,7 @@ function IncomeFilters({
             )
           }
           className={selectClass}
+          aria-label="Filter income by category"
         >
           <option value="">
             All Categories
@@ -93,6 +99,7 @@ function IncomeFilters({
           </option>
         </select>
 
+        {/* Date */}
         <input
           type="date"
           value={filters.date}
@@ -103,8 +110,10 @@ function IncomeFilters({
             )
           }
           className={selectClass}
+          aria-label="Filter income by date"
         />
 
+        {/* Sort */}
         <select
           value={filters.sort}
           onChange={(e) =>
@@ -114,6 +123,7 @@ function IncomeFilters({
             )
           }
           className={selectClass}
+          aria-label="Sort income"
         >
           <option value="newest">
             Newest

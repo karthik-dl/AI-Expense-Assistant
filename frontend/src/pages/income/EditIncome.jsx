@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import toast from "react-hot-toast";
 
 import PageHeader from "../../components/ui/PageHeader";
@@ -12,9 +15,14 @@ function EditIncome() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [income, setIncome] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [income, setIncome] =
+    useState(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [saving, setSaving] =
+    useState(false);
 
   useEffect(() => {
     const loadIncome = async () => {
@@ -37,7 +45,7 @@ function EditIncome() {
         );
 
         toast.error(
-          error.response?.data?.message ||
+          error?.response?.data?.message ||
             "Failed to load income."
         );
 
@@ -47,7 +55,9 @@ function EditIncome() {
       }
     };
 
-    loadIncome();
+    if (id) {
+      loadIncome();
+    }
   }, [id, navigate]);
 
   const handleSubmit = async (values) => {
@@ -71,7 +81,7 @@ function EditIncome() {
       );
 
       toast.error(
-        error.response?.data?.message ||
+        error?.response?.data?.message ||
           "Failed to update income."
       );
     } finally {
@@ -81,7 +91,7 @@ function EditIncome() {
 
   if (loading) {
     return (
-      <div className="flex min-h-75 items-center justify-center">
+      <div className="flex min-h-[50vh] w-full items-center justify-center">
         <Loader text="Loading income..." />
       </div>
     );
@@ -92,17 +102,23 @@ function EditIncome() {
   }
 
   return (
-    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
-      <PageHeader
-        title="Edit Income"
-        subtitle="Update your income details."
-      />
+    <div className="w-full min-w-0">
+      <div className="mx-auto w-full max-w-5xl space-y-6 sm:space-y-8">
+        {/* Page Header */}
+        <PageHeader
+          title="Edit Income"
+          subtitle="Update your income details."
+        />
 
-      <IncomeForm
-        defaultValues={income}
-        onSubmit={handleSubmit}
-        loading={saving}
-      />
+        {/* Form */}
+        <div className="flex w-full justify-center">
+          <IncomeForm
+            defaultValues={income}
+            onSubmit={handleSubmit}
+            loading={saving}
+          />
+        </div>
+      </div>
     </div>
   );
 }

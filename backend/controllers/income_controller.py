@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from utils.validators import validate_income
@@ -24,6 +24,7 @@ def add_income():
 
     if errors:
         logger.warning("Income validation failed")
+
         return error_response(
             "Validation failed",
             400,
@@ -32,7 +33,9 @@ def add_income():
 
     user_id = get_jwt_identity()
 
-    logger.info(f"User {user_id} is creating income")
+    logger.info(
+        f"User {user_id} is creating income"
+    )
 
     result = create_income(
         user_id=user_id,
@@ -44,14 +47,19 @@ def add_income():
     )
 
     if result["success"]:
-        logger.info(f"Income created successfully by User {user_id}")
+        logger.info(
+            f"Income created successfully by User {user_id}"
+        )
+
         return success_response(
             "Income created successfully",
             result.get("income"),
             201
         )
 
-    logger.warning(f"Income creation failed for User {user_id}")
+    logger.warning(
+        f"Income creation failed for User {user_id}"
+    )
 
     return error_response(
         result["message"],
@@ -59,42 +67,51 @@ def add_income():
     )
 
 
-
 @jwt_required()
 def get_incomes():
     user_id = get_jwt_identity()
 
-    # Pagination
-    page = request.args.get("page", default=1, type=int)
-    per_page = request.args.get("per_page", default=10, type=int)
+    page = request.args.get(
+        "page",
+        default=1,
+        type=int
+    )
 
-    # Filters
+    per_page = request.args.get(
+        "per_page",
+        default=10,
+        type=int
+    )
+
     category = request.args.get("category")
     start_date = request.args.get("start_date")
     end_date = request.args.get("end_date")
 
-    # Advanced Filters
     search = request.args.get("search")
-    min_amount = request.args.get("min_amount", type=float)
-    max_amount = request.args.get("max_amount", type=float)
-    month = request.args.get("month", type=int)
-    year = request.args.get("year", type=int)
 
-    # Sorting
-    sort = request.args.get("sort", default="income_date")
+    min_amount = request.args.get(
+        "min_amount",
+        type=float
+    )
 
-    logger.info(
-        f"User {user_id} requested incomes | "
-        f"page={page}, per_page={per_page}, "
-        f"category={category}, "
-        f"search={search}, "
-        f"min_amount={min_amount}, "
-        f"max_amount={max_amount}, "
-        f"month={month}, "
-        f"year={year}, "
-        f"start_date={start_date}, "
-        f"end_date={end_date}, "
-        f"sort={sort}"
+    max_amount = request.args.get(
+        "max_amount",
+        type=float
+    )
+
+    month = request.args.get(
+        "month",
+        type=int
+    )
+
+    year = request.args.get(
+        "year",
+        type=int
+    )
+
+    sort = request.args.get(
+        "sort",
+        default="income_date"
     )
 
     result = get_all_incomes(
@@ -121,28 +138,26 @@ def get_incomes():
             }
         )
 
-    logger.warning(f"Failed to fetch incomes for User {user_id}")
-
     return error_response(
         result["message"],
         400
     )
-    
+
+
 @jwt_required()
 def get_income(income_id):
     user_id = get_jwt_identity()
 
-    logger.info(f"User {user_id} requested income {income_id}")
-
-    result = get_income_by_id(user_id, income_id)
+    result = get_income_by_id(
+        user_id,
+        income_id
+    )
 
     if result["success"]:
         return success_response(
             "Income fetched successfully",
             result.get("income")
         )
-
-    logger.warning(f"Income {income_id} not found")
 
     return error_response(
         result["message"],
@@ -158,7 +173,8 @@ def edit_income(income_id):
 
     if errors:
         logger.warning(
-            f"Income update validation failed for income {income_id}"
+            f"Income update validation failed "
+            f"for income {income_id}"
         )
 
         return error_response(
@@ -168,10 +184,6 @@ def edit_income(income_id):
         )
 
     user_id = get_jwt_identity()
-
-    logger.info(
-        f"User {user_id} is updating income {income_id}"
-    )
 
     result = update_income(
         user_id=user_id,
@@ -193,10 +205,6 @@ def edit_income(income_id):
             result.get("income")
         )
 
-    logger.warning(
-        f"Income update failed for income {income_id}"
-    )
-
     return error_response(
         result["message"],
         404
@@ -211,33 +219,48 @@ def remove_income(income_id):
         f"User {user_id} is deleting income {income_id}"
     )
 
-    result = delete_income(user_id, income_id)
-
-    if result["success"]:
-        logger.info(
-            f"Income {income_id} deleted successfully"
+    try:
+        result = delete_income(
+            user_id=user_id,
+            income_id=income_id
         )
 
-        return success_response(
-            "Income deleted successfully",
-            result.get("income")
+        if result["success"]:
+            logger.info(
+                f"Income {income_id} deleted successfully "
+                f"by User {user_id}"
+            )
+
+            return success_response(
+                "Income deleted successfully",
+                None
+            )
+
+        logger.warning(
+            f"Income deletion failed for income "
+            f"{income_id}: {result['message']}"
         )
 
-    logger.warning(
-        f"Income deletion failed for income {income_id}"
-    )
+        return error_response(
+            result["message"],
+            404
+        )
 
-    return error_response(
-        result["message"],
-        404
-    )
+    except Exception as error:
+        logger.exception(
+            f"Unexpected error deleting income "
+            f"{income_id}: {error}"
+        )
+
+        return error_response(
+            "Failed to delete income",
+            500
+        )
 
 
 @jwt_required()
 def total_income():
     user_id = get_jwt_identity()
-
-    logger.info(f"User {user_id} requested total income")
 
     result = get_total_income(user_id)
 
@@ -246,10 +269,6 @@ def total_income():
             "Total income fetched successfully",
             result.get("total_income")
         )
-
-    logger.warning(
-        f"Failed to fetch total income for User {user_id}"
-    )
 
     return error_response(
         result["message"],
@@ -261,10 +280,6 @@ def total_income():
 def income_category_summary():
     user_id = get_jwt_identity()
 
-    logger.info(
-        f"User {user_id} requested income category summary"
-    )
-
     result = get_income_by_category(user_id)
 
     if result["success"]:
@@ -272,10 +287,6 @@ def income_category_summary():
             "Income category summary fetched successfully",
             result.get("categories")
         )
-
-    logger.warning(
-        f"Failed to fetch income category summary for User {user_id}"
-    )
 
     return error_response(
         result["message"],

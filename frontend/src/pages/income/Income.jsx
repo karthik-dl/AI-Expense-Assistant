@@ -18,8 +18,11 @@ function Income() {
   const [incomes, setIncomes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [selectedIncome, setSelectedIncome] = useState(null);
-  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedIncome, setSelectedIncome] =
+    useState(null);
+
+  const [deleteOpen, setDeleteOpen] =
+    useState(false);
 
   const [filters, setFilters] = useState({
     search: "",
@@ -28,43 +31,51 @@ function Income() {
     sort: "newest",
   });
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] =
+    useState(1);
 
   const itemsPerPage = 10;
 
-  const getArray = (response, key) => {
+  const getIncomeDate = (income) =>
+    income?.income_date ||
+    income?.date ||
+    "";
+
+  const getArray = (response) => {
     if (Array.isArray(response?.data)) {
       return response.data;
     }
 
-    if (Array.isArray(response?.data?.[key])) {
-      return response.data[key];
+    if (
+      Array.isArray(
+        response?.data?.incomes
+      )
+    ) {
+      return response.data.incomes;
     }
 
-    if (Array.isArray(response?.data?.data?.[key])) {
-      return response.data.data[key];
+    if (
+      Array.isArray(
+        response?.data?.data?.incomes
+      )
+    ) {
+      return response.data.data.incomes;
     }
 
     return [];
-  };
-
-  // Handles both date fields safely.
-  const getIncomeDate = (income) => {
-    return income?.income_date || income?.date || "";
   };
 
   const loadIncomes = async () => {
     try {
       setLoading(true);
 
-      const response = await incomeService.getIncomes();
+      const response =
+        await incomeService.getIncomes();
 
-      const incomeList = getArray(response, "incomes");
+      const list = getArray(response);
 
       setIncomes(
-        Array.isArray(incomeList)
-          ? incomeList
-          : []
+        Array.isArray(list) ? list : []
       );
     } catch (error) {
       console.error(
@@ -86,16 +97,6 @@ function Income() {
     setCurrentPage(1);
   }, [filters]);
 
-  const handleDeleteClick = (income) => {
-    setSelectedIncome(income);
-    setDeleteOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setDeleteOpen(false);
-    setSelectedIncome(null);
-  };
-
   const handleFilterChange = (
     field,
     value
@@ -109,29 +110,36 @@ function Income() {
   const filteredIncomes = [...incomes]
     .filter((income) => {
       const search =
-        filters.search.toLowerCase();
+        filters.search
+          ?.toLowerCase()
+          .trim() || "";
 
-      const title =
-        income.title?.toLowerCase() || "";
+      const source =
+        income?.source
+          ?.toLowerCase() || "";
 
       const category =
-        income.category?.toLowerCase() || "";
+        income?.category
+          ?.toLowerCase() || "";
 
       const matchesSearch =
         !search ||
-        title.includes(search) ||
+        source.includes(search) ||
         category.includes(search);
 
       const matchesCategory =
         !filters.category ||
-        income.category === filters.category;
+        income?.category ===
+          filters.category;
 
       const incomeDate =
         getIncomeDate(income);
 
       const matchesDate =
         !filters.date ||
-        incomeDate.startsWith(filters.date);
+        incomeDate.startsWith(
+          filters.date
+        );
 
       return (
         matchesSearch &&
@@ -151,14 +159,14 @@ function Income() {
       switch (filters.sort) {
         case "highest":
           return (
-            Number(b.amount || 0) -
-            Number(a.amount || 0)
+            Number(b?.amount || 0) -
+            Number(a?.amount || 0)
           );
 
         case "lowest":
           return (
-            Number(a.amount || 0) -
-            Number(b.amount || 0)
+            Number(a?.amount || 0) -
+            Number(b?.amount || 0)
           );
 
         case "oldest":
@@ -182,14 +190,56 @@ function Income() {
       currentPage * itemsPerPage
     );
 
+  const handleDeleteClick = (income) => {
+    console.log(
+      "Selected income for deletion:",
+      income
+    );
+
+    setSelectedIncome(income);
+    setDeleteOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setDeleteOpen(false);
+    setSelectedIncome(null);
+  };
+
+  const handleDeleteSuccess = async () => {
+    const deletedId =
+      selectedIncome?.id;
+
+    console.log(
+      "Removing deleted income from state:",
+      deletedId
+    );
+
+    if (deletedId) {
+      setIncomes((previous) =>
+        previous.filter(
+          (income) =>
+            income.id !== deletedId
+        )
+      );
+    }
+
+    setDeleteOpen(false);
+    setSelectedIncome(null);
+
+    setCurrentPage(1);
+  };
+
   return (
     <div className="w-full min-w-0 space-y-6 sm:space-y-8">
+
       {/* Header */}
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader
-          title="Income"
-          subtitle="Track and manage your income."
-        />
+        <div className="min-w-0">
+          <PageHeader
+            title="Income"
+            subtitle="Track and manage your income."
+          />
+        </div>
 
         <Link
           to="/income/new"
@@ -207,7 +257,9 @@ function Income() {
       {/* Filters */}
       <IncomeFilters
         filters={filters}
-        onFilterChange={handleFilterChange}
+        onFilterChange={
+          handleFilterChange
+        }
       />
 
       {/* Summary */}
@@ -228,12 +280,16 @@ function Income() {
       />
 
       {/* Pagination */}
-      {totalPages > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={
+              setCurrentPage
+            }
+          />
+        </div>
       )}
 
       {/* Delete Modal */}
@@ -241,7 +297,9 @@ function Income() {
         open={deleteOpen}
         income={selectedIncome}
         onClose={handleCloseModal}
-        onSuccess={loadIncomes}
+        onSuccess={
+          handleDeleteSuccess
+        }
       />
     </div>
   );

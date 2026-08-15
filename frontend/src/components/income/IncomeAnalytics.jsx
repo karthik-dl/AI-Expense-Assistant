@@ -24,13 +24,15 @@ const COLORS = [
   "#64748B",
 ];
 
-function IncomeAnalytics({
-  incomes = [],
-}) {
+function IncomeAnalytics({ incomes = [] }) {
   const getIncomeDate = (income) =>
     income?.income_date ||
     income?.date ||
     "";
+
+  /* --------------------------------
+     Monthly Income
+  -------------------------------- */
 
   const monthlyData = Array.from(
     { length: 12 },
@@ -42,16 +44,14 @@ function IncomeAnalytics({
           );
 
           return (
-            !Number.isNaN(
-              date.getTime()
-            ) &&
+            !Number.isNaN(date.getTime()) &&
             date.getMonth() === index
           );
         })
         .reduce(
           (sum, income) =>
             sum +
-            Number(income.amount || 0),
+            Number(income?.amount || 0),
           0
         );
 
@@ -68,15 +68,19 @@ function IncomeAnalytics({
     }
   );
 
+  /* --------------------------------
+     Category Data
+  -------------------------------- */
+
   const categoryMap = {};
 
   incomes.forEach((income) => {
     const category =
-      income.category || "Others";
+      income?.category || "Others";
 
     categoryMap[category] =
       (categoryMap[category] || 0) +
-      Number(income.amount || 0);
+      Number(income?.amount || 0);
   });
 
   const categoryData = Object.entries(
@@ -87,11 +91,11 @@ function IncomeAnalytics({
   }));
 
   return (
-    <div className="grid min-w-0 gap-5 xl:grid-cols-2">
+    <section className="grid min-w-0 gap-4 xl:grid-cols-2">
       {/* Monthly Income */}
-      <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5">
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-slate-900">
             Monthly Income
           </h3>
 
@@ -100,7 +104,7 @@ function IncomeAnalytics({
           </p>
         </div>
 
-        <div className="h-70 min-w-0 sm:h-75">
+        <div className="h-70 w-full min-w-0 sm:h-75">
           <ResponsiveContainer
             width="100%"
             height="100%"
@@ -110,12 +114,13 @@ function IncomeAnalytics({
               margin={{
                 top: 5,
                 right: 5,
-                left: -15,
+                left: 0,
                 bottom: 5,
               }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
+                vertical={false}
                 stroke="#E2E8F0"
               />
 
@@ -125,6 +130,8 @@ function IncomeAnalytics({
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                axisLine={false}
+                tickLine={false}
               />
 
               <YAxis
@@ -132,6 +139,9 @@ function IncomeAnalytics({
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                axisLine={false}
+                tickLine={false}
+                width={45}
               />
 
               <Tooltip
@@ -147,6 +157,7 @@ function IncomeAnalytics({
                 dataKey="total"
                 fill="#10B981"
                 radius={[6, 6, 0, 0]}
+                maxBarSize={36}
               />
             </BarChart>
           </ResponsiveContainer>
@@ -154,9 +165,9 @@ function IncomeAnalytics({
       </div>
 
       {/* Income Sources */}
-      <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5">
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-slate-900">
             Income Sources
           </h3>
 
@@ -166,11 +177,13 @@ function IncomeAnalytics({
         </div>
 
         {categoryData.length === 0 ? (
-          <div className="flex h-70 items-center justify-center text-sm text-slate-500 sm:h-75">
-            No income data available.
+          <div className="flex h-70 items-center justify-center sm:h-75">
+            <p className="text-sm text-slate-500">
+              No income data available.
+            </p>
           </div>
         ) : (
-          <div className="h-70 min-w-0 sm:h-75">
+          <div className="h-70 w-full min-w-0 sm:h-75">
             <ResponsiveContainer
               width="100%"
               height="100%"
@@ -180,14 +193,16 @@ function IncomeAnalytics({
                   data={categoryData}
                   dataKey="value"
                   nameKey="name"
-                  innerRadius={65}
-                  outerRadius={100}
-                  paddingAngle={3}
+                  cx="50%"
+                  cy="45%"
+                  innerRadius="40%"
+                  outerRadius="68%"
+                  paddingAngle={2}
                 >
                   {categoryData.map(
                     (entry, index) => (
                       <Cell
-                        key={entry.name}
+                        key={`cell-${index}`}
                         fill={
                           COLORS[
                             index %
@@ -200,17 +215,21 @@ function IncomeAnalytics({
                 </Pie>
 
                 <Tooltip
-                  formatter={(value) => [
+                  formatter={(value, name) => [
                     `₹${Number(
                       value || 0
-                    ).toLocaleString(
-                      "en-IN"
-                    )}`,
-                    "Income",
+                    ).toLocaleString("en-IN")}`,
+                    name,
                   ]}
                 />
 
-                <Legend />
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  wrapperStyle={{
+                    fontSize: "12px",
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -218,9 +237,9 @@ function IncomeAnalytics({
       </div>
 
       {/* Income Trend */}
-      <div className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 xl:col-span-2">
+      <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm xl:col-span-2 sm:p-6">
         <div className="mb-5">
-          <h3 className="text-lg font-semibold text-slate-900">
+          <h3 className="text-base font-semibold text-slate-900">
             Income Trend
           </h3>
 
@@ -229,7 +248,7 @@ function IncomeAnalytics({
           </p>
         </div>
 
-        <div className="h-70 min-w-0 sm:h-75">
+        <div className="h-70 w-full min-w-0 sm:h-75">
           <ResponsiveContainer
             width="100%"
             height="100%"
@@ -238,13 +257,14 @@ function IncomeAnalytics({
               data={monthlyData}
               margin={{
                 top: 5,
-                right: 5,
-                left: -15,
+                right: 10,
+                left: 0,
                 bottom: 5,
               }}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
+                vertical={false}
                 stroke="#E2E8F0"
               />
 
@@ -254,6 +274,8 @@ function IncomeAnalytics({
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                axisLine={false}
+                tickLine={false}
               />
 
               <YAxis
@@ -261,6 +283,9 @@ function IncomeAnalytics({
                   fontSize: 12,
                   fill: "#64748B",
                 }}
+                axisLine={false}
+                tickLine={false}
+                width={45}
               />
 
               <Tooltip
@@ -289,7 +314,7 @@ function IncomeAnalytics({
           </ResponsiveContainer>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

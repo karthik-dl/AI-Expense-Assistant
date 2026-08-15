@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   IndianRupee,
@@ -17,48 +16,48 @@ function IncomeForm({
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      title: "",
-      amount: "",
-      category: "",
-      date: "",
-      notes: "",
-      ...defaultValues,
-    },
-  });
-
-  useEffect(() => {
-    reset({
-      title: "",
-      amount: "",
-      category: "",
-      date:
+      source: defaultValues?.source || "",
+      amount: defaultValues?.amount || "",
+      category: defaultValues?.category || "",
+      income_date:
         defaultValues?.income_date ||
         defaultValues?.date ||
         "",
-      notes: "",
-      ...defaultValues,
-    });
-  }, [defaultValues, reset]);
+      notes: defaultValues?.notes || "",
+    },
+  });
+
+  const handleFormSubmit = async (data) => {
+    const payload = {
+      source: data.source?.trim() || "",
+      category: data.category || "",
+      amount: Number(data.amount),
+      income_date: data.income_date || "",
+      notes: data.notes?.trim() || "",
+    };
+
+    await onSubmit(payload);
+  };
 
   const selectClass =
-    "h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+    "h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition-colors duration-200 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
     >
+      {/* Header */}
       <div className="mb-6 border-b border-slate-100 pb-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
             <Wallet size={20} />
           </div>
 
-          <div>
+          <div className="min-w-0">
             <h2 className="text-lg font-semibold text-slate-900">
               Income Details
             </h2>
@@ -70,24 +69,29 @@ function IncomeForm({
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      {/* Fields */}
+      <div className="grid min-w-0 gap-5 sm:grid-cols-2">
+
+        {/* Source */}
         <div className="sm:col-span-2">
           <Input
-            label="Income Title"
+            label="Income Source"
+            type="text"
             placeholder="e.g. Monthly Salary"
-            error={errors.title?.message}
-            {...register("title", {
+            error={errors.source?.message}
+            {...register("source", {
               required:
-                "Title is required",
+                "Income source is required",
             })}
           />
         </div>
 
+        {/* Amount */}
         <Input
-          type="number"
-          min="1"
-          step="0.01"
           label="Amount"
+          type="number"
+          min="0"
+          step="0.01"
           placeholder="50000"
           leftIcon={
             <IndianRupee size={18} />
@@ -97,24 +101,26 @@ function IncomeForm({
             required:
               "Amount is required",
             min: {
-              value: 1,
+              value: 0.01,
               message:
                 "Amount must be greater than 0",
             },
+            valueAsNumber: true,
           })}
         />
 
-        <div>
+        {/* Category */}
+        <div className="min-w-0">
           <label className="mb-2 block text-sm font-medium text-slate-700">
             Category
           </label>
 
           <select
+            className={selectClass}
             {...register("category", {
               required:
                 "Category is required",
             })}
-            className={selectClass}
           >
             <option value="">
               Select Category
@@ -152,8 +158,8 @@ function IncomeForm({
               Gift
             </option>
 
-            <option value="Others">
-              Others
+            <option value="Other">
+              Other
             </option>
           </select>
 
@@ -164,20 +170,22 @@ function IncomeForm({
           )}
         </div>
 
+        {/* Income Date */}
         <Input
+          label="Income Date"
           type="date"
-          label="Date"
           leftIcon={
             <CalendarDays size={18} />
           }
-          error={errors.date?.message}
-          {...register("date", {
+          error={errors.income_date?.message}
+          {...register("income_date", {
             required:
-              "Date is required",
+              "Income date is required",
           })}
         />
 
-        <div className="sm:col-span-2">
+        {/* Notes */}
+        <div className="min-w-0 sm:col-span-2">
           <label className="mb-2 block text-sm font-medium text-slate-700">
             Notes
           </label>
@@ -185,16 +193,18 @@ function IncomeForm({
           <textarea
             rows={4}
             placeholder="Additional details..."
+            className="w-full resize-y rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition-colors duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
             {...register("notes")}
-            className="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
           />
         </div>
       </div>
 
-      <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
+      {/* Submit */}
+      <div className="mt-6 flex flex-col gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-end">
         <Button
           type="submit"
           loading={loading}
+          disabled={loading}
           className="w-full sm:w-auto"
         >
           Save Income

@@ -15,37 +15,32 @@ function IncomeSummary({
 
   const totalIncome = incomes.reduce(
     (sum, income) =>
-      sum + Number(income.amount || 0),
+      sum + Number(income?.amount || 0),
     0
   );
 
-  const currentMonth =
-    new Date().getMonth();
+  const now = new Date();
 
-  const currentYear =
-    new Date().getFullYear();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
 
-  const thisMonthIncome =
-    incomes
-      .filter((income) => {
-        const date = new Date(
-          getIncomeDate(income)
-        );
-
-        return (
-          !Number.isNaN(date.getTime()) &&
-          date.getMonth() ===
-            currentMonth &&
-          date.getFullYear() ===
-            currentYear
-        );
-      })
-      .reduce(
-        (sum, income) =>
-          sum +
-          Number(income.amount || 0),
-        0
+  const thisMonthIncome = incomes
+    .filter((income) => {
+      const date = new Date(
+        getIncomeDate(income)
       );
+
+      return (
+        !Number.isNaN(date.getTime()) &&
+        date.getMonth() === currentMonth &&
+        date.getFullYear() === currentYear
+      );
+    })
+    .reduce(
+      (sum, income) =>
+        sum + Number(income?.amount || 0),
+      0
+    );
 
   const averageIncome =
     incomes.length > 0
@@ -59,8 +54,7 @@ function IncomeSummary({
       icon: Wallet,
       iconClass:
         "bg-emerald-50 text-emerald-600",
-      valueClass:
-        "text-emerald-600",
+      valueClass: "text-emerald-600",
       prefix: "₹",
     },
     {
@@ -69,8 +63,7 @@ function IncomeSummary({
       icon: CalendarDays,
       iconClass:
         "bg-blue-50 text-blue-600",
-      valueClass:
-        "text-blue-600",
+      valueClass: "text-blue-600",
       prefix: "₹",
     },
     {
@@ -79,8 +72,7 @@ function IncomeSummary({
       icon: Calculator,
       iconClass:
         "bg-indigo-50 text-indigo-600",
-      valueClass:
-        "text-indigo-600",
+      valueClass: "text-indigo-600",
       prefix: "₹",
       decimal: true,
     },
@@ -90,32 +82,32 @@ function IncomeSummary({
       icon: List,
       iconClass:
         "bg-slate-100 text-slate-600",
-      valueClass:
-        "text-slate-900",
+      valueClass: "text-slate-900",
       prefix: "",
     },
   ];
 
   return (
-    <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <section className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {cards.map((card) => {
         const Icon = card.icon;
 
         return (
           <div
             key={card.title}
-            className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md"
           >
             <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-slate-500">
                   {card.title}
                 </p>
 
                 <p
-                  className={`mt-2 break-word text-2xl font-bold ${card.valueClass}`}
+                  className={`mt-2 truncate text-2xl font-bold tracking-tight ${card.valueClass}`}
                 >
                   {card.prefix}
+
                   {card.decimal
                     ? card.value.toFixed(2)
                     : card.value.toLocaleString(
@@ -133,7 +125,7 @@ function IncomeSummary({
           </div>
         );
       })}
-    </div>
+    </section>
   );
 }
 

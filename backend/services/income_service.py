@@ -14,10 +14,6 @@ def create_income(
     income_date,
     notes=None
 ):
-    """
-    Create a new income.
-    """
-
     if isinstance(income_date, str):
         income_date = datetime.strptime(
             income_date,
@@ -57,25 +53,36 @@ def get_all_incomes(
     month=None,
     year=None
 ):
-
-    query = Income.query.filter_by(user_id=user_id)
+    query = Income.query.filter_by(
+        user_id=user_id
+    )
 
     if category:
-        query = query.filter(Income.category == category)
+        query = query.filter(
+            Income.category == category
+        )
 
     if search:
         query = query.filter(
             or_(
-                Income.source.ilike(f"%{search}%"),
-                Income.category.ilike(f"%{search}%")
+                Income.source.ilike(
+                    f"%{search}%"
+                ),
+                Income.category.ilike(
+                    f"%{search}%"
+                )
             )
         )
 
     if min_amount is not None:
-        query = query.filter(Income.amount >= min_amount)
+        query = query.filter(
+            Income.amount >= min_amount
+        )
 
     if max_amount is not None:
-        query = query.filter(Income.amount <= max_amount)
+        query = query.filter(
+            Income.amount <= max_amount
+        )
 
     if start_date:
         if isinstance(start_date, str):
@@ -101,22 +108,34 @@ def get_all_incomes(
 
     if month:
         query = query.filter(
-            extract("month", Income.income_date) == month
+            extract(
+                "month",
+                Income.income_date
+            ) == month
         )
 
     if year:
         query = query.filter(
-            extract("year", Income.income_date) == year
+            extract(
+                "year",
+                Income.income_date
+            ) == year
         )
 
     if sort == "amount":
-        query = query.order_by(Income.amount.desc())
+        query = query.order_by(
+            Income.amount.desc()
+        )
 
     elif sort == "category":
-        query = query.order_by(Income.category.asc())
+        query = query.order_by(
+            Income.category.asc()
+        )
 
     elif sort == "source":
-        query = query.order_by(Income.source.asc())
+        query = query.order_by(
+            Income.source.asc()
+        )
 
     else:
         query = query.order_by(
@@ -148,8 +167,10 @@ def get_all_incomes(
     }
 
 
-def get_income_by_id(user_id, income_id):
-
+def get_income_by_id(
+    user_id,
+    income_id
+):
     income = Income.query.filter_by(
         id=income_id,
         user_id=user_id
@@ -176,7 +197,6 @@ def update_income(
     income_date,
     notes=None
 ):
-
     income = Income.query.filter_by(
         id=income_id,
         user_id=user_id
@@ -209,8 +229,10 @@ def update_income(
     }
 
 
-def delete_income(user_id, income_id):
-
+def delete_income(
+    user_id,
+    income_id
+):
     income = Income.query.filter_by(
         id=income_id,
         user_id=user_id
@@ -222,17 +244,25 @@ def delete_income(user_id, income_id):
             "message": "Income not found"
         }
 
-    db.session.delete(income)
-    db.session.commit()
+    try:
+        db.session.delete(income)
+        db.session.commit()
 
-    return {
-        "success": True,
-        "message": "Income deleted successfully"
-    }
+        return {
+            "success": True,
+            "message": "Income deleted successfully"
+        }
+
+    except Exception as error:
+        db.session.rollback()
+
+        return {
+            "success": False,
+            "message": str(error)
+        }
 
 
 def get_total_income(user_id):
-
     incomes = Income.query.filter_by(
         user_id=user_id
     ).all()
@@ -249,7 +279,6 @@ def get_total_income(user_id):
 
 
 def get_income_by_category(user_id):
-
     incomes = Income.query.filter_by(
         user_id=user_id
     ).all()
@@ -257,8 +286,14 @@ def get_income_by_category(user_id):
     categories = {}
 
     for income in incomes:
-        categories.setdefault(income.category, 0)
-        categories[income.category] += float(income.amount)
+        categories.setdefault(
+            income.category,
+            0
+        )
+
+        categories[income.category] += float(
+            income.amount
+        )
 
     return {
         "success": True,
