@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import toast from "react-hot-toast";
 
 import PageHeader from "../../components/ui/PageHeader";
@@ -12,33 +15,47 @@ function EditBudget() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [budget, setBudget] =
-    useState(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
+  const [budget, setBudget] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const loadBudget = async () => {
+      if (!id) {
+        toast.error("Budget ID is missing.");
+        navigate("/budgets");
+        return;
+      }
+
       try {
         setLoading(true);
 
+        console.log("EDIT BUDGET ID:", id);
+
         const response =
           await budgetService.getBudget(id);
+
+        console.log(
+          "GET BUDGET RESPONSE:",
+          response?.data
+        );
 
         const data = response?.data;
 
         const budgetData =
           data?.budget ||
           data?.data?.budget ||
+          data?.data ||
           data;
+
+        console.log(
+          "BUDGET DATA:",
+          budgetData
+        );
 
         if (!budgetData?.id) {
           throw new Error(
-            "Budget not found"
+            "Budget not found."
           );
         }
 
@@ -47,6 +64,11 @@ function EditBudget() {
         console.error(
           "Load Budget Error:",
           error
+        );
+
+        console.error(
+          "Server Response:",
+          error?.response?.data
         );
 
         toast.error(
@@ -60,14 +82,15 @@ function EditBudget() {
       }
     };
 
-    if (id) {
-      loadBudget();
-    }
+    loadBudget();
   }, [id, navigate]);
 
-  const handleSubmit = async (
-    values
-  ) => {
+  const handleSubmit = async (values) => {
+    if (!id) {
+      toast.error("Budget ID is missing.");
+      return;
+    }
+
     try {
       setSaving(true);
 
@@ -78,9 +101,21 @@ function EditBudget() {
         year: Number(values.year),
       };
 
-      await budgetService.updateBudget(
+      console.log(
+        "UPDATING BUDGET:",
         id,
         formattedData
+      );
+
+      const response =
+        await budgetService.updateBudget(
+          id,
+          formattedData
+        );
+
+      console.log(
+        "UPDATE RESPONSE:",
+        response?.data
       );
 
       toast.success(
@@ -92,6 +127,11 @@ function EditBudget() {
       console.error(
         "Update Budget Error:",
         error
+      );
+
+      console.error(
+        "Server Response:",
+        error?.response?.data
       );
 
       toast.error(

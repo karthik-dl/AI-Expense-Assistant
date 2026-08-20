@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
   Wallet,
@@ -37,77 +36,58 @@ const months = [
 ];
 
 function BudgetForm({
-  initialValues = {},
+  initialValues = null,
   onSubmit,
   loading = false,
 }) {
-  const currentYear =
-    new Date().getFullYear();
+  const currentDate = new Date();
+
+  const defaultMonth =
+    currentDate.getMonth() + 1;
+
+  const defaultYear =
+    currentDate.getFullYear();
 
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       category:
-        initialValues.category || "",
+        initialValues?.category || "",
 
       amount:
-        initialValues.amount || "",
+        initialValues?.amount || "",
 
-      month:
-        initialValues.month
-          ? String(initialValues.month)
-          : String(
-              new Date().getMonth() + 1
-            ),
+      month: String(
+        initialValues?.month ||
+          defaultMonth
+      ),
 
-      year:
-        initialValues.year
-          ? String(initialValues.year)
-          : String(currentYear),
+      year: String(
+        initialValues?.year ||
+          defaultYear
+      ),
     },
   });
-
-  useEffect(() => {
-    reset({
-      category:
-        initialValues.category || "",
-
-      amount:
-        initialValues.amount || "",
-
-      month:
-        initialValues.month
-          ? String(initialValues.month)
-          : String(
-              new Date().getMonth() + 1
-            ),
-
-      year:
-        initialValues.year
-          ? String(initialValues.year)
-          : String(currentYear),
-    });
-  }, [
-    initialValues,
-    reset,
-    currentYear,
-  ]);
 
   const handleFormSubmit = async (
     data
   ) => {
-    const formData = {
+    const formattedData = {
       category: data.category,
       amount: Number(data.amount),
       month: Number(data.month),
       year: Number(data.year),
     };
 
-    await onSubmit(formData);
+    console.log(
+      "Budget Form Data:",
+      formattedData
+    );
+
+    await onSubmit(formattedData);
   };
 
   const selectClass =
@@ -151,11 +131,11 @@ function BudgetForm({
           </label>
 
           <select
+            className={selectClass}
             {...register("category", {
               required:
                 "Category is required",
             })}
-            className={selectClass}
           >
             <option value="">
               Select Category
@@ -197,7 +177,6 @@ function BudgetForm({
           {...register("amount", {
             required:
               "Budget amount is required",
-
             min: {
               value: 1,
               message:
@@ -216,11 +195,11 @@ function BudgetForm({
           </label>
 
           <select
+            className={selectClass}
             {...register("month", {
               required:
                 "Month is required",
             })}
-            className={selectClass}
           >
             {months.map((month) => (
               <option
@@ -249,34 +228,26 @@ function BudgetForm({
           </label>
 
           <select
+            className={selectClass}
             {...register("year", {
               required:
                 "Year is required",
             })}
-            className={selectClass}
           >
-            <option
-              value={currentYear - 1}
-            >
-              {currentYear - 1}
+            <option value={defaultYear - 1}>
+              {defaultYear - 1}
             </option>
 
-            <option
-              value={currentYear}
-            >
-              {currentYear}
+            <option value={defaultYear}>
+              {defaultYear}
             </option>
 
-            <option
-              value={currentYear + 1}
-            >
-              {currentYear + 1}
+            <option value={defaultYear + 1}>
+              {defaultYear + 1}
             </option>
 
-            <option
-              value={currentYear + 2}
-            >
-              {currentYear + 2}
+            <option value={defaultYear + 2}>
+              {defaultYear + 2}
             </option>
           </select>
 

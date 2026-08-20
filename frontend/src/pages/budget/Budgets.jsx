@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -15,6 +15,7 @@ import * as budgetService from "../../services/budgetService";
 
 function Budgets() {
   const today = new Date();
+  const location = useLocation();
 
   const [budgets, setBudgets] = useState([]);
   const [remainingData, setRemainingData] =
@@ -35,6 +36,9 @@ function Budgets() {
     category: "",
   });
 
+  /* ================================
+     LOAD BUDGETS
+  ================================= */
 
   const loadBudgets = async () => {
     try {
@@ -43,20 +47,37 @@ function Budgets() {
       const response =
         await budgetService.getBudgets();
 
+      console.log(
+        "GET /budgets:",
+        response?.data
+      );
+
       const data = response?.data;
 
-      const list =
-        data?.budgets ||
-        data?.data?.budgets ||
-        (Array.isArray(data)
-          ? data
-          : []);
+      let list = [];
 
-      setBudgets(
-        Array.isArray(list)
-          ? list
-          : []
+      if (Array.isArray(data)) {
+        list = data;
+      } else if (
+        Array.isArray(data?.budgets)
+      ) {
+        list = data.budgets;
+      } else if (
+        Array.isArray(data?.data?.budgets)
+      ) {
+        list = data.data.budgets;
+      } else if (
+        Array.isArray(data?.data)
+      ) {
+        list = data.data;
+      }
+
+      console.log(
+        "Budgets received:",
+        list
       );
+
+      setBudgets(list);
     } catch (error) {
       console.error(
         "Load Budgets Error:",
@@ -74,22 +95,40 @@ function Budgets() {
     }
   };
 
-
+  /* ================================
+     LOAD REMAINING
+  ================================= */
 
   const loadRemaining = async () => {
     try {
       const response =
         await budgetService.getRemainingBudget(
-          filters.month,
-          filters.year
+          Number(filters.month),
+          Number(filters.year)
         );
+
+      console.log(
+        "Remaining Budget:",
+        response?.data
+      );
 
       const data = response?.data;
 
-      const result =
-        data?.budgets ||
-        data?.data?.budgets ||
-        [];
+      let result = [];
+
+      if (
+        Array.isArray(data?.budgets)
+      ) {
+        result = data.budgets;
+      } else if (
+        Array.isArray(data?.data?.budgets)
+      ) {
+        result = data.data.budgets;
+      } else if (
+        Array.isArray(data?.data)
+      ) {
+        result = data.data;
+      }
 
       setRemainingData(
         Array.isArray(result)
@@ -106,12 +145,25 @@ function Budgets() {
     }
   };
 
+  /* ================================
+     INITIAL LOAD
+  ================================= */
 
   useEffect(() => {
     loadBudgets();
   }, []);
 
+  /* ================================
+     REFRESH WHEN RETURNING TO PAGE
+  ================================= */
 
+  useEffect(() => {
+    loadBudgets();
+  }, [location.key]);
+
+  /* ================================
+     LOAD REMAINING WHEN FILTER CHANGES
+  ================================= */
 
   useEffect(() => {
     loadRemaining();
@@ -120,7 +172,9 @@ function Budgets() {
     filters.year,
   ]);
 
-  
+  /* ================================
+     FILTER CHANGE
+  ================================= */
 
   const handleFilterChange = (
     field,
@@ -128,18 +182,19 @@ function Budgets() {
   ) => {
     setFilters((previous) => ({
       ...previous,
-      [field]: Number.isNaN(
-        Number(value)
-      )
-        ? value
-        : Number(value),
+      [field]:
+        field === "category"
+          ? value
+          : Number(value),
     }));
   };
 
+  /* ================================
+     FILTER BUDGETS
+  ================================= */
 
-
-  const filteredBudgets = budgets.filter(
-    (budget) => {
+  const filteredBudgets =
+    budgets.filter((budget) => {
       const matchesMonth =
         Number(budget.month) ===
         Number(filters.month);
@@ -158,9 +213,11 @@ function Budgets() {
         matchesYear &&
         matchesCategory
       );
-    }
-  );
+    });
 
+  /* ================================
+     GET SPENT
+  ================================= */
 
   const getSpent = (budget) => {
     const data =
@@ -175,7 +232,9 @@ function Budgets() {
     );
   };
 
-
+  /* ================================
+     DELETE
+  ================================= */
 
   const handleDeleteClick = (
     budget
@@ -190,34 +249,25 @@ function Budgets() {
   };
 
   const handleDeleteSuccess = async () => {
-    setBudgets((previous) =>
-      previous.filter(
-        (budget) =>
-          budget.id !==
-          selectedBudget?.id
-      )
-    );
-
-    setRemainingData((previous) =>
-      previous.filter(
-        (item) =>
-          item.category !==
-          selectedBudget?.category
-      )
-    );
-
     setDeleteOpen(false);
+
     setSelectedBudget(null);
 
     await loadBudgets();
+
     await loadRemaining();
   };
+
+  /* ================================
+     RENDER
+  ================================= */
 
   return (
     <div className="w-full min-w-0 space-y-6 sm:space-y-8">
 
       {/* Header */}
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
         <PageHeader
           title="Budgets"
           subtitle="Plan and manage your monthly spending limits."
@@ -250,7 +300,7 @@ function Budgets() {
         remainingData={remainingData}
       />
 
-      {/* Budget Cards */}
+      {/* Loading */}
       {loading ? (
         <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
           <p className="text-sm text-slate-500">
@@ -258,13 +308,16 @@ function Budgets() {
           </p>
         </div>
       ) : filteredBudgets.length === 0 ? (
+
+        /* Empty */
         <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
+
           <p className="text-lg font-semibold text-slate-900">
             No budgets found
           </p>
 
           <p className="mt-2 text-sm text-slate-500">
-            Create a budget for{" "}
+            No budget exists for{" "}
             {filters.month}/
             {filters.year}.
           </p>
@@ -278,14 +331,19 @@ function Budgets() {
             </Button>
           </Link>
         </div>
+
       ) : (
+
+        /* Budget Cards */
         <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+
           {filteredBudgets.map(
             (budget) => (
               <div
                 key={budget.id}
                 className="min-w-0"
               >
+
                 <BudgetCard
                   budget={budget}
                   spent={getSpent(
@@ -294,6 +352,7 @@ function Budgets() {
                 />
 
                 <div className="mt-3 flex justify-end gap-2">
+
                   <Link
                     to={`/budgets/${budget.id}/edit`}
                   >
@@ -316,10 +375,13 @@ function Budgets() {
                   >
                     Delete
                   </Button>
+
                 </div>
+
               </div>
             )
           )}
+
         </div>
       )}
 
@@ -332,6 +394,7 @@ function Budgets() {
           handleDeleteSuccess
         }
       />
+
     </div>
   );
 }

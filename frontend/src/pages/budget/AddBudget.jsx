@@ -17,14 +17,13 @@ function AddBudget() {
     try {
       setLoading(true);
 
-      await budgetService.createBudget(
-        values
-      );
+      await budgetService.createBudget(values);
 
       toast.success(
-        "Budget created successfully."
+        "Budget added successfully."
       );
 
+      // Go to budget list after successful creation
       navigate("/budgets");
     } catch (error) {
       console.error(
@@ -34,7 +33,7 @@ function AddBudget() {
 
       toast.error(
         error?.response?.data?.message ||
-          "Failed to create budget."
+          "Failed to add budget."
       );
     } finally {
       setLoading(false);
