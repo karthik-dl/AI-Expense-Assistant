@@ -12,7 +12,8 @@ import Badge from "../ui/Badge";
 
 function RecentTransactions() {
   const [loading, setLoading] = useState(true);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] =
+    useState([]);
 
   useEffect(() => {
     fetchTransactions();
@@ -23,11 +24,17 @@ function RecentTransactions() {
       return response.data;
     }
 
-    if (Array.isArray(response?.data?.[key])) {
+    if (
+      Array.isArray(response?.data?.[key])
+    ) {
       return response.data[key];
     }
 
-    if (Array.isArray(response?.data?.data?.[key])) {
+    if (
+      Array.isArray(
+        response?.data?.data?.[key]
+      )
+    ) {
       return response.data.data[key];
     }
 
@@ -38,11 +45,13 @@ function RecentTransactions() {
     try {
       setLoading(true);
 
-      const [incomeRes, expenseRes] =
-        await Promise.all([
-          api.get("/incomes"),
-          api.get("/expenses"),
-        ]);
+      const [
+        incomeRes,
+        expenseRes,
+      ] = await Promise.all([
+        api.get("/incomes"),
+        api.get("/expenses"),
+      ]);
 
       const incomes = getArray(
         incomeRes,
@@ -50,7 +59,13 @@ function RecentTransactions() {
       ).map((item) => ({
         ...item,
         type: "Income",
-        date: item.income_date,
+        date:
+          item.income_date ||
+          item.date,
+        description:
+          item.source ||
+          item.title ||
+          "Income",
       }));
 
       const expenses = getArray(
@@ -59,14 +74,28 @@ function RecentTransactions() {
       ).map((item) => ({
         ...item,
         type: "Expense",
-        date: item.expense_date,
+        date:
+          item.expense_date ||
+          item.date,
+        description:
+          item.description ||
+          item.title ||
+          "Expense",
       }));
 
       const merged = [
         ...incomes,
         ...expenses,
       ]
-        .filter((item) => item.date)
+        .filter((item) => {
+          if (!item.date) {
+            return false;
+          }
+
+          return !isNaN(
+            new Date(item.date).getTime()
+          );
+        })
         .sort(
           (a, b) =>
             new Date(b.date) -
@@ -80,6 +109,8 @@ function RecentTransactions() {
         "Recent Transactions Error:",
         error
       );
+
+      setTransactions([]);
     } finally {
       setLoading(false);
     }
@@ -93,6 +124,7 @@ function RecentTransactions() {
 
   return (
     <Card hover={false}>
+      {/* Header */}
       <div className="mb-5 flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
@@ -112,17 +144,22 @@ function RecentTransactions() {
         </Link>
       </div>
 
+      {/* Empty State */}
       {transactions.length === 0 ? (
         <div className="flex min-h-40 items-center justify-center text-center text-sm text-slate-500">
           No transactions found.
         </div>
       ) : (
         <div className="w-full overflow-x-auto">
-          <table className="w-full min-w-150">
+          <table className="w-full min-w-162.5">
             <thead>
               <tr className="border-b border-slate-200 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
                 <th className="pb-3">
                   Type
+                </th>
+
+                <th className="pb-3">
+                  Description
                 </th>
 
                 <th className="pb-3">
@@ -145,6 +182,7 @@ function RecentTransactions() {
                   key={`${item.type}-${item.id}`}
                   className="border-b border-slate-100 last:border-none"
                 >
+                  {/* Type */}
                   <td className="py-3">
                     <div className="flex items-center gap-2">
                       <span
@@ -154,10 +192,15 @@ function RecentTransactions() {
                             : "bg-red-50 text-red-600"
                         }`}
                       >
-                        {item.type === "Income" ? (
-                          <ArrowDownLeft size={16} />
+                        {item.type ===
+                        "Income" ? (
+                          <ArrowDownLeft
+                            size={16}
+                          />
                         ) : (
-                          <ArrowUpRight size={16} />
+                          <ArrowUpRight
+                            size={16}
+                          />
                         )}
                       </span>
 
@@ -167,39 +210,62 @@ function RecentTransactions() {
                     </div>
                   </td>
 
+                  {/* Description */}
+                  <td className="max-w-45 py-3">
+                    <p className="truncate text-sm font-medium text-slate-700">
+                      {item.description}
+                    </p>
+                  </td>
+
+                  {/* Category */}
                   <td className="py-3">
                     <Badge
                       variant={
-                        item.type === "Income"
+                        item.type ===
+                        "Income"
                           ? "success"
                           : "danger"
                       }
                       size="sm"
                     >
-                      {item.category || "General"}
+                      {item.category ||
+                        "General"}
                     </Badge>
                   </td>
 
+                  {/* Date */}
                   <td className="whitespace-nowrap py-3 text-sm text-slate-500">
                     {new Date(
                       item.date
-                    ).toLocaleDateString("en-IN")}
+                    ).toLocaleDateString(
+                      "en-IN",
+                      {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      }
+                    )}
                   </td>
 
+                  {/* Amount */}
                   <td
                     className={`whitespace-nowrap py-3 text-right text-sm font-semibold ${
-                      item.type === "Income"
+                      item.type ===
+                      "Income"
                         ? "text-emerald-600"
                         : "text-red-600"
                     }`}
                   >
-                    {item.type === "Income"
+                    {item.type ===
+                    "Income"
                       ? "+"
                       : "-"}
                     ₹
                     {Number(
                       item.amount || 0
-                    ).toLocaleString("en-IN")}
+                    ).toLocaleString(
+                      "en-IN"
+                    )}
                   </td>
                 </tr>
               ))}

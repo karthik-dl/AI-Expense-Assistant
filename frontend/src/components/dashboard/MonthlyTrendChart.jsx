@@ -43,11 +43,17 @@ function MonthlyTrendChart() {
       return response.data;
     }
 
-    if (Array.isArray(response?.data?.[key])) {
+    if (
+      Array.isArray(response?.data?.[key])
+    ) {
       return response.data[key];
     }
 
-    if (Array.isArray(response?.data?.data?.[key])) {
+    if (
+      Array.isArray(
+        response?.data?.data?.[key]
+      )
+    ) {
       return response.data.data[key];
     }
 
@@ -58,11 +64,13 @@ function MonthlyTrendChart() {
     try {
       setLoading(true);
 
-      const [incomeRes, expenseRes] =
-        await Promise.all([
-          api.get("/incomes"),
-          api.get("/expenses"),
-        ]);
+      const [
+        incomeRes,
+        expenseRes,
+      ] = await Promise.all([
+        api.get("/incomes"),
+        api.get("/expenses"),
+      ]);
 
       const incomes = getArray(
         incomeRes,
@@ -74,6 +82,14 @@ function MonthlyTrendChart() {
         "expenses"
       );
 
+      const currentYear =
+        new Date().getFullYear();
+
+      /*
+       * Create all 12 months first.
+       * This ensures months with no
+       * transactions still appear as 0.
+       */
       const monthlyMap = {};
 
       MONTHS.forEach((month) => {
@@ -84,12 +100,25 @@ function MonthlyTrendChart() {
         };
       });
 
+      /*
+       * Income
+       */
       incomes.forEach((item) => {
         const date = new Date(
-          item.income_date
+          item?.income_date ||
+            item?.date
         );
 
-        if (isNaN(date.getTime())) return;
+        if (isNaN(date.getTime())) {
+          return;
+        }
+
+        if (
+          date.getFullYear() !==
+          currentYear
+        ) {
+          return;
+        }
 
         const month =
           MONTHS[date.getMonth()];
@@ -98,12 +127,25 @@ function MonthlyTrendChart() {
           Number(item.amount || 0);
       });
 
+      /*
+       * Expenses
+       */
       expenses.forEach((item) => {
         const date = new Date(
-          item.expense_date
+          item?.expense_date ||
+            item?.date
         );
 
-        if (isNaN(date.getTime())) return;
+        if (isNaN(date.getTime())) {
+          return;
+        }
+
+        if (
+          date.getFullYear() !==
+          currentYear
+        ) {
+          return;
+        }
 
         const month =
           MONTHS[date.getMonth()];
@@ -113,13 +155,17 @@ function MonthlyTrendChart() {
       });
 
       setChartData(
-        Object.values(monthlyMap)
+        MONTHS.map(
+          (month) => monthlyMap[month]
+        )
       );
     } catch (error) {
       console.error(
         "Monthly Trend Error:",
         error
       );
+
+      setChartData([]);
     } finally {
       setLoading(false);
     }
@@ -127,22 +173,27 @@ function MonthlyTrendChart() {
 
   if (loading) {
     return (
-      <Loader text="Loading monthly trends..." />
+      <Loader
+        text="Loading monthly trends..."
+      />
     );
   }
 
   return (
     <Card hover={false}>
+      {/* Header */}
       <div className="mb-4">
         <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
           Monthly Income vs Expenses
         </h2>
 
         <p className="mt-1 text-sm text-slate-500">
-          Track your financial activity throughout the year.
+          Track your financial activity
+          throughout {new Date().getFullYear()}.
         </p>
       </div>
 
+      {/* Chart */}
       <div className="h-64 w-full min-w-0 sm:h-72">
         <ResponsiveContainer
           width="100%"
@@ -223,12 +274,19 @@ function MonthlyTrendChart() {
               }}
               axisLine={false}
               tickLine={false}
-              width={35}
+              width={45}
+              tickFormatter={(value) =>
+                `₹${value.toLocaleString(
+                  "en-IN"
+                )}`
+              }
             />
 
             <Tooltip
               formatter={(value, name) => [
-                `₹${Number(value).toLocaleString(
+                `₹${Number(
+                  value
+                ).toLocaleString(
                   "en-IN"
                 )}`,
                 name === "income"
@@ -237,7 +295,8 @@ function MonthlyTrendChart() {
               ]}
               contentStyle={{
                 background: "#ffffff",
-                border: "1px solid #e2e8f0",
+                border:
+                  "1px solid #e2e8f0",
                 borderRadius: "10px",
               }}
             />
