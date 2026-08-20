@@ -1,80 +1,91 @@
 import {
   Wallet,
-  Receipt,
+  TrendingUp,
+  TrendingDown,
   PiggyBank,
-  Layers3,
 } from "lucide-react";
 
 function BudgetSummary({
   budgets = [],
+  remainingData = [],
 }) {
-  const totalBudget =
-    budgets.reduce(
-      (sum, budget) =>
-        sum +
-        Number(
-          budget?.amount || 0
-        ),
-      0
-    );
+  const totalBudget = budgets.reduce(
+    (sum, budget) =>
+      sum + Number(budget.amount || 0),
+    0
+  );
 
-  const totalSpent =
-    budgets.reduce(
-      (sum, budget) =>
-        sum +
-        Number(
-          budget?.spent || 0
-        ),
-      0
-    );
+  const totalSpent = budgets.reduce(
+    (sum, budget) => {
+      const data = remainingData.find(
+        (item) =>
+          item.category ===
+          budget.category
+      );
 
-  const remaining =
+      return (
+        sum + Number(data?.spent || 0)
+      );
+    },
+    0
+  );
+
+  const totalRemaining =
     totalBudget - totalSpent;
+
+  const utilization =
+    totalBudget > 0
+      ? (totalSpent / totalBudget) * 100
+      : 0;
+
+  const overBudget =
+    totalRemaining < 0;
 
   const cards = [
     {
       title: "Total Budget",
       value: totalBudget,
-      prefix: "₹",
       icon: Wallet,
       iconClass:
         "bg-blue-50 text-blue-600",
       valueClass:
-        "text-blue-600",
+        "text-slate-900",
     },
     {
       title: "Total Spent",
       value: totalSpent,
-      prefix: "₹",
-      icon: Receipt,
+      icon: TrendingDown,
       iconClass:
         "bg-red-50 text-red-600",
       valueClass:
         "text-red-600",
     },
     {
-      title: "Remaining",
-      value: remaining,
-      prefix: "₹",
-      icon: PiggyBank,
-      iconClass:
-        remaining >= 0
-          ? "bg-emerald-50 text-emerald-600"
-          : "bg-red-50 text-red-600",
-      valueClass:
-        remaining >= 0
-          ? "text-emerald-600"
-          : "text-red-600",
+      title: overBudget
+        ? "Over Budget"
+        : "Remaining",
+      value: Math.abs(totalRemaining),
+      icon: overBudget
+        ? TrendingDown
+        : TrendingUp,
+      iconClass: overBudget
+        ? "bg-red-50 text-red-600"
+        : "bg-emerald-50 text-emerald-600",
+      valueClass: overBudget
+        ? "text-red-600"
+        : "text-emerald-600",
     },
     {
-      title: "Categories",
-      value: budgets.length,
-      prefix: "",
-      icon: Layers3,
+      title: "Utilization",
+      value: utilization,
+      icon: PiggyBank,
       iconClass:
-        "bg-slate-100 text-slate-600",
+        "bg-purple-50 text-purple-600",
       valueClass:
-        "text-slate-900",
+        utilization > 100
+          ? "text-red-600"
+          : "text-purple-600",
+      percentage: true,
     },
   ];
 
@@ -97,12 +108,17 @@ function BudgetSummary({
                 <p
                   className={`mt-2 break-word text-2xl font-bold ${card.valueClass}`}
                 >
-                  {card.prefix}
-                  {Number(
-                    card.value || 0
-                  ).toLocaleString(
-                    "en-IN"
-                  )}
+                  {card.percentage
+                    ? `${card.value.toFixed(
+                        1
+                      )}%`
+                    : `₹${card.value.toLocaleString(
+                        "en-IN",
+                        {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        }
+                      )}`}
                 </p>
               </div>
 

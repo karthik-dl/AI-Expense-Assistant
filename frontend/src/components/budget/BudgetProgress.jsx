@@ -1,115 +1,201 @@
+import {
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
+} from "lucide-react";
+
 function BudgetProgress({
+  budget,
   spent = 0,
-  budget = 0,
 }) {
-  const numericSpent =
-    Number(spent) || 0;
+  if (!budget) {
+    return null;
+  }
 
-  const numericBudget =
-    Number(budget) || 0;
+  const budgetAmount = Number(
+    budget.amount || 0
+  );
 
-  const percentage =
-    numericBudget > 0
-      ? (numericSpent /
-          numericBudget) *
-        100
-      : 0;
-
-  const displayPercentage =
-    Math.round(percentage);
+  const spentAmount = Number(
+    spent || 0
+  );
 
   const remaining =
-    numericBudget - numericSpent;
+    budgetAmount - spentAmount;
+
+  const utilization =
+    budgetAmount > 0
+      ? (spentAmount / budgetAmount) * 100
+      : 0;
 
   const isOverBudget =
-    percentage >= 100;
+    spentAmount > budgetAmount;
 
-  const isNearLimit =
-    percentage >= 75 &&
-    percentage < 100;
+  const progressWidth =
+    Math.min(utilization, 100);
 
-  let progressColor =
+  let progressClass =
     "bg-emerald-500";
 
-  let status = "On Track";
-
-  let statusClass =
-    "bg-emerald-50 text-emerald-700";
-
-  if (isOverBudget) {
-    progressColor = "bg-red-500";
-    status = "Over Budget";
-    statusClass =
-      "bg-red-50 text-red-700";
-  } else if (isNearLimit) {
-    progressColor = "bg-amber-500";
-    status = "Near Limit";
-    statusClass =
-      "bg-amber-50 text-amber-700";
+  if (utilization >= 100) {
+    progressClass = "bg-red-500";
+  } else if (utilization >= 80) {
+    progressClass = "bg-orange-500";
+  } else if (utilization >= 60) {
+    progressClass = "bg-yellow-500";
   }
 
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between gap-3">
-        <span className="text-xs font-medium text-slate-500">
-          Spending Progress
-        </span>
+    <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-base font-semibold text-slate-900">
+            {budget.category || "Budget"}
+          </h3>
 
-        <span className="text-xs font-semibold text-slate-700">
-          {displayPercentage}%
-        </span>
-      </div>
+          <p className="mt-1 text-sm text-slate-500">
+            Monthly spending progress
+          </p>
+        </div>
 
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
         <div
-          className={`h-full rounded-full transition-all duration-500 ${progressColor}`}
-          style={{
-            width: `${Math.min(
-              percentage,
-              100
-            )}%`,
-          }}
-        />
-      </div>
-
-      <div className="flex items-center justify-between gap-3 text-xs">
-        <span className="min-w-0 truncate text-slate-500">
-          Spent{" "}
-          <strong className="text-slate-700">
-            ₹
-            {numericSpent.toLocaleString(
-              "en-IN"
-            )}
-          </strong>
-        </span>
-
-        <span
-          className={`min-w-0 truncate font-medium ${
-            remaining >= 0
-              ? "text-slate-500"
-              : "text-red-600"
+          className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+            isOverBudget
+              ? "bg-red-50 text-red-600"
+              : "bg-emerald-50 text-emerald-600"
           }`}
         >
-          {remaining >= 0
-            ? "Remaining "
-            : "Over by "}
-          <strong>
+          {isOverBudget ? (
+            <AlertTriangle size={20} />
+          ) : (
+            <TrendingUp size={20} />
+          )}
+        </div>
+      </div>
+
+      {/* Amounts */}
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div>
+          <p className="text-xs font-medium text-slate-500">
+            Budget
+          </p>
+
+          <p className="mt-1 text-lg font-bold text-slate-900">
+            ₹
+            {budgetAmount.toLocaleString(
+              "en-IN"
+            )}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium text-slate-500">
+            Spent
+          </p>
+
+          <p
+            className={`mt-1 text-lg font-bold ${
+              isOverBudget
+                ? "text-red-600"
+                : "text-orange-600"
+            }`}
+          >
+            ₹
+            {spentAmount.toLocaleString(
+              "en-IN"
+            )}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-xs font-medium text-slate-500">
+            {isOverBudget
+              ? "Exceeded"
+              : "Remaining"}
+          </p>
+
+          <p
+            className={`mt-1 text-lg font-bold ${
+              isOverBudget
+                ? "text-red-600"
+                : "text-emerald-600"
+            }`}
+          >
             ₹
             {Math.abs(
               remaining
             ).toLocaleString(
               "en-IN"
             )}
-          </strong>
-        </span>
+          </p>
+        </div>
       </div>
 
-      <div>
-        <span
-          className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass}`}
-        >
-          {status}
-        </span>
+      {/* Progress */}
+      <div className="mt-6">
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-sm font-medium text-slate-600">
+            Spending Progress
+          </span>
+
+          <span
+            className={`text-sm font-bold ${
+              isOverBudget
+                ? "text-red-600"
+                : "text-slate-900"
+            }`}
+          >
+            {utilization.toFixed(1)}%
+          </span>
+        </div>
+
+        <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${progressClass}`}
+            style={{
+              width: `${progressWidth}%`,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Status */}
+      <div className="mt-4 flex items-center gap-2">
+        {isOverBudget ? (
+          <>
+            <TrendingDown
+              size={16}
+              className="text-red-500"
+            />
+
+            <p className="text-sm font-medium text-red-600">
+              You have exceeded this budget.
+            </p>
+          </>
+        ) : utilization >= 80 ? (
+          <>
+            <AlertTriangle
+              size={16}
+              className="text-orange-500"
+            />
+
+            <p className="text-sm font-medium text-orange-600">
+              You are close to your budget limit.
+            </p>
+          </>
+        ) : (
+          <>
+            <TrendingUp
+              size={16}
+              className="text-emerald-500"
+            />
+
+            <p className="text-sm font-medium text-emerald-600">
+              Your spending is within the budget.
+            </p>
+          </>
+        )}
       </div>
     </div>
   );

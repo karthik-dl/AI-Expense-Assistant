@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Plus, WalletCards } from "lucide-react";
+import { Plus } from "lucide-react";
+import toast from "react-hot-toast";
 
 import PageHeader from "../../components/ui/PageHeader";
 import Button from "../../components/ui/Button";
-import Pagination from "../../components/ui/Pagination";
 
-import BudgetSummary from "../../components/budget/BudgetSummary";
-import BudgetFilters from "../../components/budget/BudgetFilters";
 import BudgetCard from "../../components/budget/BudgetCard";
+import BudgetFilters from "../../components/budget/BudgetFilters";
+import BudgetSummary from "../../components/budget/BudgetSummary";
 import DeleteBudgetModal from "../../components/budget/DeleteBudgetModal";
 
 import * as budgetService from "../../services/budgetService";
 
 function Budgets() {
+  const today = new Date();
+
   const [budgets, setBudgets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [remainingData, setRemainingData] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
 
   const [selectedBudget, setSelectedBudget] =
     useState(null);
@@ -24,31 +30,32 @@ function Budgets() {
     useState(false);
 
   const [filters, setFilters] = useState({
-    search: "",
-    month: "",
-    sort: "newest",
+    month: today.getMonth() + 1,
+    year: today.getFullYear(),
+    category: "",
   });
 
-  const [currentPage, setCurrentPage] =
-    useState(1);
-
-  const itemsPerPage = 6;
 
   const loadBudgets = async () => {
     try {
       setLoading(true);
 
-      const { data } =
+      const response =
         await budgetService.getBudgets();
+
+      const data = response?.data;
 
       const list =
         data?.budgets ||
         data?.data?.budgets ||
-        data ||
-        [];
+        (Array.isArray(data)
+          ? data
+          : []);
 
       setBudgets(
-        Array.isArray(list) ? list : []
+        Array.isArray(list)
+          ? list
+          : []
       );
     } catch (error) {
       console.error(
@@ -57,114 +64,163 @@ function Budgets() {
       );
 
       setBudgets([]);
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to load budgets."
+      );
     } finally {
       setLoading(false);
     }
   };
 
+
+
+  const loadRemaining = async () => {
+    try {
+      const response =
+        await budgetService.getRemainingBudget(
+          filters.month,
+          filters.year
+        );
+
+      const data = response?.data;
+
+      const result =
+        data?.budgets ||
+        data?.data?.budgets ||
+        [];
+
+      setRemainingData(
+        Array.isArray(result)
+          ? result
+          : []
+      );
+    } catch (error) {
+      console.error(
+        "Load Remaining Budget Error:",
+        error
+      );
+
+      setRemainingData([]);
+    }
+  };
+
+
   useEffect(() => {
     loadBudgets();
   }, []);
 
+
+
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
+    loadRemaining();
+  }, [
+    filters.month,
+    filters.year,
+  ]);
 
-  const handleDeleteClick = (budget) => {
-    setSelectedBudget(budget);
-    setDeleteOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setDeleteOpen(false);
-    setSelectedBudget(null);
-  };
+  
 
   const handleFilterChange = (
     field,
     value
   ) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
+    setFilters((previous) => ({
+      ...previous,
+      [field]: Number.isNaN(
+        Number(value)
+      )
+        ? value
+        : Number(value),
     }));
   };
 
-  const filteredBudgets = [...budgets]
-    .filter((budget) => {
-      const search =
-        filters.search
-          .toLowerCase()
-          .trim();
 
-      const category =
-        budget.category
-          ?.toLowerCase() || "";
 
-      const matchesSearch =
-        !search ||
-        category.includes(search);
-
+  const filteredBudgets = budgets.filter(
+    (budget) => {
       const matchesMonth =
-        !filters.month ||
-        budget.month ===
-          filters.month;
+        Number(budget.month) ===
+        Number(filters.month);
+
+      const matchesYear =
+        Number(budget.year) ===
+        Number(filters.year);
+
+      const matchesCategory =
+        !filters.category ||
+        budget.category ===
+          filters.category;
 
       return (
-        matchesSearch &&
-        matchesMonth
+        matchesMonth &&
+        matchesYear &&
+        matchesCategory
       );
-    })
-    .sort((a, b) => {
-      if (filters.sort === "highest") {
-        return (
-          Number(b.amount || 0) -
-          Number(a.amount || 0)
-        );
-      }
-
-      if (filters.sort === "lowest") {
-        return (
-          Number(a.amount || 0) -
-          Number(b.amount || 0)
-        );
-      }
-
-      const dateA = new Date(
-        a.createdAt ||
-          a.created_at ||
-          0
-      );
-
-      const dateB = new Date(
-        b.createdAt ||
-          b.created_at ||
-          0
-      );
-
-      return dateB - dateA;
-    });
-
-  const totalPages = Math.ceil(
-    filteredBudgets.length /
-      itemsPerPage
+    }
   );
 
-  const paginatedBudgets =
-    filteredBudgets.slice(
-      (currentPage - 1) *
-        itemsPerPage,
-      currentPage *
-        itemsPerPage
+
+  const getSpent = (budget) => {
+    const data =
+      remainingData.find(
+        (item) =>
+          item.category ===
+          budget.category
+      );
+
+    return Number(
+      data?.spent || 0
     );
+  };
+
+
+
+  const handleDeleteClick = (
+    budget
+  ) => {
+    setSelectedBudget(budget);
+    setDeleteOpen(true);
+  };
+
+  const handleCloseDelete = () => {
+    setDeleteOpen(false);
+    setSelectedBudget(null);
+  };
+
+  const handleDeleteSuccess = async () => {
+    setBudgets((previous) =>
+      previous.filter(
+        (budget) =>
+          budget.id !==
+          selectedBudget?.id
+      )
+    );
+
+    setRemainingData((previous) =>
+      previous.filter(
+        (item) =>
+          item.category !==
+          selectedBudget?.category
+      )
+    );
+
+    setDeleteOpen(false);
+    setSelectedBudget(null);
+
+    await loadBudgets();
+    await loadRemaining();
+  };
 
   return (
     <div className="w-full min-w-0 space-y-6 sm:space-y-8">
+
       {/* Header */}
       <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <PageHeader
           title="Budgets"
-          subtitle="Plan and monitor your monthly spending."
+          subtitle="Plan and manage your monthly spending limits."
         />
 
         <Link
@@ -191,81 +247,89 @@ function Budgets() {
       {/* Summary */}
       <BudgetSummary
         budgets={filteredBudgets}
+        remainingData={remainingData}
       />
 
       {/* Budget Cards */}
       {loading ? (
-        <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
-
-          <p className="mt-4 text-sm text-slate-500">
+        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
+          <p className="text-sm text-slate-500">
             Loading budgets...
           </p>
         </div>
-      ) : paginatedBudgets.length ===
-        0 ? (
-        <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-            <WalletCards size={26} />
-          </div>
-
-          <h3 className="mt-5 text-lg font-semibold text-slate-900">
+      ) : filteredBudgets.length === 0 ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
+          <p className="text-lg font-semibold text-slate-900">
             No budgets found
-          </h3>
+          </p>
 
-          <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
-            Create a budget to start
-            planning and monitoring
-            your spending.
+          <p className="mt-2 text-sm text-slate-500">
+            Create a budget for{" "}
+            {filters.month}/
+            {filters.year}.
           </p>
 
           <Link to="/budgets/new">
             <Button
-              className="mt-6"
-              leftIcon={
-                <Plus size={18} />
-              }
+              className="mt-5"
+              leftIcon={<Plus size={18} />}
             >
-              Create Budget
+              Add Budget
             </Button>
           </Link>
         </div>
       ) : (
-        <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {paginatedBudgets.map(
+        <div className="grid min-w-0 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredBudgets.map(
             (budget) => (
-              <BudgetCard
+              <div
                 key={budget.id}
-                budget={budget}
-                onDelete={
-                  handleDeleteClick
-                }
-              />
+                className="min-w-0"
+              >
+                <BudgetCard
+                  budget={budget}
+                  spent={getSpent(
+                    budget
+                  )}
+                />
+
+                <div className="mt-3 flex justify-end gap-2">
+                  <Link
+                    to={`/budgets/${budget.id}/edit`}
+                  >
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                    >
+                      Edit
+                    </Button>
+                  </Link>
+
+                  <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={() =>
+                      handleDeleteClick(
+                        budget
+                      )
+                    }
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </div>
             )
           )}
         </div>
       )}
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={
-            setCurrentPage
-          }
-        />
-      )}
-
-      {/* Delete */}
+      {/* Delete Modal */}
       <DeleteBudgetModal
         open={deleteOpen}
         budget={selectedBudget}
-        onClose={
-          handleCloseModal
-        }
+        onClose={handleCloseDelete}
         onSuccess={
-          loadBudgets
+          handleDeleteSuccess
         }
       />
     </div>

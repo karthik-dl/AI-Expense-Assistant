@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import PageHeader from "../../components/ui/PageHeader";
 import BudgetForm from "../../components/budget/BudgetForm";
 
-import { createBudget } from "../../services/budgetService";
+import * as budgetService from "../../services/budgetService";
 
 function AddBudget() {
   const navigate = useNavigate();
@@ -13,13 +13,13 @@ function AddBudget() {
   const [loading, setLoading] =
     useState(false);
 
-  const handleSubmit = async (
-    formData
-  ) => {
+  const handleSubmit = async (values) => {
     try {
       setLoading(true);
 
-      await createBudget(formData);
+      await budgetService.createBudget(
+        values
+      );
 
       toast.success(
         "Budget created successfully."
@@ -28,7 +28,7 @@ function AddBudget() {
       navigate("/budgets");
     } catch (error) {
       console.error(
-        "Create Budget Error:",
+        "Add Budget Error:",
         error
       );
 
@@ -42,16 +42,22 @@ function AddBudget() {
   };
 
   return (
-    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
-      <PageHeader
-        title="Add Budget"
-        subtitle="Create a new monthly budget."
-      />
+    <div className="w-full min-w-0">
+      <div className="mx-auto w-full max-w-5xl space-y-6 sm:space-y-8">
 
-      <BudgetForm
-        onSubmit={handleSubmit}
-        loading={loading}
-      />
+        <PageHeader
+          title="Add Budget"
+          subtitle="Create a monthly spending budget."
+        />
+
+        <div className="flex w-full justify-center">
+          <BudgetForm
+            onSubmit={handleSubmit}
+            loading={loading}
+          />
+        </div>
+
+      </div>
     </div>
   );
 }

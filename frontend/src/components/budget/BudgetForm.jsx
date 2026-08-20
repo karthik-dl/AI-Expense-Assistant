@@ -22,18 +22,18 @@ const categories = [
 ];
 
 const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
+  { value: 1, label: "January" },
+  { value: 2, label: "February" },
+  { value: 3, label: "March" },
+  { value: 4, label: "April" },
+  { value: 5, label: "May" },
+  { value: 6, label: "June" },
+  { value: 7, label: "July" },
+  { value: 8, label: "August" },
+  { value: 9, label: "September" },
+  { value: 10, label: "October" },
+  { value: 11, label: "November" },
+  { value: 12, label: "December" },
 ];
 
 function BudgetForm({
@@ -41,6 +41,9 @@ function BudgetForm({
   onSubmit,
   loading = false,
 }) {
+  const currentYear =
+    new Date().getFullYear();
+
   const {
     register,
     handleSubmit,
@@ -48,30 +51,73 @@ function BudgetForm({
     formState: { errors },
   } = useForm({
     defaultValues: {
-      category: "",
-      amount: "",
-      month: "",
-      notes: "",
-      ...initialValues,
+      category:
+        initialValues.category || "",
+
+      amount:
+        initialValues.amount || "",
+
+      month:
+        initialValues.month
+          ? String(initialValues.month)
+          : String(
+              new Date().getMonth() + 1
+            ),
+
+      year:
+        initialValues.year
+          ? String(initialValues.year)
+          : String(currentYear),
     },
   });
 
   useEffect(() => {
     reset({
-      category: "",
-      amount: "",
-      month: "",
-      notes: "",
-      ...initialValues,
+      category:
+        initialValues.category || "",
+
+      amount:
+        initialValues.amount || "",
+
+      month:
+        initialValues.month
+          ? String(initialValues.month)
+          : String(
+              new Date().getMonth() + 1
+            ),
+
+      year:
+        initialValues.year
+          ? String(initialValues.year)
+          : String(currentYear),
     });
-  }, [initialValues, reset]);
+  }, [
+    initialValues,
+    reset,
+    currentYear,
+  ]);
+
+  const handleFormSubmit = async (
+    data
+  ) => {
+    const formData = {
+      category: data.category,
+      amount: Number(data.amount),
+      month: Number(data.month),
+      year: Number(data.year),
+    };
+
+    await onSubmit(formData);
+  };
 
   const selectClass =
     "h-11 w-full rounded-xl border border-slate-300 bg-white px-4 text-sm text-slate-900 outline-none transition hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(
+        handleFormSubmit
+      )}
       className="w-full max-w-3xl rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:p-8"
     >
       {/* Header */}
@@ -94,10 +140,14 @@ function BudgetForm({
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2">
+
         {/* Category */}
         <div>
           <label className="mb-2 block text-sm font-medium text-slate-700">
             Category
+            <span className="ml-1 text-red-500">
+              *
+            </span>
           </label>
 
           <select
@@ -140,12 +190,14 @@ function BudgetForm({
           leftIcon={
             <IndianRupee size={17} />
           }
+          required
           error={
             errors.amount?.message
           }
           {...register("amount", {
             required:
               "Budget amount is required",
+
             min: {
               value: 1,
               message:
@@ -158,6 +210,9 @@ function BudgetForm({
         <div>
           <label className="mb-2 block text-sm font-medium text-slate-700">
             Month
+            <span className="ml-1 text-red-500">
+              *
+            </span>
           </label>
 
           <select
@@ -167,16 +222,12 @@ function BudgetForm({
             })}
             className={selectClass}
           >
-            <option value="">
-              Select Month
-            </option>
-
             {months.map((month) => (
               <option
-                key={month}
-                value={month}
+                key={month.value}
+                value={month.value}
               >
-                {month}
+                {month.label}
               </option>
             ))}
           </select>
@@ -188,18 +239,52 @@ function BudgetForm({
           )}
         </div>
 
-        {/* Notes */}
-        <div className="sm:col-span-2">
+        {/* Year */}
+        <div>
           <label className="mb-2 block text-sm font-medium text-slate-700">
-            Notes
+            Year
+            <span className="ml-1 text-red-500">
+              *
+            </span>
           </label>
 
-          <textarea
-            rows={4}
-            placeholder="Optional notes..."
-            {...register("notes")}
-            className="w-full resize-y rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-          />
+          <select
+            {...register("year", {
+              required:
+                "Year is required",
+            })}
+            className={selectClass}
+          >
+            <option
+              value={currentYear - 1}
+            >
+              {currentYear - 1}
+            </option>
+
+            <option
+              value={currentYear}
+            >
+              {currentYear}
+            </option>
+
+            <option
+              value={currentYear + 1}
+            >
+              {currentYear + 1}
+            </option>
+
+            <option
+              value={currentYear + 2}
+            >
+              {currentYear + 2}
+            </option>
+          </select>
+
+          {errors.year && (
+            <p className="mt-1.5 text-xs font-medium text-red-600">
+              {errors.year.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -208,6 +293,7 @@ function BudgetForm({
         <Button
           type="submit"
           loading={loading}
+          disabled={loading}
           className="w-full sm:w-auto"
         >
           Save Budget

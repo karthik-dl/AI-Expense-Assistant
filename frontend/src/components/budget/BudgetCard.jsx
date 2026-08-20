@@ -1,140 +1,197 @@
-import { Link } from "react-router-dom";
 import {
-  Pencil,
-  Trash2,
   Wallet,
+  TrendingUp,
+  TrendingDown,
 } from "lucide-react";
-
-import Button from "../ui/Button";
-import BudgetProgress from "./BudgetProgress";
 
 function BudgetCard({
   budget,
-  onDelete,
+  spent = 0,
 }) {
-  const budgetAmount = Number(
-    budget?.amount || 0
+  if (!budget) return null;
+
+  const amount = Number(
+    budget.amount || 0
   );
 
   const spentAmount = Number(
-    budget?.spent || 0
+    spent || 0
   );
 
   const remaining =
-    budgetAmount - spentAmount;
+    amount - spentAmount;
+
+  const percentage =
+    amount > 0
+      ? Math.min(
+          (spentAmount / amount) * 100,
+          100
+        )
+      : 0;
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const month =
+    Number(budget.month) >= 1 &&
+    Number(budget.month) <= 12
+      ? monthNames[
+          Number(budget.month) - 1
+        ]
+      : "Monthly";
+
+  const isOverBudget =
+    spentAmount > amount;
 
   return (
-    <article className="min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
       {/* Header */}
-      <div className="flex min-w-0 items-start justify-between gap-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-            <Wallet size={21} />
-          </div>
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
+              <Wallet size={20} />
+            </div>
 
-          <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold text-slate-900">
-              {budget?.category ||
-                "Budget"}
-            </h3>
+            <div className="min-w-0">
+              <h3 className="truncate text-base font-semibold text-slate-900">
+                {budget.category ||
+                  "Other"}
+              </h3>
 
-            <p className="mt-0.5 text-sm text-slate-500">
-              {budget?.month ||
-                "Monthly budget"}
-            </p>
+              <p className="mt-0.5 text-sm text-slate-500">
+                {month}{" "}
+                {budget.year || ""}
+              </p>
+            </div>
           </div>
+        </div>
+
+        {/* Percentage */}
+        <div
+          className={`shrink-0 rounded-lg px-2.5 py-1 text-xs font-semibold ${
+            isOverBudget
+              ? "bg-red-50 text-red-600"
+              : "bg-blue-50 text-blue-600"
+          }`}
+        >
+          {Math.round(percentage)}%
         </div>
       </div>
 
       {/* Amounts */}
-      <div className="mt-6 grid grid-cols-3 gap-3">
-        <div className="min-w-0">
+      <div className="mt-6 grid grid-cols-2 gap-4">
+        <div>
           <p className="text-xs font-medium text-slate-500">
             Budget
           </p>
 
-          <p className="mt-1 truncate text-sm font-bold text-blue-600">
+          <p className="mt-1 text-lg font-bold text-slate-900">
             ₹
-            {budgetAmount.toLocaleString(
-              "en-IN"
+            {amount.toLocaleString(
+              "en-IN",
+              {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              }
             )}
           </p>
         </div>
 
-        <div className="min-w-0">
+        <div>
           <p className="text-xs font-medium text-slate-500">
             Spent
           </p>
 
-          <p className="mt-1 truncate text-sm font-bold text-red-600">
-            ₹
-            {spentAmount.toLocaleString(
-              "en-IN"
-            )}
-          </p>
-        </div>
-
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-slate-500">
-            Remaining
-          </p>
-
           <p
-            className={`mt-1 truncate text-sm font-bold ${
-              remaining >= 0
-                ? "text-emerald-600"
-                : "text-red-600"
+            className={`mt-1 text-lg font-bold ${
+              isOverBudget
+                ? "text-red-600"
+                : "text-orange-600"
             }`}
           >
             ₹
-            {remaining.toLocaleString(
-              "en-IN"
+            {spentAmount.toLocaleString(
+              "en-IN",
+              {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              }
             )}
           </p>
         </div>
       </div>
 
       {/* Progress */}
-      <div className="mt-6 border-t border-slate-100 pt-5">
-        <BudgetProgress
-          spent={spentAmount}
-          budget={budgetAmount}
-        />
+      <div className="mt-5">
+        <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <div
+            className={`h-full rounded-full transition-all duration-500 ${
+              isOverBudget
+                ? "bg-red-500"
+                : "bg-blue-500"
+            }`}
+            style={{
+              width: `${percentage}%`,
+            }}
+          />
+        </div>
       </div>
 
-      {/* Actions */}
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <Link
-          to={`/budgets/${budget.id}/edit`}
-          className="min-w-0"
+      {/* Remaining */}
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
+        <div className="flex items-center gap-2">
+          {isOverBudget ? (
+            <TrendingDown
+              size={17}
+              className="text-red-500"
+            />
+          ) : (
+            <TrendingUp
+              size={17}
+              className="text-emerald-500"
+            />
+          )}
+
+          <span className="text-sm text-slate-500">
+            {isOverBudget
+              ? "Over budget"
+              : "Remaining"}
+          </span>
+        </div>
+
+        <span
+          className={`text-sm font-bold ${
+            isOverBudget
+              ? "text-red-600"
+              : "text-emerald-600"
+          }`}
         >
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            leftIcon={
-              <Pencil size={15} />
+          {isOverBudget ? "-" : ""}₹
+          {Math.abs(
+            remaining
+          ).toLocaleString(
+            "en-IN",
+            {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
             }
-          >
-            Edit
-          </Button>
-        </Link>
-
-        <Button
-          type="button"
-          variant="danger"
-          className="w-full"
-          leftIcon={
-            <Trash2 size={15} />
-          }
-          onClick={() =>
-            onDelete?.(budget)
-          }
-        >
-          Delete
-        </Button>
+          )}
+        </span>
       </div>
-    </article>
+    </div>
   );
 }
 

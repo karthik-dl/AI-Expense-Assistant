@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import PageHeader from "../../components/ui/PageHeader";
 import Loader from "../../components/ui/Loader";
 import BudgetForm from "../../components/budget/BudgetForm";
 
-import {
-  getBudget,
-  updateBudget,
-} from "../../services/budgetService";
+import * as budgetService from "../../services/budgetService";
 
 function EditBudget() {
   const { id } = useParams();
@@ -32,13 +26,21 @@ function EditBudget() {
       try {
         setLoading(true);
 
-        const { data } =
-          await getBudget(id);
+        const response =
+          await budgetService.getBudget(id);
+
+        const data = response?.data;
 
         const budgetData =
           data?.budget ||
           data?.data?.budget ||
           data;
+
+        if (!budgetData?.id) {
+          throw new Error(
+            "Budget not found"
+          );
+        }
 
         setBudget(budgetData);
       } catch (error) {
@@ -58,18 +60,27 @@ function EditBudget() {
       }
     };
 
-    loadBudget();
+    if (id) {
+      loadBudget();
+    }
   }, [id, navigate]);
 
   const handleSubmit = async (
-    formData
+    values
   ) => {
     try {
       setSaving(true);
 
-      await updateBudget(
+      const formattedData = {
+        category: values.category,
+        amount: Number(values.amount),
+        month: Number(values.month),
+        year: Number(values.year),
+      };
+
+      await budgetService.updateBudget(
         id,
-        formData
+        formattedData
       );
 
       toast.success(
@@ -105,17 +116,23 @@ function EditBudget() {
   }
 
   return (
-    <div className="w-full min-w-0 space-y-6 sm:space-y-8">
-      <PageHeader
-        title="Edit Budget"
-        subtitle="Update your monthly budget."
-      />
+    <div className="w-full min-w-0">
+      <div className="mx-auto w-full max-w-5xl space-y-6 sm:space-y-8">
 
-      <BudgetForm
-        initialValues={budget}
-        onSubmit={handleSubmit}
-        loading={saving}
-      />
+        <PageHeader
+          title="Edit Budget"
+          subtitle="Update your budget details."
+        />
+
+        <div className="flex w-full justify-center">
+          <BudgetForm
+            initialValues={budget}
+            onSubmit={handleSubmit}
+            loading={saving}
+          />
+        </div>
+
+      </div>
     </div>
   );
 }
