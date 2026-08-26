@@ -8,7 +8,8 @@ import {
 import Card from "../ui/Card";
 
 function SpendingInsights({ summary }) {
-  const insights = summary.spendingInsights || [];
+  const insights =
+    summary?.spendingInsights || [];
 
   const getIcon = (type) => {
     switch (type) {
@@ -54,7 +55,8 @@ function SpendingInsights({ summary }) {
         </h2>
 
         <p className="mt-1 text-sm text-slate-500">
-          Key observations generated from your financial data.
+          Key observations generated from your
+          financial data.
         </p>
       </div>
 

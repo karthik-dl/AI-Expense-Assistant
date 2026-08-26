@@ -8,7 +8,8 @@ import {
 import Card from "../ui/Card";
 
 function SavingsSuggestions({ summary }) {
-  const suggestions = summary.savingsSuggestions || [];
+  const suggestions =
+    summary?.savingsSuggestions || [];
 
   const getIcon = (type) => {
     switch (type) {
@@ -54,7 +55,8 @@ function SavingsSuggestions({ summary }) {
         </h2>
 
         <p className="mt-1 text-sm text-slate-500">
-          Personalized recommendations to improve your savings.
+          Personalized recommendations to improve
+          your savings.
         </p>
       </div>
 
@@ -66,14 +68,14 @@ function SavingsSuggestions({ summary }) {
         <div className="space-y-4">
           {suggestions.map((item, index) => (
             <div
-              key={index}
+              key={`${item.type}-${index}`}
               className="flex items-start gap-4 rounded-2xl border border-slate-200 p-4 transition hover:shadow-md"
             >
-              <div className="rounded-xl bg-slate-100 p-3">
+              <div className="shrink-0 rounded-xl bg-slate-100 p-3">
                 {getIcon(item.type)}
               </div>
 
-              <div className="flex-1">
+              <div className="min-w-0 flex-1">
                 <h3 className="font-semibold text-slate-800">
                   {item.title}
                 </h3>
@@ -82,7 +84,7 @@ function SavingsSuggestions({ summary }) {
                   {item.description}
                 </p>
 
-                {item.potentialSaving && (
+                {Number(item.potentialSaving || 0) > 0 && (
                   <div className="mt-3 inline-flex rounded-full bg-green-100 px-3 py-1 text-sm font-semibold text-green-700">
                     Potential Saving: ₹
                     {Number(

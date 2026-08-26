@@ -7,7 +7,12 @@ import {
 import Card from "../ui/Card";
 
 function PredictionCard({ summary }) {
-  const prediction = summary.prediction || {};
+  const prediction =
+    summary?.prediction || {};
+
+  const predictedIncome = Number(
+    prediction.predictedIncome || 0
+  );
 
   const predictedExpense = Number(
     prediction.predictedExpense || 0
@@ -17,33 +22,40 @@ function PredictionCard({ summary }) {
     prediction.predictedSavings || 0
   );
 
-  const confidence = Number(
-    prediction.confidence || 0
+  const confidence = Math.min(
+    Math.max(
+      Number(prediction.confidence || 0),
+      0
+    ),
+    100
   );
 
-  const risk = prediction.risk || "Low";
+  const risk =
+    prediction.risk || "Low";
 
   const riskStyles = {
     Low: "bg-green-100 text-green-700",
-    Medium: "bg-yellow-100 text-yellow-700",
+    Medium:
+      "bg-yellow-100 text-yellow-700",
     High: "bg-red-100 text-red-700",
   };
 
   return (
     <Card>
-      <div className="mb-6 flex items-center justify-between">
+      {/* Header */}
+      <div className="mb-6 flex items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold text-slate-800">
-            AI Prediction
+            AI Financial Prediction
           </h2>
 
           <p className="mt-1 text-sm text-slate-500">
-            Forecast based on your spending pattern.
+            Forecast based on your historical financial data.
           </p>
         </div>
 
         <div
-          className={`rounded-full px-3 py-1 text-sm font-semibold ${
+          className={`shrink-0 rounded-full px-3 py-1 text-sm font-semibold ${
             riskStyles[risk] ||
             riskStyles.Low
           }`}
@@ -52,7 +64,31 @@ function PredictionCard({ summary }) {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Predictions */}
+      <div className="grid gap-4 md:grid-cols-3">
+
+        {/* Predicted Income */}
+        <div className="rounded-2xl bg-slate-50 p-5">
+          <div className="mb-2 flex items-center gap-2">
+            <TrendingUp
+              className="text-green-500"
+              size={20}
+            />
+
+            <span className="font-medium text-slate-700">
+              Predicted Income
+            </span>
+          </div>
+
+          <p className="text-2xl font-bold text-green-600">
+            ₹
+            {predictedIncome.toLocaleString(
+              "en-IN"
+            )}
+          </p>
+        </div>
+
+        {/* Predicted Expenses */}
         <div className="rounded-2xl bg-slate-50 p-5">
           <div className="mb-2 flex items-center gap-2">
             <TrendingDown
@@ -60,7 +96,7 @@ function PredictionCard({ summary }) {
               size={20}
             />
 
-            <span className="font-medium">
+            <span className="font-medium text-slate-700">
               Predicted Expenses
             </span>
           </div>
@@ -73,27 +109,36 @@ function PredictionCard({ summary }) {
           </p>
         </div>
 
+        {/* Predicted Savings */}
         <div className="rounded-2xl bg-slate-50 p-5">
           <div className="mb-2 flex items-center gap-2">
             <TrendingUp
-              className="text-green-500"
+              className="text-blue-500"
               size={20}
             />
 
-            <span className="font-medium">
+            <span className="font-medium text-slate-700">
               Predicted Savings
             </span>
           </div>
 
-          <p className="text-2xl font-bold text-green-600">
+          <p
+            className={`text-2xl font-bold ${
+              predictedSavings >= 0
+                ? "text-blue-600"
+                : "text-red-600"
+            }`}
+          >
             ₹
             {predictedSavings.toLocaleString(
               "en-IN"
             )}
           </p>
         </div>
+
       </div>
 
+      {/* Confidence */}
       <div className="mt-6 rounded-2xl bg-blue-50 p-5">
         <div className="mb-3 flex items-center gap-2">
           <ShieldAlert
@@ -103,6 +148,10 @@ function PredictionCard({ summary }) {
 
           <span className="font-semibold text-slate-700">
             AI Confidence
+          </span>
+
+          <span className="ml-auto font-bold text-blue-700">
+            {confidence}%
           </span>
         </div>
 
@@ -116,8 +165,9 @@ function PredictionCard({ summary }) {
         </div>
 
         <p className="text-sm text-slate-600">
-          {confidence}% confidence based on your
-          historical income and expense data.
+          {confidence}% confidence based on
+          your historical income and expense
+          data.
         </p>
       </div>
     </Card>

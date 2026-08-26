@@ -1,95 +1,130 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
-import Loader from "../../components/ui/Loader";
 import PageHeader from "../../components/ui/PageHeader";
+import Loader from "../../components/ui/Loader";
 
 import SummaryCard from "../../components/ai-summary/SummaryCard";
 import FinancialHealth from "../../components/ai-summary/FinancialHealth";
-import SpendingInsights from "../../components/ai-summary/SpendingInsights";
-import SavingsSuggestions from "../../components/ai-summary/SavingsSuggestions";
-import BudgetAlerts from "../../components/ai-summary/BudgetAlerts";
 import PredictionCard from "../../components/ai-summary/PredictionCard";
+import SpendingInsights from "../../components/ai-summary/SpendingInsights";
+import BudgetAlerts from "../../components/ai-summary/BudgetAlerts";
+import SavingsSuggestions from "../../components/ai-summary/SavingsSuggestions";
 import AIChatSummary from "../../components/ai-summary/AIChatSummary";
 
 import { getAISummary } from "../../services/aiService";
 
 function AISummary() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-  const [summary, setSummary] = useState({
-    spendingInsights: [],
-    savingsSuggestions: [],
-    budgetAlerts: [],
-    prediction: {},
-  });
+  const [summary, setSummary] = useState(null);
 
-  const loadSummary = useCallback(async () => {
+  const loadAISummary = async () => {
     try {
       setLoading(true);
-      setError("");
 
-      const { data } = await getAISummary();
+      const response = await getAISummary();
 
-      setSummary(data);
-    } catch (err) {
-      console.error(err);
-      setError("Unable to load AI summary. Please try again.");
+      console.log(
+        "AI Summary Response:",
+        response.data
+      );
+
+      // Backend response:
+      //
+      // {
+      //   success: true,
+      //   message: "...",
+      //   data: {
+      //     financialScore: ...,
+      //     totalIncome: ...,
+      //     totalExpense: ...,
+      //     savings: ...,
+      //     prediction: {...},
+      //     ...
+      //   }
+      // }
+
+      setSummary(response.data.data);
+    } catch (error) {
+      console.error(
+        "AI Summary Error:",
+        error
+      );
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to load AI summary."
+      );
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    loadSummary();
-  }, [loadSummary]);
+    loadAISummary();
+  }, []);
+
+  if (loading) {
+    return (
+      <Loader text="Loading AI insights..." />
+    );
+  }
+
+  if (!summary) {
+    return (
+      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
+        <p className="text-sm text-slate-500">
+          No AI summary available.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
+    <div className="mx-auto w-full max-w-[1600px] space-y-6">
+
+      {/* Page Header */}
       <PageHeader
         title="AI Financial Summary"
-        subtitle="AI-powered insights into your finances."
-      >
-        <button
-          onClick={loadSummary}
-          disabled={loading}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {loading ? "Refreshing..." : "Refresh"}
-        </button>
-      </PageHeader>
+        subtitle="Understand your financial health with smart insights and recommendations."
+      />
 
-      {loading ? (
-        <Loader />
-      ) : error ? (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center text-red-600">
-          <p className="mb-4">{error}</p>
+      {/* Main Summary */}
+      <SummaryCard
+        summary={summary}
+      />
 
-          <button
-            onClick={loadSummary}
-            className="rounded-xl bg-red-600 px-4 py-2 text-white transition hover:bg-red-700"
-          >
-            Try Again
-          </button>
-        </div>
-      ) : (
-        <>
-          <SummaryCard summary={summary} />
+      {/* Financial Health */}
+      <FinancialHealth
+        summary={summary}
+      />
 
-          <div className="grid gap-6 xl:grid-cols-2">
-            <FinancialHealth summary={summary} />
-            <PredictionCard summary={summary} />
-          </div>
+      {/* Financial Prediction */}
+      <PredictionCard
+        summary={summary}
+      />
 
-          <SpendingInsights summary={summary} />
+      {/* Spending Insights */}
+      <SpendingInsights
+        summary={summary}
+      />
 
-          <SavingsSuggestions summary={summary} />
+      {/* Budget Alerts */}
+      <BudgetAlerts
+        summary={summary}
+      />
 
-          <BudgetAlerts summary={summary} />
+      {/* Savings Suggestions */}
+      <SavingsSuggestions
+        summary={summary}
+      />
 
-          <AIChatSummary summary={summary} />
-        </>
-      )}
+      {/* AI Summary */}
+      <AIChatSummary
+        summary={summary}
+      />
+
     </div>
   );
 }

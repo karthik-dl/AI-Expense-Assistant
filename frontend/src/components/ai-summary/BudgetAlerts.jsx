@@ -7,7 +7,8 @@ import {
 import Card from "../ui/Card";
 
 function BudgetAlerts({ summary }) {
-  const alerts = summary.budgetAlerts || [];
+  const alerts =
+    summary?.budgetAlerts || [];
 
   const getAlertConfig = (status) => {
     switch (status) {
@@ -71,16 +72,19 @@ function BudgetAlerts({ summary }) {
       ) : (
         <div className="space-y-4">
           {alerts.map((alert, index) => {
-            const config = getAlertConfig(
-              alert.status
-            );
+            const config =
+              getAlertConfig(
+                alert.status
+              );
 
             return (
               <div
-                key={index}
+                key={`${alert.category}-${index}`}
                 className={`flex items-start gap-4 rounded-2xl border p-4 ${config.bg} ${config.border}`}
               >
-                <div>{config.icon}</div>
+                <div className="shrink-0">
+                  {config.icon}
+                </div>
 
                 <div className="flex-1">
                   <h3
@@ -93,24 +97,39 @@ function BudgetAlerts({ summary }) {
                     {alert.message}
                   </p>
 
-                  <div className="mt-3 flex flex-wrap gap-4 text-sm">
+                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-700">
                     <span>
-                      <strong>Budget:</strong> ₹
+                      <strong>
+                        Budget:
+                      </strong>{" "}
+                      ₹
                       {Number(
-                        alert.budget
-                      ).toLocaleString("en-IN")}
+                        alert.budget || 0
+                      ).toLocaleString(
+                        "en-IN"
+                      )}
                     </span>
 
                     <span>
-                      <strong>Spent:</strong> ₹
+                      <strong>
+                        Spent:
+                      </strong>{" "}
+                      ₹
                       {Number(
-                        alert.spent
-                      ).toLocaleString("en-IN")}
+                        alert.spent || 0
+                      ).toLocaleString(
+                        "en-IN"
+                      )}
                     </span>
 
                     <span>
-                      <strong>Usage:</strong>{" "}
-                      {alert.percentage}%
+                      <strong>
+                        Usage:
+                      </strong>{" "}
+                      {Number(
+                        alert.percentage || 0
+                      ).toFixed(1)}
+                      %
                     </span>
                   </div>
                 </div>
