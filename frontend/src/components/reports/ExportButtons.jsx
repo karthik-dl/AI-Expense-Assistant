@@ -1,72 +1,151 @@
+import { useState } from "react";
+import {
+  Download,
+  FileText,
+  FileSpreadsheet,
+} from "lucide-react";
 import toast from "react-hot-toast";
-import { Download, FileText, FileSpreadsheet } from "lucide-react";
 
 import Button from "../ui/Button";
-
 import {
   exportPdf,
   exportCsv,
 } from "../../services/reportsService";
 
-function ExportButtons({ filters }) {
-  const downloadFile = (blob, filename) => {
-    const url = window.URL.createObjectURL(blob);
+function ExportButtons({
+  filters = {},
+}) {
+  const [pdfLoading, setPdfLoading] =
+    useState(false);
 
-    const link = document.createElement("a");
+  const [csvLoading, setCsvLoading] =
+    useState(false);
+
+  const downloadFile = (
+    blob,
+    filename
+  ) => {
+    const url = window.URL.createObjectURL(
+      new Blob([blob])
+    );
+
+    const link =
+      document.createElement("a");
+
     link.href = url;
-    link.download = filename;
+    link.setAttribute(
+      "download",
+      filename
+    );
 
     document.body.appendChild(link);
+
     link.click();
 
     link.remove();
+
     window.URL.revokeObjectURL(url);
   };
 
   const handlePdfExport = async () => {
     try {
-      const { data } = await exportPdf(filters);
+      setPdfLoading(true);
 
-      downloadFile(data, "financial-report.pdf");
+      const response =
+        await exportPdf(filters);
 
-      toast.success("PDF exported successfully.");
+      downloadFile(
+        response.data,
+        "financial-report.pdf"
+      );
+
+      toast.success(
+        "PDF report downloaded successfully."
+      );
     } catch (error) {
-      console.error(error);
+      console.error(
+        "PDF Export Error:",
+        error
+      );
 
-      toast.error("Failed to export PDF.");
+      toast.error(
+        error?.response?.data?.message ||
+          "PDF export is not available yet."
+      );
+    } finally {
+      setPdfLoading(false);
     }
   };
 
   const handleCsvExport = async () => {
     try {
-      const { data } = await exportCsv(filters);
+      setCsvLoading(true);
 
-      downloadFile(data, "financial-report.csv");
+      const response =
+        await exportCsv(filters);
 
-      toast.success("CSV exported successfully.");
+      downloadFile(
+        response.data,
+        "financial-report.csv"
+      );
+
+      toast.success(
+        "CSV report downloaded successfully."
+      );
     } catch (error) {
-      console.error(error);
+      console.error(
+        "CSV Export Error:",
+        error
+      );
 
-      toast.error("Failed to export CSV.");
+      toast.error(
+        error?.response?.data?.message ||
+          "CSV export is not available yet."
+      );
+    } finally {
+      setCsvLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-wrap justify-end gap-4">
+    <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+
       <Button
-        variant="secondary"
+        type="button"
+        variant="outline"
+        loading={pdfLoading}
+        disabled={
+          pdfLoading || csvLoading
+        }
         onClick={handlePdfExport}
+        leftIcon={
+          !pdfLoading && (
+            <FileText size={16} />
+          )
+        }
       >
-        <FileText size={18} />
         Export PDF
       </Button>
 
       <Button
+        type="button"
+        variant="outline"
+        loading={csvLoading}
+        disabled={
+          pdfLoading || csvLoading
+        }
         onClick={handleCsvExport}
+        leftIcon={
+          !csvLoading && (
+            <FileSpreadsheet
+              size={16}
+            />
+          )
+        }
       >
-        <FileSpreadsheet size={18} />
         Export CSV
       </Button>
+
     </div>
   );
 }

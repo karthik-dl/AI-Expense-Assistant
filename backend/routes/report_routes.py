@@ -6,40 +6,62 @@ from controllers.report_controller import (
     category_analysis,
     cash_flow,
     top_expenses,
-    savings_analysis
+    savings_analysis,
+    export_csv,
+    export_pdf
 )
+
 
 report_bp = Blueprint(
     "report_bp",
     __name__
 )
 
+
 report_bp.route(
     "/reports/monthly",
     methods=["GET"]
 )(monthly_report)
+
 
 report_bp.route(
     "/reports/yearly",
     methods=["GET"]
 )(yearly_report)
 
+
 report_bp.route(
     "/reports/category-analysis",
     methods=["GET"]
 )(category_analysis)
+
 
 report_bp.route(
     "/reports/cash-flow",
     methods=["GET"]
 )(cash_flow)
 
+
 report_bp.route(
     "/reports/top-expenses",
     methods=["GET"]
 )(top_expenses)
 
+
 report_bp.route(
     "/reports/savings-analysis",
     methods=["GET"]
 )(savings_analysis)
+
+
+
+report_bp.route(
+    "/reports/export/csv",
+    methods=["GET"]
+)(export_csv)
+
+
+report_bp.route(
+    "/reports/export/pdf",
+    methods=["GET"]
+)(export_pdf)

@@ -1,71 +1,111 @@
 import Card from "../ui/Card";
 
-function ReportsSummary({ summary }) {
-  const totalIncome = Number(summary.totalIncome || 0);
-  const totalExpense = Number(summary.totalExpense || 0);
+function ReportsSummary({ summary = {} }) {
+  const totalIncome = Number(
+    summary?.totalIncome || 0
+  );
 
-  const netSavings = totalIncome - totalExpense;
+  const totalExpense = Number(
+    summary?.totalExpense || 0
+  );
+
+  const netSavings =
+    totalIncome - totalExpense;
 
   const savingsRate =
     totalIncome > 0
       ? (netSavings / totalIncome) * 100
       : 0;
 
+  const isPositiveSavings =
+    netSavings >= 0;
+
   return (
-    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-      <Card>
-        <h4 className="text-sm text-slate-500">
+    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+
+      {/* Income */}
+      <Card hover={false}>
+        <p className="text-sm font-medium text-slate-500">
           Total Income
-        </h4>
+        </p>
 
-        <p className="mt-2 text-3xl font-bold text-green-600">
-          ₹{totalIncome.toLocaleString("en-IN")}
+        <p className="mt-2 text-2xl font-bold text-emerald-600 sm:text-3xl">
+          ₹
+          {totalIncome.toLocaleString(
+            "en-IN"
+          )}
+        </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          Total income for selected period
         </p>
       </Card>
 
-      <Card>
-        <h4 className="text-sm text-slate-500">
+      {/* Expenses */}
+      <Card hover={false}>
+        <p className="text-sm font-medium text-slate-500">
           Total Expenses
-        </h4>
+        </p>
 
-        <p className="mt-2 text-3xl font-bold text-red-600">
-          ₹{totalExpense.toLocaleString("en-IN")}
+        <p className="mt-2 text-2xl font-bold text-red-600 sm:text-3xl">
+          ₹
+          {totalExpense.toLocaleString(
+            "en-IN"
+          )}
+        </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          Total spending for selected period
         </p>
       </Card>
 
-      <Card>
-        <h4 className="text-sm text-slate-500">
+      {/* Savings */}
+      <Card hover={false}>
+        <p className="text-sm font-medium text-slate-500">
           Net Savings
-        </h4>
+        </p>
 
         <p
-          className={`mt-2 text-3xl font-bold ${
-            netSavings >= 0
+          className={`mt-2 text-2xl font-bold sm:text-3xl ${
+            isPositiveSavings
               ? "text-blue-600"
               : "text-red-600"
           }`}
         >
-          ₹{netSavings.toLocaleString("en-IN")}
+          ₹
+          {netSavings.toLocaleString(
+            "en-IN"
+          )}
+        </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          Income minus expenses
         </p>
       </Card>
 
-      <Card>
-        <h4 className="text-sm text-slate-500">
+      {/* Savings Rate */}
+      <Card hover={false}>
+        <p className="text-sm font-medium text-slate-500">
           Savings Rate
-        </h4>
+        </p>
 
         <p
-          className={`mt-2 text-3xl font-bold ${
+          className={`mt-2 text-2xl font-bold sm:text-3xl ${
             savingsRate >= 20
-              ? "text-green-600"
+              ? "text-emerald-600"
               : savingsRate >= 10
-              ? "text-yellow-500"
+              ? "text-amber-500"
               : "text-red-500"
           }`}
         >
           {savingsRate.toFixed(1)}%
         </p>
+
+        <p className="mt-1 text-xs text-slate-400">
+          Percentage of income saved
+        </p>
       </Card>
+
     </div>
   );
 }
