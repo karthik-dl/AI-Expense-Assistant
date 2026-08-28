@@ -18,26 +18,35 @@ function ProfileForm({ profile, onSuccess }) {
 
   useEffect(() => {
     reset({
-      name: profile.name || "",
-      email: profile.email || "",
-      phone: profile.phone || "",
-      location: profile.location || "",
-      bio: profile.bio || "",
+      name: profile?.name || "",
+      email: profile?.email || "",
     });
   }, [profile, reset]);
 
   const onSubmit = async (data) => {
     try {
-      await updateProfile(data);
+      await updateProfile({
+        name: data.name.trim(),
+        email: data.email.trim(),
+      });
 
-      toast.success("Profile updated successfully.");
+      toast.success(
+        "Profile updated successfully."
+      );
 
       if (onSuccess) {
-        onSuccess();
+        await onSuccess();
       }
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to update profile.");
+      console.error(
+        "Profile Update Error:",
+        error
+      );
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to update profile."
+      );
     }
   };
 
@@ -58,6 +67,11 @@ function ProfileForm({ profile, onSuccess }) {
             error={errors.name?.message}
             {...register("name", {
               required: "Name is required",
+              minLength: {
+                value: 2,
+                message:
+                  "Name must be at least 2 characters",
+              },
             })}
           />
 
@@ -71,36 +85,10 @@ function ProfileForm({ profile, onSuccess }) {
               pattern: {
                 value:
                   /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Invalid email address",
+                message:
+                  "Invalid email address",
               },
             })}
-          />
-
-          <Input
-            label="Phone"
-            placeholder="Enter phone number"
-            error={errors.phone?.message}
-            {...register("phone")}
-          />
-
-          <Input
-            label="Location"
-            placeholder="Enter location"
-            error={errors.location?.message}
-            {...register("location")}
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-medium text-slate-700">
-            Bio
-          </label>
-
-          <textarea
-            rows={5}
-            placeholder="Tell us about yourself..."
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            {...register("bio")}
           />
         </div>
 

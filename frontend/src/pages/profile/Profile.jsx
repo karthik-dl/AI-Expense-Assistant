@@ -6,7 +6,7 @@ import PageHeader from "../../components/ui/PageHeader";
 import ProfileCard from "../../components/profile/ProfileCard";
 import ProfileForm from "../../components/profile/ProfileForm";
 import AccountStats from "../../components/profile/AccountStats";
-import AvatarUpload from "../../components/profile/AvatarUpload";
+
 import ChangePasswordModal from "../../components/profile/ChangePasswordModal";
 import DeleteAccountModal from "../../components/profile/DeleteAccountModal";
 
@@ -17,8 +17,11 @@ function Profile() {
   const [profile, setProfile] = useState({});
   const [error, setError] = useState("");
 
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] =
+    useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] =
+    useState(false);
 
   const loadProfile = useCallback(async () => {
     try {
@@ -27,7 +30,7 @@ function Profile() {
 
       const { data } = await getProfile();
 
-      setProfile(data);
+      setProfile(data.user);
     } catch (err) {
       console.error(err);
       setError("Unable to load profile.");
@@ -60,19 +63,12 @@ function Profile() {
       />
 
       <div className="grid gap-6 xl:grid-cols-3">
-        {/* Left Column */}
         <div className="space-y-6">
           <ProfileCard profile={profile} />
-
-          <AvatarUpload
-            profile={profile}
-            onSuccess={loadProfile}
-          />
 
           <AccountStats profile={profile} />
         </div>
 
-        {/* Right Column */}
         <div className="space-y-6 xl:col-span-2">
           <ProfileForm
             profile={profile}

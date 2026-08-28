@@ -16,23 +16,40 @@ function ChangePasswordModal({ open, onClose }) {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const newPassword = watch("newPassword");
+  const newPassword = watch(
+    "newPassword"
+  );
 
   const onSubmit = async (data) => {
     try {
       await changePassword({
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
+        currentPassword:
+          data.currentPassword,
+
+        newPassword:
+          data.newPassword,
+
+        confirmPassword:
+          data.confirmPassword,
       });
 
-      toast.success("Password changed successfully.");
+      toast.success(
+        "Password changed successfully."
+      );
 
       reset();
 
       onClose();
     } catch (error) {
-      console.error(error);
-      toast.error("Failed to change password.");
+      console.error(
+        "Change Password Error:",
+        error
+      );
+
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to change password."
+      );
     }
   };
 
@@ -53,19 +70,28 @@ function ChangePasswordModal({ open, onClose }) {
           label="Current Password"
           type="password"
           placeholder="Enter current password"
-          error={errors.currentPassword?.message}
-          {...register("currentPassword", {
-            required: "Current password is required",
-          })}
+          error={
+            errors.currentPassword?.message
+          }
+          {...register(
+            "currentPassword",
+            {
+              required:
+                "Current password is required",
+            }
+          )}
         />
 
         <Input
           label="New Password"
           type="password"
           placeholder="Enter new password"
-          error={errors.newPassword?.message}
+          error={
+            errors.newPassword?.message
+          }
           {...register("newPassword", {
-            required: "New password is required",
+            required:
+              "New password is required",
             minLength: {
               value: 8,
               message:
@@ -78,13 +104,19 @@ function ChangePasswordModal({ open, onClose }) {
           label="Confirm Password"
           type="password"
           placeholder="Confirm new password"
-          error={errors.confirmPassword?.message}
-          {...register("confirmPassword", {
-            required: "Please confirm your password",
-            validate: (value) =>
-              value === newPassword ||
-              "Passwords do not match",
-          })}
+          error={
+            errors.confirmPassword?.message
+          }
+          {...register(
+            "confirmPassword",
+            {
+              required:
+                "Please confirm your password",
+              validate: (value) =>
+                value === newPassword ||
+                "Passwords do not match",
+            }
+          )}
         />
 
         <div className="flex justify-end gap-3 pt-2">

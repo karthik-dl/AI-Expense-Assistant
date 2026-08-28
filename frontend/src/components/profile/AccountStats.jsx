@@ -7,7 +7,12 @@ import {
 
 import Card from "../ui/Card";
 
-function StatItem({ title, value, icon, color }) {
+function StatItem({
+  title,
+  value,
+  icon,
+  color,
+}) {
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-slate-200 p-4 transition hover:shadow-md">
       <div
@@ -16,7 +21,7 @@ function StatItem({ title, value, icon, color }) {
         {icon}
       </div>
 
-      <div>
+      <div className="min-w-0">
         <p className="text-sm text-slate-500">
           {title}
         </p>
@@ -30,7 +35,23 @@ function StatItem({ title, value, icon, color }) {
 }
 
 function AccountStats({ profile }) {
-  const stats = profile.stats || {};
+  const stats = profile?.stats || {};
+
+  const totalExpenses = Number(
+    stats.expenses || 0
+  );
+
+  const totalIncome = Number(
+    stats.income || 0
+  );
+
+  const activeBudgets = Number(
+    stats.budgets || 0
+  );
+
+  const transactions = Number(
+    stats.transactions || 0
+  );
 
   return (
     <Card>
@@ -41,7 +62,9 @@ function AccountStats({ profile }) {
       <div className="space-y-4">
         <StatItem
           title="Total Expenses"
-          value={stats.expenses || 0}
+          value={`₹${totalExpenses.toLocaleString(
+            "en-IN"
+          )}`}
           color="bg-red-100"
           icon={
             <Wallet
@@ -53,7 +76,9 @@ function AccountStats({ profile }) {
 
         <StatItem
           title="Total Income"
-          value={stats.income || 0}
+          value={`₹${totalIncome.toLocaleString(
+            "en-IN"
+          )}`}
           color="bg-green-100"
           icon={
             <TrendingUp
@@ -65,7 +90,7 @@ function AccountStats({ profile }) {
 
         <StatItem
           title="Active Budgets"
-          value={stats.budgets || 0}
+          value={activeBudgets}
           color="bg-blue-100"
           icon={
             <Target
@@ -77,7 +102,7 @@ function AccountStats({ profile }) {
 
         <StatItem
           title="Transactions"
-          value={stats.transactions || 0}
+          value={transactions}
           color="bg-purple-100"
           icon={
             <Receipt

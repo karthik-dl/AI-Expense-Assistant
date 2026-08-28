@@ -1,34 +1,31 @@
-import { Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { Mail, Calendar } from "lucide-react";
 import Card from "../ui/Card";
 
 function ProfileCard({ profile }) {
-  const {
-    name = "User",
-    email = "Not Available",
-    phone = "Not Available",
-    location = "Not Specified",
-    bio = "No bio available.",
-    avatar = "",
-    joinedAt,
-  } = profile;
+  const name = profile?.name || "User";
+  const email = profile?.email || "Not Available";
+  const createdAt = profile?.created_at;
 
-  const memberSince = joinedAt
-    ? new Date(joinedAt).toLocaleDateString("en-IN", {
-        year: "numeric",
-        month: "long",
-      })
+  const memberSince = createdAt
+    ? new Date(createdAt).toLocaleDateString(
+        "en-IN",
+        {
+          year: "numeric",
+          month: "long",
+        }
+      )
     : "N/A";
+
+  const avatarUrl =
+    "https://ui-avatars.com/api/?name=" +
+    encodeURIComponent(name) +
+    "&background=2563EB&color=fff&size=200";
 
   return (
     <Card>
       <div className="flex flex-col items-center text-center">
         <img
-          src={
-            avatar ||
-            "https://ui-avatars.com/api/?name=" +
-              encodeURIComponent(name) +
-              "&background=2563EB&color=fff&size=200"
-          }
+          src={avatarUrl}
           alt={name}
           className="h-32 w-32 rounded-full border-4 border-blue-500 object-cover shadow-lg"
         />
@@ -38,7 +35,7 @@ function ProfileCard({ profile }) {
         </h2>
 
         <p className="mt-2 text-sm text-slate-500">
-          {bio}
+          Personal Finance Account
         </p>
       </div>
 
@@ -48,28 +45,9 @@ function ProfileCard({ profile }) {
             size={18}
             className="text-blue-600"
           />
-          <span className="text-slate-700">
+
+          <span className="break-all text-slate-700">
             {email}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Phone
-            size={18}
-            className="text-blue-600"
-          />
-          <span className="text-slate-700">
-            {phone}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <MapPin
-            size={18}
-            className="text-blue-600"
-          />
-          <span className="text-slate-700">
-            {location}
           </span>
         </div>
 
@@ -78,6 +56,7 @@ function ProfileCard({ profile }) {
             size={18}
             className="text-blue-600"
           />
+
           <span className="text-slate-700">
             Member Since {memberSince}
           </span>
