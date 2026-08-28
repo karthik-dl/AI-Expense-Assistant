@@ -1,14 +1,19 @@
 import api from "./api";
 
-export const login = (data) =>
-  api.post("/auth/login", data);
+export const login = (data) => {
+  return api.post(
+    "/auth/login",
+    data
+  );
+};
 
-export const register = (data) =>
-  api.post("/auth/register", data);
+export const register = (data) => {
+  return api.post(
+    "/auth/register",
+    data
+  );
+};
 
-export const getProfile = () =>
-  api.get("/profile");
-
-export const logout = () => {
-  localStorage.removeItem("access_token");
+export const getProfile = () => {
+  return api.get("/profile");
 };

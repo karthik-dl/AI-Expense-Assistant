@@ -1,60 +1,63 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
-/* =========================================================
-   ExpenseAI - Global Theme
-   White + Blue + Green
-   ========================================================= */
-
 :root {
-  /* Brand */
   --brand: #2563eb;
   --brand-dark: #1d4ed8;
   --brand-light: #eff6ff;
 
-  /* Success */
   --success: #059669;
   --success-dark: #047857;
   --success-light: #ecfdf5;
 
-  /* Danger */
   --danger: #dc2626;
   --danger-light: #fef2f2;
 
-  /* Warning */
   --warning: #d97706;
   --warning-light: #fffbeb;
 
-  /* Page */
   --page-bg: #f8fafc;
 
-  /* Surfaces */
   --surface: #ffffff;
   --surface-muted: #f1f5f9;
 
-  /* Borders */
   --border: #e2e8f0;
   --border-light: #f1f5f9;
 
-  /* Text */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
 
-  /* Sidebar */
   --sidebar-bg: #ffffff;
   --sidebar-border: #e2e8f0;
 
-  /* Radius */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 20px;
 }
 
-/* =========================================================
-   Reset
-   ========================================================= */
+html.dark {
+  --page-bg: #0f172a;
+
+  --surface: #1e293b;
+  --surface-muted: #334155;
+
+  --border: #475569;
+  --border-light: #334155;
+
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  --sidebar-bg: #111827;
+  --sidebar-border: #334155;
+
+  --brand-light: #1e3a8a;
+  --success-light: #064e3b;
+  --danger-light: #450a0a;
+  --warning-light: #451a03;
+}
 
 *,
 *::before,
@@ -82,18 +85,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   text-rendering: optimizeLegibility;
-}
 
-/* React root */
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
 
 #root {
   min-height: 100vh;
   width: 100%;
 }
-
-/* =========================================================
-   Typography
-   ========================================================= */
 
 h1,
 h2,
@@ -118,18 +119,10 @@ p {
   color: var(--text-secondary);
 }
 
-/* =========================================================
-   Links
-   ========================================================= */
-
 a {
   color: inherit;
   text-decoration: none;
 }
-
-/* =========================================================
-   Form Elements
-   ========================================================= */
 
 button,
 input,
@@ -152,26 +145,16 @@ select {
   max-width: 100%;
 }
 
-/* Prevent long text from breaking layouts */
-
 img,
 svg {
   display: block;
   max-width: 100%;
 }
 
-/* =========================================================
-   Selection
-   ========================================================= */
-
 ::selection {
   background: #dbeafe;
   color: #1e3a8a;
 }
-
-/* =========================================================
-   Scrollbar
-   ========================================================= */
 
 ::-webkit-scrollbar {
   width: 7px;
@@ -179,26 +162,17 @@ svg {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f8fafc;
+  background: var(--page-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #94a3b8;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
-
-/* =========================================================
-   Responsive Layout Protection
-   ========================================================= */
-
-/*
-  Prevent dashboard components from creating horizontal
-  overflow on smaller screens.
-*/
 
 html,
 body,
@@ -206,18 +180,9 @@ body,
   overflow-x: hidden;
 }
 
-/*
-  Allow tables/charts to scroll or shrink inside their
-  own containers instead of expanding the entire page.
-*/
-
 .min-w-0 {
   min-width: 0;
 }
-
-/* =========================================================
-   Focus
-   ========================================================= */
 
 button:focus-visible,
 a:focus-visible,
@@ -228,19 +193,11 @@ select:focus-visible {
   outline-offset: 2px;
 }
 
-/* =========================================================
-   Mobile Improvements
-   ========================================================= */
-
 @media (max-width: 640px) {
   body {
     font-size: 14px;
   }
 }
-
-/* =========================================================
-   Reduced Motion
-   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -251,4 +208,88 @@ select:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+html.dark .bg-white {
+  background-color: var(--surface) !important;
+}
+
+html.dark .bg-slate-50 {
+  background-color: var(--page-bg) !important;
+}
+
+html.dark .bg-slate-100 {
+  background-color: var(--surface-muted) !important;
+}
+
+html.dark .text-slate-900 {
+  color: var(--text-primary) !important;
+}
+
+html.dark .text-slate-800 {
+  color: var(--text-primary) !important;
+}
+
+html.dark .text-slate-700 {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .text-slate-600 {
+  color: var(--text-secondary) !important;
+}
+
+html.dark .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+html.dark .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html.dark .border-slate-200 {
+  border-color: var(--border) !important;
+}
+
+html.dark .border-slate-100 {
+  border-color: var(--border-light) !important;
+}
+
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background-color: #1e293b;
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #94a3b8;
+}
+
+html.dark .bg-blue-50 {
+  background-color: #172554 !important;
+}
+
+html.dark .bg-green-50 {
+  background-color: #052e16 !important;
+}
+
+html.dark .bg-red-50 {
+  background-color: #450a0a !important;
+}
+
+html.dark .bg-yellow-50 {
+  background-color: #451a03 !important;
+}
+
+html.dark .bg-purple-50 {
+  background-color: #2e1065 !important;
+}
+
+html.dark .shadow-md,
+html.dark .shadow-lg,
+html.dark .shadow-xl,
+html.dark .shadow-2xl {
+  --tw-shadow-color: rgba(0, 0, 0, 0.35);
 }
