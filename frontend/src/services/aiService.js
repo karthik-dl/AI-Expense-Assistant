@@ -1,10 +1,13 @@
 import api from "./api";
 
-export const getAISummary = () =>
-  api.get("/ai/summary");
+export const getAISummary = () => {
+  return api.get("/ai-summary");
+};
 
-export const getSavingsTips = () =>
-  api.get("/ai/savings");
+export const getSavingsTips = () => {
+  return api.get("/ai/savings");
+};
 
-export const getBudgetAlerts = () =>
-  api.get("/ai/budget-alerts");
+export const getBudgetAlerts = () => {
+  return api.get("/ai/budget-alerts");
+};

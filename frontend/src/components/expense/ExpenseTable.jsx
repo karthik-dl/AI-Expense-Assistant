@@ -53,7 +53,6 @@ function ExpenseTable({
 
   return (
     <section className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      {/* Mobile scroll container */}
       <div className="w-full overflow-x-auto">
         <table className="w-full min-w-180">
           <thead className="bg-slate-50">
@@ -86,15 +85,13 @@ function ExpenseTable({
                 key={expense.id}
                 className="border-t border-slate-100 transition-colors hover:bg-slate-50"
               >
-                {/* Title */}
                 <td className="px-5 py-4 sm:px-6">
                   <p className="max-w-55 truncate text-sm font-semibold text-slate-800">
-                    {expense.title ||
+                    {expense.description ||
                       "Untitled Expense"}
                   </p>
                 </td>
 
-                {/* Category */}
                 <td className="px-5 py-4 sm:px-6">
                   <Badge
                     variant="primary"
@@ -105,18 +102,16 @@ function ExpenseTable({
                   </Badge>
                 </td>
 
-                {/* Date */}
                 <td className="whitespace-nowrap px-5 py-4 text-sm text-slate-500 sm:px-6">
-                  {expense.date
+                  {expense.expense_date
                     ? new Date(
-                        expense.date
+                        expense.expense_date
                       ).toLocaleDateString(
                         "en-IN"
                       )
                     : "-"}
                 </td>
 
-                {/* Amount */}
                 <td className="whitespace-nowrap px-5 py-4 text-right text-sm font-bold text-red-600 sm:px-6">
                   -₹
                   {Number(
@@ -126,13 +121,12 @@ function ExpenseTable({
                   )}
                 </td>
 
-                {/* Actions */}
                 <td className="px-5 py-4 sm:px-6">
                   <div className="flex items-center justify-center gap-2">
                     <Link
                       to={`/expenses/${expense.id}/edit`}
                       aria-label={`Edit ${
-                        expense.title ||
+                        expense.description ||
                         "expense"
                       }`}
                     >
@@ -156,7 +150,7 @@ function ExpenseTable({
                         onDelete?.(expense)
                       }
                       aria-label={`Delete ${
-                        expense.title ||
+                        expense.description ||
                         "expense"
                       }`}
                     >
