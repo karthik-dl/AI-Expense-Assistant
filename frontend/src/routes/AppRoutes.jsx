@@ -28,7 +28,7 @@ import EditBudget from "../pages/budget/EditBudget";
 import Reports from "../pages/reports/Reports";
 import AISummary from "../pages/ai-summary/AISummary";
 import Profile from "../pages/profile/Profile";
-import Settings from "../pages/settings/Settings";
+import Settings from "../pages/Settings/Settings";
 
 function AppRoutes() {
   return (
