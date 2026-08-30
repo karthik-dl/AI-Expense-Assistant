@@ -33,15 +33,20 @@ migrate = Migrate()
 def create_app(config_class=Config):
     app = Flask(__name__)
 
+
     app.config.from_object(config_class)
 
+ 
     register_error_handlers(app)
 
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": "http://localhost:5173"
+                "origins": [
+                    "http://localhost:5173",
+                    "https://frontend-dun-beta-k1ylyteh71.vercel.app"
+                ]
             }
         },
         supports_credentials=True,
@@ -59,6 +64,7 @@ def create_app(config_class=Config):
     )
 
     JWTManager(app)
+
 
     app.register_blueprint(
         user_bp,
@@ -125,6 +131,7 @@ def create_app(config_class=Config):
         url_prefix="/api"
     )
 
+
     db.init_app(app)
 
     migrate.init_app(
@@ -132,12 +139,14 @@ def create_app(config_class=Config):
         db
     )
 
+
     @app.route("/")
     def home():
         return {
             "status": "success",
             "message": "AI Expense Assistant Backend Running 🚀"
         }
+
 
     @app.route("/health")
     def health():
@@ -149,7 +158,6 @@ def create_app(config_class=Config):
 
 
 app = create_app()
-
 
 if __name__ == "__main__":
     app.run(
